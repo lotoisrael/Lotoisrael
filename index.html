@@ -305,14 +305,16 @@ body{font-family:'Heebo',sans-serif;background:#edf0f7;color:#1a1a1a;direction:r
   <footer class="site-footer" role="contentinfo">
     <nav aria-label="קישורי מידע" class="footer-links">
       <a href="#" onclick="openAccModal(event)" aria-label="פתח הצהרת נגישות">♿ הצהרת נגישות</a>
-      <a href="#" onclick="event.preventDefault()">תנאי שימוש</a>
-      <a href="#" onclick="event.preventDefault()">צור קשר</a>
+      <a href="#" onclick="openTermsModal(event)" aria-label="פתח תנאי שימוש">תנאי שימוש</a>
+      <a href="mailto:Info@lotoisrael.com">צור קשר</a>
     </nav>
     <p>התחזיות ניתנות לצורכי בידור בלבד ואינן מבטיחות זכייה.</p>
     <p>גיל מינימלי 18 · שחקו באחריות</p>
   </footer>
 
 </div><!-- /page -->
+
+None
 
 <!-- ══════════════════════════════════════
      ACCESSIBILITY STATEMENT MODAL
@@ -371,7 +373,7 @@ body{font-family:'Heebo',sans-serif;background:#edf0f7;color:#1a1a1a;direction:r
             </tr>
             <tr>
               <td>מייל</td>
-              <td><a href="mailto:accessibility@lotosmart.co.il" aria-label="שלח מייל לרכזת הנגישות">accessibility@lotosmart.co.il</a></td>
+              <td><a href="mailto:info@lotoisrael.com" aria-label="שלח מייל לרכזת הנגישות">accessibility@lotosmart.co.il</a></td>
             </tr>
           </tbody>
         </table>
@@ -590,7 +592,23 @@ function makeTrap(modalSel,closeFn){
     else{if(document.activeElement===last){e.preventDefault();first.focus();}}
   };
 }
-let accTrap=null,payTrap=null;
+let accTrap=null,payTrap=null,termsTrap=null;
+
+/* ── Terms modal ── */
+function openTermsModal(e){
+  if(e)e.preventDefault();
+  lastFocus=document.activeElement;
+  document.getElementById('terms-modal-bg').classList.add('open');
+  termsTrap=makeTrap('#terms-modal-bg .modal',closeTermsModal);
+  document.addEventListener('keydown',termsTrap);
+  setTimeout(()=>{const f=document.querySelector('#terms-modal-bg .modal button');if(f)f.focus();},50);
+}
+function closeTermsModal(){
+  document.getElementById('terms-modal-bg').classList.remove('open');
+  document.removeEventListener('keydown',termsTrap);
+  if(lastFocus)lastFocus.focus();
+}
+function termsBgClose(e){if(e.target===document.getElementById('terms-modal-bg'))closeTermsModal();}
 
 /* ── Accessibility modal ── */
 function openAccModal(e){
@@ -667,6 +685,39 @@ function checkReturnFromStripe(){
     document.body.appendChild(banner);setTimeout(()=>banner.remove(),4000);
   };wait();
 }
+
+/* ── Terms modal (inline) ── */
+(function(){
+  const bg=document.createElement('div');
+  bg.id='terms-modal-bg';
+  bg.className='modal-bg';
+  bg.setAttribute('role','dialog');
+  bg.setAttribute('aria-modal','true');
+  bg.setAttribute('aria-labelledby','terms-title');
+  bg.innerHTML=`
+  <div class="modal acc-modal" style="max-width:560px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;border-bottom:2px solid #e8eaf6;padding-bottom:12px">
+      <h2 id="terms-title" style="font-size:clamp(16px,3vw,20px);font-weight:900;color:#1340a0">📋 תנאי שימוש</h2>
+      <button onclick="closeTermsModal()" aria-label="סגור תנאי שימוש" style="background:none;border:none;font-size:22px;cursor:pointer;color:#333;padding:4px 8px;line-height:1">✕</button>
+    </div>
+    <p style="font-size:11px;color:#555;margin-bottom:16px">עודכן לאחרונה: מרץ 2026</p>
+    <div style="display:flex;flex-direction:column;gap:18px;font-size:13px;color:#222;line-height:1.9;text-align:right">
+      <div><h3 style="font-size:14px;font-weight:900;color:#1340a0;margin-bottom:4px">1. כללי</h3><p>האתר <strong>לוטו חכם</strong> מופעל על ידי חברת לוטו ישראל בע"מ. השימוש באתר מהווה הסכמה מלאה לתנאי שימוש אלה. אם אינך מסכים לתנאים, הפסק את השימוש באתר לאלתר.</p></div>
+      <div><h3 style="font-size:14px;font-weight:900;color:#1340a0;margin-bottom:4px">2. מטרת השירות</h3><p>האתר מספק כלי לבידור ולניתוח סטטיסטי בלבד של מספרי הגרלות לוטו. המספרים אינם מהווים המלצה, ייעוץ או הבטחה לזכייה. החברה אינה קשורה למפעל הפיס.</p></div>
+      <div><h3 style="font-size:14px;font-weight:900;color:#1340a0;margin-bottom:4px">3. גיל מינימלי</h3><p>השימוש באתר מותר לבני <strong>18 ומעלה בלבד</strong>. קטינים אינם רשאים לעשות שימוש בשירותי האתר ובכלל זה ביצוע תשלומים.</p></div>
+      <div><h3 style="font-size:14px;font-weight:900;color:#1340a0;margin-bottom:4px">4. תשלומים והחזרים</h3><p>התשלומים מתבצעים דרך Stripe. כל עסקה חד-פעמית. לאחר חשיפת המספרים <strong>לא ניתן לבצע החזר כספי</strong>. לבעיות בחיוב פנה אלינו תוך 48 שעות.</p></div>
+      <div><h3 style="font-size:14px;font-weight:900;color:#1340a0;margin-bottom:4px">5. הגבלת אחריות</h3><p>החברה לא תישא בכל אחריות לנזק הנובע מהסתמכות על תוצאות האתר. ההחלטה לרכוש כרטיס לוטו היא באחריות המשתמש בלבד.</p></div>
+      <div><h3 style="font-size:14px;font-weight:900;color:#1340a0;margin-bottom:4px">6. קניין רוחני</h3><p>כל התכנים, העיצובים והאלגוריתמים הינם רכוש החברה ומוגנים בזכויות יוצרים. אין להעתיק או לעשות שימוש מסחרי ללא אישור בכתב.</p></div>
+      <div><h3 style="font-size:14px;font-weight:900;color:#1340a0;margin-bottom:4px">7. פרטיות ועוגיות</h3><p>האתר עושה שימוש ב-Google Analytics לניתוח תנועה אנונימי. לא נאסף מידע אישי מזהה ללא הסכמה.</p></div>
+      <div><h3 style="font-size:14px;font-weight:900;color:#1340a0;margin-bottom:4px">8. שינויים בתנאים</h3><p>החברה רשאית לעדכן תנאים אלה בכל עת. המשך השימוש לאחר פרסום שינויים מהווה הסכמה לתנאים המעודכנים.</p></div>
+      <div><h3 style="font-size:14px;font-weight:900;color:#1340a0;margin-bottom:4px">9. דין וסמכות שיפוט</h3><p>תנאי שימוש אלה כפופים לדיני מדינת ישראל. כל סכסוך יובא לבית המשפט המוסמך במחוז תל אביב-יפו.</p></div>
+      <div><h3 style="font-size:14px;font-weight:900;color:#1340a0;margin-bottom:4px">10. יצירת קשר</h3><p>לשאלות: <a href="mailto:Info@lotoisrael.com" style="color:#1340a0;font-weight:700">Info@lotoisrael.com</a></p></div>
+    </div>
+    <button class="acc-close-btn" onclick="closeTermsModal()" style="margin-top:20px">סגור</button>
+  </div>`;
+  bg.addEventListener('click',e=>{if(e.target===bg)closeTermsModal();});
+  document.body.appendChild(bg);
+})();
 
 checkReturnFromStripe();
 init();
