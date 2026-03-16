@@ -214,7 +214,7 @@ body{font-family:'Heebo',sans-serif;background:#f0f4f8;color:#1a1a1a;direction:r
       </div>
       <p id="strong-hint" style="font-size:11px;color:#555;text-align:center;margin-top:4px;font-weight:600" aria-live="polite">☝️ המספר החזק מוסתר</p>
       <div class="why-grid" id="why-grid"></div>
-      <p class="expiry-note" id="expiry-note" style="display:none" aria-live="assertive" role="timer"></p>
+None
       <button class="copy-btn" id="copy-btn" onclick="copyNumbers()">📋 העתק מספרים</button>
     </section>
   </section>
@@ -553,6 +553,7 @@ function revealNumbers(){
 }
 
 function copyNumbers(){
+  gtag_event('copy_numbers',{event_category:'engagement'});
   const txt=_nums.join(', ')+' | חזק: '+_strong;
   navigator.clipboard.writeText(txt).then(()=>{
     const btn=document.getElementById('copy-btn');
@@ -568,21 +569,14 @@ function copyNumbers(){
 }
 
 function startExpiryCountdown(expiresAt){
-  const note=document.getElementById('expiry-note');
-  note.style.display='block';
   const tick=()=>{
     const left=expiresAt-Date.now();
     if(left<=0){
-      note.textContent='⏰ פג תוקף – צור שורה חדשה';
-      note.classList.add('expiring');
       document.getElementById('blur-overlay').classList.remove('hidden');
       document.getElementById('copy-btn').style.display='none';
       revealed=false;return;
     }
-    const h=Math.floor(left/3600000),m=Math.floor((left%3600000)/60000),s=Math.floor((left%60000)/1000);
-    note.textContent=`⏱ המספרים גלויים עוד ${h>0?h+':':''}${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    if(left<10*60*1000)note.classList.add('expiring');
-    setTimeout(tick,1000);
+    setTimeout(tick,10000);
   };tick();
 }
 
@@ -605,11 +599,15 @@ function openAccModal(e){if(e)e.preventDefault();lastFocus=document.activeElemen
 function closeAccModal(){document.getElementById('acc-modal-bg').classList.remove('open');document.removeEventListener('keydown',accTrap);if(lastFocus)lastFocus.focus();}
 function accBgClose(e){if(e.target===document.getElementById('acc-modal-bg'))closeAccModal();}
 
-function openPayModal(){lastFocus=document.activeElement;document.getElementById('modal-bg').classList.add('open');document.getElementById('modal-form').classList.remove('hide');document.getElementById('modal-success').classList.remove('show');payTrap=makeTrap('#modal-bg .modal',closePayModal);document.addEventListener('keydown',payTrap);setTimeout(()=>{const f=document.querySelector('#modal-bg a,#modal-bg button:not([disabled])');if(f)f.focus();},50);}
+function gtag_event(name,params={}){if(typeof gtag==='function')gtag('event',name,params);}
+
+function openPayModal(){
+  gtag_event('reveal_click',{event_category:'monetization'});lastFocus=document.activeElement;document.getElementById('modal-bg').classList.add('open');document.getElementById('modal-form').classList.remove('hide');document.getElementById('modal-success').classList.remove('show');payTrap=makeTrap('#modal-bg .modal',closePayModal);document.addEventListener('keydown',payTrap);setTimeout(()=>{const f=document.querySelector('#modal-bg a,#modal-bg button:not([disabled])');if(f)f.focus();},50);}
 function closePayModal(){document.getElementById('modal-bg').classList.remove('open');document.removeEventListener('keydown',payTrap);if(lastFocus)lastFocus.focus();}
 function payBgClose(e){if(e.target===document.getElementById('modal-bg'))closePayModal();}
 
 function onStripeClick(){
+  gtag_event('stripe_checkout_click',{event_category:'monetization',currency:'ILS',value:5});
   localStorage.setItem(PENDING_KEY,JSON.stringify({nums:_nums,strong:_strong,reasons:_reasons,ts:Date.now()}));
 }
 
@@ -638,6 +636,8 @@ function checkReturnFromStripe(){
   localStorage.removeItem(PENDING_KEY);
   window.history.replaceState({},'',window.location.pathname);
   startExpiryCountdown(expiresAt);
+  gtag_event('purchase',{event_category:'monetization',currency:'ILS',value:5});
+  gtag_event('numbers_revealed',{event_category:'monetization'});
   const banner=document.createElement('div');
   banner.setAttribute('role','alert');
   banner.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2e7d32;color:#fff;padding:12px 28px;border-radius:50px;font-family:Heebo,sans-serif;font-size:15px;font-weight:700;box-shadow:0 4px 16px rgba(0,0,0,.3);z-index:9999;white-space:nowrap';
