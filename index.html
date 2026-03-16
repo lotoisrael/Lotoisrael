@@ -24,6 +24,14 @@
 <meta name="twitter:image" content="https://www.lotoisrael.com/og.jpg">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"לוטו ישראל","url":"https://www.lotoisrael.com","description":"מחולל מספרי לוטו חכם המבוסס על ניתוח סטטיסטי של הגרלות מפעל הפיס","applicationCategory":"EntertainmentApplication","operatingSystem":"Web","inLanguage":"he","offers":{"@type":"Offer","price":"5","priceCurrency":"ILS"},"publisher":{"@type":"Organization","name":"לוטו ישראל","url":"https://www.lotoisrael.com","email":"Info@lotoisrael.com"}}</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-691HKZF7E5"></script>
+<!-- COOKIE BANNER -->
+<div id="cookie-banner" style="display:none;position:fixed;bottom:0;right:0;left:0;background:#1a1a1a;color:#fff;padding:14px 20px;z-index:999;font-family:'Heebo',sans-serif;font-size:12px;line-height:1.8;direction:rtl">
+  <div style="max-width:540px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <p style="margin:0;flex:1">🍪 אתר זה משתמש בעוגיות לניתוח תנועה אנונימי (Google Analytics) ולשיפור חוויית המשתמש. <a href="#" onclick="openPrivacyModal(event)" style="color:#f5c518;font-weight:700">למדיניות הפרטיות</a></p>
+    <button onclick="acceptCookies()" style="background:#c8102e;color:#fff;border:none;border-radius:50px;padding:8px 20px;font-family:'Heebo',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">הבנתי ✓</button>
+  </div>
+</div>
+
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=gtag;gtag('js',new Date());gtag('config','G-691HKZF7E5');</script>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 <style>
@@ -216,6 +224,7 @@ body{font-family:'Heebo',sans-serif;background:#f0f4f8;color:#1a1a1a;direction:r
   <nav class="footer-links">
     <a href="#" onclick="openAccModal(event)">♿ הצהרת נגישות</a>
     <a href="#" onclick="openTermsModal(event)">תנאי שימוש</a>
+    <a href="#" onclick="openPrivacyModal(event)">מדיניות פרטיות</a>
     <a href="mailto:Info@lotoisrael.com">צור קשר</a>
   </nav>
   <p>האתר אינו קשור למפעל הפיס ואינו פועל מטעמו.</p>
@@ -227,7 +236,7 @@ body{font-family:'Heebo',sans-serif;background:#f0f4f8;color:#1a1a1a;direction:r
     <h3>תוצאות לוטו אחרונות</h3>
     <p>האתר מציג את <strong>תוצאות הגרלת הלוטו האחרונה</strong> בזמן אמת, כולל המספרים הזוכים, המספר החזק, פרס ראשון וסך הפרסים.</p>
     <h3>אסטרטגיות בחירת מספרים</h3>
-    <p><strong>מספרים חמים</strong>, <strong>מספרים בתורם</strong>, ו<strong>בחירה חכמה</strong>. <strong>אין באף אסטרטגיה כדי לשפר את סיכויי הזכייה האמיתיים.</strong></p>
+    <p><strong>מספרים חמים</strong>, <strong>מספרים בתורם</strong>, ו<strong>בחירה חכמה</strong>. <strong>הזכייה תלויה במזל בלבד ואינה קשורה לידע, ניסיון או יכולת. אין באף אסטרטגיה כדי לשפר את סיכויי הזכייה.</strong></p>
     <h3>שאלות נפוצות</h3>
     <p><strong>מתי הגרלת הלוטו?</strong> ימי שלישי ומוצאי שבת.</p>
     <p><strong>כמה מספרים בלוטו?</strong> 6 מספרים מ-1 עד 37 ומספר חזק מ-1 עד 7.</p>
@@ -279,6 +288,55 @@ body{font-family:'Heebo',sans-serif;background:#f0f4f8;color:#1a1a1a;direction:r
   </div>
 </div>
 
+<!-- PRIVACY MODAL -->
+<div class="modal-bg" id="privacy-modal-bg" role="dialog" aria-modal="true" onclick="privacyBgClose(event)">
+  <div class="modal acc-modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;border-bottom:2px solid #f5c0c8;padding-bottom:12px">
+      <h2 style="font-size:clamp(16px,3vw,20px);font-weight:900;color:#c8102e">🔒 מדיניות פרטיות ועוגיות</h2>
+      <button onclick="closePrivacyModal()" aria-label="סגור" style="background:none;border:none;font-size:22px;cursor:pointer;color:#333;padding:4px 8px">✕</button>
+    </div>
+    <p style="font-size:11px;color:#555;margin-bottom:14px">עודכן לאחרונה: מרץ 2026</p>
+    <div style="display:flex;flex-direction:column;gap:16px;font-size:12px;color:#222;line-height:1.9;text-align:right">
+
+      <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">1. כללי</h3>
+      <p>אתר <strong>לוטו ישראל</strong> (lotoisrael.com) מכבד את פרטיותך. מדיניות זו מסבירה אילו נתונים נאספים, כיצד הם משמשים ומהן זכויותיך.</p></div>
+
+      <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">2. מידע הנאסף</h3>
+      <p>האתר <strong>אינו אוסף</strong> מידע אישי מזהה כגון שם, כתובת מייל או פרטי תשלום ישירות. תשלומים מתבצעים דרך PayPal בלבד — פרטי התשלום אינם עוברים דרך שרתינו.</p></div>
+
+      <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">3. עוגיות (Cookies)</h3>
+      <p>האתר משתמש בעוגיות לצורך:</p>
+      <ul style="padding-right:16px;display:flex;flex-direction:column;gap:4px;margin-top:4px">
+        <li><strong>Google Analytics</strong> — ניתוח תנועה אנונימי (עוגיות: _ga, _gid, _gat). המידע אנונימי לחלוטין ואינו מזהה אותך אישית.</li>
+        <li><strong>Session Storage</strong> — שמירת תוצאות ההגרלה האחרונה לשיפור מהירות הטעינה. נמחק עם סגירת הדפדפן.</li>
+        <li><strong>Local Storage</strong> — שמירת מצב תשלום זמני לצורך חשיפת המספרים לאחר תשלום.</li>
+      </ul></div>
+
+      <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">4. Google Analytics</h3>
+      <p>אנו משתמשים ב-Google Analytics (מזהה: G-691HKZF7E5) לניתוח אנונימי של תנועת משתמשים. Google עשויה לעבד נתונים אלה בהתאם ל<a href="https://policies.google.com/privacy" target="_blank" rel="noopener" style="color:#c8102e">מדיניות הפרטיות של Google</a>. ניתן לבטל מעקב זה באמצעות <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener" style="color:#c8102e">תוסף הביטול של Google</a>.</p></div>
+
+      <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">5. שיתוף מידע עם צדדים שלישיים</h3>
+      <p>אנו <strong>לא מוכרים ולא משתפים</strong> מידע אישי עם צדדים שלישיים, למעט שירותים הנדרשים לתפעול האתר (Google Analytics, PayPal).</p></div>
+
+      <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">6. זכויות המשתמש</h3>
+      <p>בהתאם לחוק הגנת הפרטיות הישראלי ולתקנות GDPR, יש לך זכות:</p>
+      <ul style="padding-right:16px;display:flex;flex-direction:column;gap:4px;margin-top:4px">
+        <li>לדעת אילו נתונים נאספו עליך</li>
+        <li>לבקש מחיקת נתונים</li>
+        <li>לבטל הסכמה לעוגיות</li>
+      </ul></div>
+
+      <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">7. ניהול עוגיות</h3>
+      <p>ניתן לנהל או לחסום עוגיות דרך הגדרות הדפדפן שלך. חסימת עוגיות עלולה להשפיע על תפקוד האתר.</p></div>
+
+      <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">8. יצירת קשר</h3>
+      <p>לשאלות בנושא פרטיות: <a href="mailto:Info@lotoisrael.com" style="color:#c8102e;font-weight:700">Info@lotoisrael.com</a></p></div>
+
+    </div>
+    <button class="acc-close-btn" onclick="closePrivacyModal()">סגור</button>
+  </div>
+</div>
+
 <!-- TERMS MODAL -->
 <div class="modal-bg" id="terms-modal-bg" role="dialog" aria-modal="true" onclick="termsBgClose(event)">
   <div class="modal acc-modal">
@@ -289,7 +347,7 @@ body{font-family:'Heebo',sans-serif;background:#f0f4f8;color:#1a1a1a;direction:r
     <p style="font-size:11px;color:#555;margin-bottom:14px">עודכן לאחרונה: מרץ 2026</p>
     <div style="display:flex;flex-direction:column;gap:16px;font-size:12px;color:#222;line-height:1.9;text-align:right">
       <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">1. כללי</h3><p>האתר <strong>לוטו ישראל</strong> מופעל באופן עצמאי ואינו קשור למפעל הפיס, אינו מייצגו ואינו פועל מטעמו בשום צורה.</p></div>
-      <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">2. מטרת השירות</h3><p>האתר מספק כלי <strong>לבידור בלבד</strong>. המספרים אינם מבטיחים זכייה ואינם מגדילים סיכויים. הגרלת הלוטו היא משחק מזל טהור.</p></div>
+      <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">2. מטרת השירות</h3><p>האתר מספק כלי <strong>לבידור בלבד</strong>. המספרים אינם מבטיחים זכייה ואינם מגדילים סיכויים. <strong>הזכייה תלויה במזל בלבד, ואינה קשורה לידע, ניסיון, יכולת או ריבוי משחקים.</strong> הגרלת הלוטו היא משחק מזל טהור.</p></div>
       <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">3. גיל מינימלי</h3><p>השימוש מותר לבני <strong>18 ומעלה בלבד</strong>.</p></div>
       <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">4. משחק אחראי</h3><p>מוקד טיפול בהתמכרויות: <strong>1-800-599-029</strong> (חינם).</p></div>
       <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">5. תשלומים</h3><p>התשלומים דרך PayPal. לאחר חשיפת המספרים <strong>לא ניתן לבצע החזר</strong>.</p></div>
@@ -611,11 +669,17 @@ function openAccModal(e){if(e)e.preventDefault();lastFocus=document.activeElemen
 function closeAccModal(){document.getElementById('acc-modal-bg').classList.remove('open');document.removeEventListener('keydown',accTrap);if(lastFocus)lastFocus.focus();}
 function accBgClose(e){if(e.target===document.getElementById('acc-modal-bg'))closeAccModal();}
 
-function openTermsModal(e){if(e)e.preventDefault();lastFocus=document.activeElement;document.getElementById('terms-modal-bg').classList.add('open');termsTrap=makeTrap('#terms-modal-bg .modal',closeTermsModal);document.addEventListener('keydown',termsTrap);setTimeout(()=>{const f=document.querySelector('#terms-modal-bg .modal button');if(f)f.focus();},50);}
+function openPrivacyModal(e){if(e)e.preventDefault();lastFocus=document.activeElement;document.getElementById('privacy-modal-bg').classList.add('open');document.addEventListener('keydown',privacyTrap);setTimeout(()=>{const f=document.querySelector('#privacy-modal-bg .modal button');if(f)f.focus();},50);}
+function closePrivacyModal(){document.getElementById('privacy-modal-bg').classList.remove('open');document.removeEventListener('keydown',privacyTrap);if(lastFocus)lastFocus.focus();}
+function privacyBgClose(e){if(e.target===document.getElementById('privacy-modal-bg'))closePrivacyModal();}
+let privacyTrap=e=>{if(e.key==='Escape')closePrivacyModal();};if(e)e.preventDefault();lastFocus=document.activeElement;document.getElementById('terms-modal-bg').classList.add('open');termsTrap=makeTrap('#terms-modal-bg .modal',closeTermsModal);document.addEventListener('keydown',termsTrap);setTimeout(()=>{const f=document.querySelector('#terms-modal-bg .modal button');if(f)f.focus();},50);}
 function closeTermsModal(){document.getElementById('terms-modal-bg').classList.remove('open');document.removeEventListener('keydown',termsTrap);if(lastFocus)lastFocus.focus();}
 function termsBgClose(e){if(e.target===document.getElementById('terms-modal-bg'))closeTermsModal();}
 
-try { init(); checkReturnFromStripe(); } catch(e) { console.error('Boot error:',e); document.getElementById('results-card').innerHTML='<p style="text-align:center;padding:20px;color:#c8102e">שגיאה בטעינה. אנא רענן את הדף.</p>'; document.getElementById('go-btn').disabled=false; }
+function acceptCookies(){localStorage.setItem('cookies_ok','1');document.getElementById('cookie-banner').style.display='none';}
+function showCookieBanner(){if(!localStorage.getItem('cookies_ok')){document.getElementById('cookie-banner').style.display='block';}}
+
+try { init(); checkReturnFromStripe(); showCookieBanner(); } catch(e) { console.error('Boot error:',e); document.getElementById('results-card').innerHTML='<p style="text-align:center;padding:20px;color:#c8102e">שגיאה בטעינה. אנא רענן את הדף.</p>'; document.getElementById('go-btn').disabled=false; }
 </script>
 </body>
 </html>
