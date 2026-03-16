@@ -13,14 +13,18 @@
 <meta property="og:url" content="https://www.lotoisrael.com/">
 <meta property="og:title" content="לוטו ישראל – מחולל מספרים חכם לפי סטטיסטיקה">
 <meta property="og:description" content="מחולל מספרי לוטו חכם המבוסס על ניתוח סטטיסטי של הגרלות מפעל הפיס.">
+<meta property="og:image" content="https://www.lotoisrael.com/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:locale" content="he_IL">
 <meta property="og:site_name" content="לוטו ישראל">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="לוטו ישראל – מחולל מספרים חכם">
 <meta name="twitter:description" content="מספרי לוטו חכמים לפי סטטיסטיקה. תוצאות הגרלה אחרונה מפעל הפיס.">
+<meta name="twitter:image" content="https://www.lotoisrael.com/og.jpg">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"לוטו ישראל","url":"https://www.lotoisrael.com","description":"מחולל מספרי לוטו חכם המבוסס על ניתוח סטטיסטי של הגרלות מפעל הפיס","applicationCategory":"EntertainmentApplication","operatingSystem":"Web","inLanguage":"he","offers":{"@type":"Offer","price":"5","priceCurrency":"ILS"},"publisher":{"@type":"Organization","name":"לוטו ישראל","url":"https://www.lotoisrael.com","email":"Info@lotoisrael.com"}}</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-691HKZF7E5"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=gtag;gtag('js',new Date());gtag('config','G-JRT5194T61');</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=gtag;gtag('js',new Date());gtag('config','G-691HKZF7E5');</script>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -125,23 +129,14 @@ body{font-family:'Heebo',sans-serif;background:#f0f4f8;color:#1a1a1a;direction:r
 .modal-sub{font-size:13px;color:#333;margin-bottom:14px;line-height:1.7}
 .modal-price{font-size:clamp(32px,6vw,44px);font-weight:900;color:#c8102e;line-height:1;margin-bottom:2px}
 .modal-price-sub{font-size:12px;color:#555;margin-bottom:18px;font-weight:600}
-.stripe-pay-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px;background:#0070ba;color:#fff;border:none;border-radius:50px;font-family:'Heebo',sans-serif;font-size:16px;font-weight:900;cursor:pointer;margin-bottom:8px;text-decoration:none;transition:background .2s;touch-action:manipulation}
-.stripe-pay-btn:hover{background:#005ea6}
+.paypal-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px;background:#0070ba;color:#fff;border:none;border-radius:50px;font-family:'Heebo',sans-serif;font-size:16px;font-weight:900;cursor:pointer;margin-bottom:8px;text-decoration:none;transition:background .2s;touch-action:manipulation}
+.paypal-btn:hover{background:#005ea6}
 .modal-cancel-btn{background:none;border:2px solid #e2e6ee;border-radius:50px;font-family:'Heebo',sans-serif;font-size:13px;color:#333;cursor:pointer;padding:8px 20px;font-weight:600}
 .modal-cancel-btn:hover{border-color:#aaa}
-.stripe-badge{font-size:11px;color:#555;margin-top:10px;font-weight:600}
-.modal-success{display:none;flex-direction:column;align-items:center;gap:10px}
-.modal-success.show{display:flex}
-.modal-form.hide{opacity:0;pointer-events:none;height:0;overflow:hidden}
-.check-circle{width:68px;height:68px;background:#2e7d32;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:34px;color:#fff;animation:bpop .5s cubic-bezier(.34,1.56,.64,1)}
+.pay-badge{font-size:11px;color:#555;margin-top:10px;font-weight:600}
 .acc-modal{max-width:540px;max-height:88vh;overflow-y:auto;text-align:right;padding:clamp(16px,3vw,26px)}
 .acc-section-title{font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px}
 .acc-text{font-size:12px;color:#222;line-height:1.8}
-.acc-contact-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px}
-.acc-contact-table td{padding:7px 10px;border-bottom:1px solid #eee}
-.acc-contact-table tr:last-child td{border-bottom:none}
-.acc-contact-table td:first-child{font-weight:700;color:#c8102e;width:70px}
-.acc-contact-table a{color:#c8102e;text-decoration:underline}
 .acc-close-btn{margin-top:18px;width:100%;padding:12px;background:#c8102e;color:#fff;border:none;border-radius:50px;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;cursor:pointer}
 .acc-close-btn:hover{background:#9b0020}
 .seo-section{max-width:540px;margin:24px auto 0;text-align:right;font-size:12px;color:#666;line-height:2;border-top:1px solid #eee;padding-top:16px}
@@ -167,9 +162,9 @@ body{font-family:'Heebo',sans-serif;background:#f0f4f8;color:#1a1a1a;direction:r
 </header>
 
 <main id="main-content" class="content" tabindex="-1">
-  <section aria-labelledby="results-heading" class="card" id="results-card"></section>
-  <section aria-labelledby="generator-heading" class="card">
-    <h1 id="generator-heading" class="gen-title">🎯 צור מספרים מבוססי סטטיסטיקה</h1>
+  <section class="card" id="results-card"></section>
+  <section class="card">
+    <h1 class="gen-title">🎯 צור מספרים מבוססי סטטיסטיקה</h1>
     <p class="gen-sub" id="smart-sub" aria-live="polite"></p>
     <span class="next-draw" id="next-draw-label" aria-live="polite"></span>
     <fieldset style="border:none;padding:0;margin:0">
@@ -177,52 +172,40 @@ body{font-family:'Heebo',sans-serif;background:#f0f4f8;color:#1a1a1a;direction:r
       <div class="strat-grid">
         <div>
           <input type="radio" name="strategy" id="strat-smart" value="smart" class="strat-radio" checked onchange="selectStrat('smart')">
-          <label for="strat-smart" class="strat-label">
-            <span class="strat-icon" aria-hidden="true">🧠</span>
-            <span class="strat-name">חכם</span>
-            <span class="strat-badge">מומלץ</span>
-          </label>
+          <label for="strat-smart" class="strat-label"><span class="strat-icon">🧠</span><span class="strat-name">חכם</span><span class="strat-badge">מומלץ</span></label>
         </div>
         <div>
           <input type="radio" name="strategy" id="strat-hot" value="hot" class="strat-radio" onchange="selectStrat('hot')">
-          <label for="strat-hot" class="strat-label">
-            <span class="strat-icon" aria-hidden="true">🔥</span>
-            <span class="strat-name">חמים</span>
-            <span class="strat-badge hot">HOT</span>
-          </label>
+          <label for="strat-hot" class="strat-label"><span class="strat-icon">🔥</span><span class="strat-name">חמים</span><span class="strat-badge hot">HOT</span></label>
         </div>
         <div>
           <input type="radio" name="strategy" id="strat-due" value="due" class="strat-radio" onchange="selectStrat('due')">
-          <label for="strat-due" class="strat-label">
-            <span class="strat-icon" aria-hidden="true">⏰</span>
-            <span class="strat-name">בתורם</span>
-            <span class="strat-badge due">DUE</span>
-          </label>
+          <label for="strat-due" class="strat-label"><span class="strat-icon">⏰</span><span class="strat-name">בתורם</span><span class="strat-badge due">DUE</span></label>
         </div>
       </div>
     </fieldset>
     <button class="go-btn" id="go-btn" onclick="runAnalysis()">
-      <span id="go-icon" aria-hidden="true">✨</span>
+      <span id="go-icon">✨</span>
       <span id="go-txt">צור שורת מספרים בשבילי</span>
     </button>
     <div class="think-wrap" id="thinking" role="status" aria-live="polite">
-      <div class="think-row" id="t1"><span aria-hidden="true">📊</span><span id="t1l"></span><div class="t-bar" aria-hidden="true"><div class="t-fill"></div></div></div>
-      <div class="think-row" id="t2"><span aria-hidden="true">⏱️</span><span id="t2l"></span><div class="t-bar" aria-hidden="true"><div class="t-fill"></div></div></div>
-      <div class="think-row" id="t3"><span aria-hidden="true">🔗</span><span id="t3l"></span><div class="t-bar" aria-hidden="true"><div class="t-fill"></div></div></div>
-      <div class="think-row" id="t4"><span aria-hidden="true">🎯</span><span id="t4l"></span><div class="t-bar" aria-hidden="true"><div class="t-fill"></div></div></div>
+      <div class="think-row" id="t1"><span>📊</span><span id="t1l"></span><div class="t-bar"><div class="t-fill"></div></div></div>
+      <div class="think-row" id="t2"><span>⏱️</span><span id="t2l"></span><div class="t-bar"><div class="t-fill"></div></div></div>
+      <div class="think-row" id="t3"><span>🔗</span><span id="t3l"></span><div class="t-bar"><div class="t-fill"></div></div></div>
+      <div class="think-row" id="t4"><span>🎯</span><span id="t4l"></span><div class="t-bar"><div class="t-fill"></div></div></div>
     </div>
-    <section class="result-section" id="result-wrap" aria-labelledby="result-heading" aria-live="polite" aria-atomic="true">
-      <h2 id="result-heading" class="result-lbl">שורת המספרים שלך להגרלה הבאה:</h2>
+    <section class="result-section" id="result-wrap" aria-live="polite">
+      <h2 class="result-lbl">שורת המספרים שלך להגרלה הבאה:</h2>
       <div class="balls-reveal-wrap">
         <div class="result-balls-row" id="result-balls" role="list"></div>
-        <div class="blur-overlay" id="blur-overlay" role="region" aria-label="תוכן נעול">
+        <div class="blur-overlay" id="blur-overlay">
           <p class="pay-label">🔒 גלה את המספרים שלך</p>
           <p class="pay-sub">תשלום חד-פעמי</p>
-          <div class="pay-price-tag" aria-hidden="true">₪5 בלבד</div>
+          <div class="pay-price-tag">₪5 בלבד</div>
           <button class="pay-btn" onclick="openPayModal()">לחשיפת המספרים – ₪5</button>
         </div>
       </div>
-      <p id="strong-hint" style="font-size:11px;color:#555;text-align:center;margin-top:4px;font-weight:600" aria-live="polite">☝️ המספר החזק מוסתר</p>
+      <p id="strong-hint" style="font-size:11px;color:#555;text-align:center;margin-top:4px;font-weight:600">☝️ המספר החזק מוסתר</p>
       <div class="why-grid" id="why-grid"></div>
       <button class="copy-btn" id="copy-btn" onclick="copyNumbers()">📋 העתק מספרים</button>
     </section>
@@ -230,7 +213,7 @@ body{font-family:'Heebo',sans-serif;background:#f0f4f8;color:#1a1a1a;direction:r
 </main>
 
 <footer class="site-footer" role="contentinfo">
-  <nav class="footer-links" aria-label="קישורי מידע">
+  <nav class="footer-links">
     <a href="#" onclick="openAccModal(event)">♿ הצהרת נגישות</a>
     <a href="#" onclick="openTermsModal(event)">תנאי שימוש</a>
     <a href="mailto:Info@lotoisrael.com">צור קשר</a>
@@ -238,19 +221,19 @@ body{font-family:'Heebo',sans-serif;background:#f0f4f8;color:#1a1a1a;direction:r
   <p>האתר אינו קשור למפעל הפיס ואינו פועל מטעמו.</p>
   <p>התחזיות ניתנות לצורכי בידור בלבד ואינן מבטיחות זכייה.</p>
   <p>גיל מינימלי 18 · שחקו באחריות</p>
-  <section class="seo-section" aria-label="מידע על האתר">
+  <section class="seo-section">
     <h2>מחולל מספרי לוטו חכם – לוטו ישראל</h2>
     <p><strong>לוטו ישראל</strong> הוא כלי לניתוח סטטיסטי של הגרלות <strong>לוטו מפעל הפיס</strong>, לצורכי בידור בלבד. האתר אינו קשור למפעל הפיס. <strong>אין בכך כדי להבטיח זכייה.</strong></p>
     <h3>תוצאות לוטו אחרונות</h3>
     <p>האתר מציג את <strong>תוצאות הגרלת הלוטו האחרונה</strong> בזמן אמת, כולל המספרים הזוכים, המספר החזק, פרס ראשון וסך הפרסים.</p>
     <h3>אסטרטגיות בחירת מספרים</h3>
-    <p><strong>מספרים חמים</strong> (יצאו הרבה לאחרונה), <strong>מספרים בתורם</strong> (לא יצאו הרבה זמן), ו<strong>בחירה חכמה</strong> המשלבת את שתי הגישות. <strong>אין באף אסטרטגיה כדי לשפר את סיכויי הזכייה האמיתיים.</strong></p>
+    <p><strong>מספרים חמים</strong>, <strong>מספרים בתורם</strong>, ו<strong>בחירה חכמה</strong>. <strong>אין באף אסטרטגיה כדי לשפר את סיכויי הזכייה האמיתיים.</strong></p>
     <h3>שאלות נפוצות</h3>
     <p><strong>מתי הגרלת הלוטו?</strong> ימי שלישי ומוצאי שבת.</p>
     <p><strong>כמה מספרים בלוטו?</strong> 6 מספרים מ-1 עד 37 ומספר חזק מ-1 עד 7.</p>
-    <p><strong>מה הסיכוי לזכות בלוטו?</strong> כ-1 ל-16 מיליון לפרס ראשון.</p>
+    <p><strong>מה הסיכוי לזכות?</strong> כ-1 ל-16 מיליון לפרס ראשון.</p>
     <div class="seo-links">
-      <a href="https://www.pais.co.il/lotto/" target="_blank" rel="noopener">האתר הרשמי של מפעל הפיס – לוטו</a>
+      <a href="https://www.pais.co.il/lotto/" target="_blank" rel="noopener">האתר הרשמי של מפעל הפיס</a>
       <span style="color:#ccc">·</span>
       <a href="https://www.pais.co.il/lotto/archive.aspx" target="_blank" rel="noopener">ארכיון תוצאות לוטו</a>
       <span style="color:#ccc">·</span>
@@ -261,33 +244,28 @@ body{font-family:'Heebo',sans-serif;background:#f0f4f8;color:#1a1a1a;direction:r
 </div>
 
 <!-- PAYMENT MODAL -->
-<div class="modal-bg" id="modal-bg" role="dialog" aria-modal="true" aria-labelledby="pay-modal-title" onclick="payBgClose(event)">
+<div class="modal-bg" id="modal-bg" role="dialog" aria-modal="true" onclick="payBgClose(event)">
   <div class="modal">
     <div class="modal-form" id="modal-form">
-      <div class="modal-icon" aria-hidden="true">🎱</div>
-      <h2 id="pay-modal-title" class="modal-title">חשוף את השורה שלך</h2>
+      <div class="modal-icon">🎱</div>
+      <h2 class="modal-title">חשוף את השורה שלך</h2>
       <p class="modal-sub">תשלום חד-פעמי, מאובטח ב-PayPal.<br>המספרים גלויים לאחר התשלום.</p>
-      <p class="modal-price" aria-label="מחיר חמישה שקלים">₪5</p>
+      <p class="modal-price">₪5</p>
       <p class="modal-price-sub">לשורה אחת</p>
-      <a href="https://www.paypal.com/ncp/payment/3C2X8LN2A6CFE" target="_blank" rel="noopener noreferrer" class="stripe-pay-btn" onclick="onStripeClick()">
-        <span aria-hidden="true">🅿️</span> שלם ₪5 דרך PayPal
+      <a href="https://www.paypal.com/ncp/payment/3C2X8LN2A6CFE" target="_blank" rel="noopener noreferrer" class="paypal-btn" onclick="onPayClick()">
+        <span>🅿️</span> שלם ₪5 דרך PayPal
       </a>
-      <p class="stripe-badge" role="note">🔒 תשלום מאובטח על ידי PayPal</p>
+      <p class="pay-badge">🔒 תשלום מאובטח על ידי PayPal</p>
       <button class="modal-cancel-btn" onclick="closePayModal()">ביטול</button>
-    </div>
-    <div class="modal-success" id="modal-success" aria-live="assertive">
-      <div class="check-circle" role="img" aria-label="תשלום התקבל">✓</div>
-      <p style="font-size:18px;font-weight:900;color:#2e7d32">התשלום התקבל!</p>
-      <p style="font-size:13px;color:#333">חושף את המספרים שלך...</p>
     </div>
   </div>
 </div>
 
 <!-- ACCESSIBILITY MODAL -->
-<div class="modal-bg" id="acc-modal-bg" role="dialog" aria-modal="true" aria-labelledby="acc-title" onclick="accBgClose(event)">
+<div class="modal-bg" id="acc-modal-bg" role="dialog" aria-modal="true" onclick="accBgClose(event)">
   <div class="modal acc-modal">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;border-bottom:2px solid #f5c0c8;padding-bottom:12px">
-      <h2 id="acc-title" style="font-size:clamp(16px,3vw,20px);font-weight:900;color:#c8102e">♿ הצהרת נגישות</h2>
+      <h2 style="font-size:clamp(16px,3vw,20px);font-weight:900;color:#c8102e">♿ הצהרת נגישות</h2>
       <button onclick="closeAccModal()" aria-label="סגור" style="background:none;border:none;font-size:22px;cursor:pointer;color:#333;padding:4px 8px">✕</button>
     </div>
     <p style="font-size:11px;color:#555;margin-bottom:14px">עודכן לאחרונה: מרץ 2026</p>
@@ -295,16 +273,350 @@ body{font-family:'Heebo',sans-serif;background:#f0f4f8;color:#1a1a1a;direction:r
       <div><h3 class="acc-section-title">1. מחויבות לנגישות</h3><p class="acc-text">אתר לוטו ישראל מחויב לנגישות מלאה בהתאם לחוק שוויון זכויות לאנשים עם מוגבלות.</p></div>
       <div><h3 class="acc-section-title">2. מצב הנגישות</h3><p class="acc-text">האתר עומד בדרישות תקן ישראלי IS 5568 המבוסס על WCAG 2.1 ברמה AA.</p></div>
       <div><h3 class="acc-section-title">3. התאמות שבוצעו</h3><ul class="acc-text" style="padding-right:16px;display:flex;flex-direction:column;gap:3px"><li>ניווט מלא במקלדת</li><li>תאימות לקוראי מסך</li><li>ניגודיות צבעים 4.5:1</li><li>מבנה סמנטי עם ARIA</li></ul></div>
-      <div><h3 class="acc-section-title">4. יצירת קשר</h3>
-        <table class="acc-contact-table"><tbody>
-          <tr><td>מייל</td><td><a href="mailto:Info@lotoisrael.com">Info@lotoisrael.com</a></td></tr>
-        </tbody></table>
-      </div>
+      <div><h3 class="acc-section-title">4. יצירת קשר</h3><p class="acc-text"><a href="mailto:Info@lotoisrael.com" style="color:#c8102e">Info@lotoisrael.com</a></p></div>
     </div>
     <button class="acc-close-btn" onclick="closeAccModal()">סגור</button>
   </div>
 </div>
 
-<script src="/app.js" defer></script>
+<!-- TERMS MODAL -->
+<div class="modal-bg" id="terms-modal-bg" role="dialog" aria-modal="true" onclick="termsBgClose(event)">
+  <div class="modal acc-modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;border-bottom:2px solid #f5c0c8;padding-bottom:12px">
+      <h2 style="font-size:clamp(16px,3vw,20px);font-weight:900;color:#c8102e">📋 תנאי שימוש</h2>
+      <button onclick="closeTermsModal()" aria-label="סגור" style="background:none;border:none;font-size:22px;cursor:pointer;color:#333;padding:4px 8px">✕</button>
+    </div>
+    <p style="font-size:11px;color:#555;margin-bottom:14px">עודכן לאחרונה: מרץ 2026</p>
+    <div style="display:flex;flex-direction:column;gap:16px;font-size:12px;color:#222;line-height:1.9;text-align:right">
+      <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">1. כללי</h3><p>האתר <strong>לוטו ישראל</strong> מופעל באופן עצמאי ואינו קשור למפעל הפיס, אינו מייצגו ואינו פועל מטעמו בשום צורה.</p></div>
+      <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">2. מטרת השירות</h3><p>האתר מספק כלי <strong>לבידור בלבד</strong>. המספרים אינם מבטיחים זכייה ואינם מגדילים סיכויים. הגרלת הלוטו היא משחק מזל טהור.</p></div>
+      <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">3. גיל מינימלי</h3><p>השימוש מותר לבני <strong>18 ומעלה בלבד</strong>.</p></div>
+      <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">4. משחק אחראי</h3><p>מוקד טיפול בהתמכרויות: <strong>1-800-599-029</strong> (חינם).</p></div>
+      <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">5. תשלומים</h3><p>התשלומים דרך PayPal. לאחר חשיפת המספרים <strong>לא ניתן לבצע החזר</strong>.</p></div>
+      <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">6. הגבלת אחריות</h3><p>החברה לא תישא בכל אחריות לנזק הנובע מהסתמכות על תוצאות האתר.</p></div>
+      <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">7. קניין רוחני</h3><p>כל התכנים מוגנים בזכויות יוצרים. אין להעתיק ללא אישור בכתב.</p></div>
+      <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">8. פרטיות</h3><p>האתר משתמש ב-Google Analytics לניתוח תנועה אנונימי בלבד.</p></div>
+      <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">9. דין וסמכות</h3><p>דיני מדינת ישראל. בית משפט מחוז תל אביב-יפו.</p></div>
+      <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">10. יצירת קשר</h3><p><a href="mailto:Info@lotoisrael.com" style="color:#c8102e;font-weight:700">Info@lotoisrael.com</a></p></div>
+    </div>
+    <button class="acc-close-btn" onclick="closeTermsModal()">סגור</button>
+  </div>
+</div>
+
+<script>
+const PENDING_KEY='loto_pending_reveal';
+const EXPIRY_MS=12*60*60*1000;
+const CACHE_KEY='loto_v6';
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const NEXT_DRAW_DATE=new Date('2026-03-17T21:00:00Z').getTime();
+
+const DEFAULT_DATA={
+  drawNumber:3906,date:'14/03/2026',
+  numbers:[5,7,20,22,31,35],strongNumber:2,
+  firstPrize:8000000,totalPrizes:4240648,
+  history:[
+    {numbers:[5,7,20,22,31,35],strong:2},{numbers:[19,20,23,24,31,33],strong:6},
+    {numbers:[3,8,10,17,29,35],strong:7},{numbers:[13,15,16,20,35,36],strong:7},
+    {numbers:[4,8,11,18,19,35],strong:7},{numbers:[7,9,25,26,35,36],strong:3},
+    {numbers:[7,10,14,25,29,36],strong:7},{numbers:[6,9,10,11,21,22],strong:2},
+    {numbers:[1,3,8,20,24,37],strong:1},{numbers:[13,14,26,31,33,36],strong:4},
+    {numbers:[5,8,30,32,33,34],strong:2},{numbers:[5,23,25,27,28,32],strong:2},
+    {numbers:[5,14,18,22,26,31],strong:5},{numbers:[2,11,15,19,28,34],strong:3},
+    {numbers:[6,12,17,23,30,37],strong:6},{numbers:[1,9,16,22,27,33],strong:4},
+    {numbers:[4,10,18,24,31,36],strong:1},{numbers:[3,7,14,20,28,35],strong:7},
+    {numbers:[8,13,19,25,32,37],strong:2},{numbers:[2,6,15,21,29,34],strong:5},
+    {numbers:[5,11,17,23,30,36],strong:3},{numbers:[1,8,14,22,28,33],strong:6},
+    {numbers:[4,9,16,24,31,37],strong:4},{numbers:[3,10,18,20,27,35],strong:1},
+    {numbers:[7,12,15,23,29,36],strong:7},{numbers:[2,6,13,19,26,34],strong:2},
+    {numbers:[5,11,17,22,30,37],strong:5},{numbers:[1,8,14,21,28,33],strong:3},
+    {numbers:[4,9,16,24,29,36],strong:6},{numbers:[3,7,15,20,27,35],strong:4},
+  ]
+};
+
+let currentData=null,strat='smart',running=false,revealed=false;
+let _nums=[],_strong=0,_reasons=[],lastFocus=null;
+
+function gtag_event(n,p={}){if(typeof gtag==='function')gtag('event',n,p);}
+function cacheGet(){try{const v=sessionStorage.getItem(CACHE_KEY);return v?JSON.parse(v):null;}catch{return null;}}
+function cacheSet(o){try{sessionStorage.setItem(CACHE_KEY,JSON.stringify(o));}catch{}}
+
+function nextDrawAfter(ms){
+  if(ms<NEXT_DRAW_DATE)return NEXT_DRAW_DATE;
+  const SLOTS=[[2,21],[6,21]];
+  for(let a=0;a<=7;a++){
+    const c=new Date(ms+a*86400000);
+    for(const[dow,h]of SLOTS){
+      const d=new Date(Date.UTC(c.getUTCFullYear(),c.getUTCMonth(),c.getUTCDate(),h));
+      if(d.getUTCDay()===dow&&d.getTime()>ms)return d.getTime();
+    }
+  }
+  return ms+3*86400000;
+}
+
+function fmtMoney(n){return n?Number(n).toLocaleString('he-IL')+' ₪':'—';}
+
+function renderResults(data){
+  const nums=(data.numbers||[]).slice(0,6);
+  document.getElementById('results-card').innerHTML=
+    `<h2 class="results-heading">תוצאות הגרלת לוטו מס׳ ${data.drawNumber||'—'}</h2>
+     <p class="results-date"><time>${data.date||''}</time></p>
+     <div class="results-row">
+       <div class="main-balls">${nums.map((n,i)=>`<div class="ball ball-main" aria-label="מספר ${i+1}: ${n}">${n}</div>`).join('')}</div>
+       <div class="strong-wrap">
+         <div class="ball ball-strong">${data.strongNumber||'?'}</div>
+         <p class="strong-lbl">מספר<br>חזק</p>
+       </div>
+     </div>
+     <div class="prize-row">
+       <div class="prize-item"><p class="prize-lbl">פרס ראשון</p><p class="prize-val">${fmtMoney(data.firstPrize)}</p></div>
+       <div class="prize-divider"></div>
+       <div class="prize-item"><p class="prize-lbl">סך הפרסים</p><p class="prize-val">${fmtMoney(data.totalPrizes)}</p></div>
+     </div>`;
+}
+
+function renderNextDraw(){
+  const next=nextDrawAfter(Date.now());
+  const d=new Date(next);
+  const days=['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+  const dateStr=d.toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Jerusalem'});
+  document.getElementById('next-draw-label').textContent=`🗓 הגרלה הבאה: יום ${days[d.getUTCDay()]}, ${dateStr}`;
+}
+
+async function fetchLive(){
+  const controller=new AbortController();
+  const tid=setTimeout(()=>controller.abort(),6000);
+  try{
+    const res=await fetch('/api/lotto',{signal:controller.signal});
+    clearTimeout(tid);
+    if(!res.ok)throw new Error(`http ${res.status}`);
+    const data=await res.json();
+    if(data.error||!data.numbers||data.numbers.length<6)throw new Error('bad');
+    if(!data.history||data.history.length<5)data.history=DEFAULT_DATA.history;
+    return data;
+  }catch(e){clearTimeout(tid);throw e;}
+}
+
+function scheduleResultsRefresh(){
+  const delay=nextDrawAfter(Date.now())-Date.now()+5*60*1000;
+  setTimeout(async()=>{
+    try{const data=await fetchLive();currentData=data;cacheSet({data,savedAt:Date.now(),nextDraw:nextDrawAfter(Date.now())});renderResults(data);}catch{}
+    scheduleResultsRefresh();
+  },Math.min(delay,2147483647));
+}
+
+function init(){
+  const now=Date.now();
+  const cached=cacheGet();
+  const cacheValid=cached?.data&&cached?.savedAt&&cached?.nextDraw&&now<cached.nextDraw;
+  currentData=cacheValid?cached.data:DEFAULT_DATA;
+  renderResults(currentData);
+  renderNextDraw();
+  document.getElementById('go-btn').disabled=false;
+  if(!cacheValid){
+    fetchLive().then(data=>{
+      currentData=data;
+      cacheSet({data,savedAt:now,nextDraw:nextDrawAfter(now)});
+      renderResults(data);
+    }).catch(()=>{});
+  }
+  scheduleResultsRefresh();
+}
+
+function selectStrat(s){strat=s;}
+
+function extractJSON(raw){
+  if(!raw)throw new Error('empty');
+  const c=raw.replace(/```json\s*/gi,'').replace(/```\s*/g,'').trim();
+  try{return JSON.parse(c);}catch{}
+  const m=c.match(/\{[\s\S]*\}/);
+  if(m){try{return JSON.parse(m[0]);}catch{}}
+  throw new Error('no JSON');
+}
+
+async function claudeCall(prompt){
+  const res=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+  });
+  if(!res.ok)throw new Error(`HTTP ${res.status}`);
+  const d=await res.json();
+  return d.content.filter(b=>b.type==='text').map(b=>b.text).join('');
+}
+
+async function runAnalysis(){
+  if(running)return;
+  running=true;revealed=false;
+  const btn=document.getElementById('go-btn');
+  btn.disabled=true;
+  document.getElementById('go-icon').className='spin-icon';
+  document.getElementById('go-icon').textContent='⟳';
+  document.getElementById('go-txt').textContent='מנתח...';
+  document.getElementById('result-wrap').classList.remove('show');
+  document.getElementById('copy-btn').style.display='none';
+
+  const steps={
+    smart:['בודק תדירות היסטורית...','בודק כמה זמן לא יצאו...','מנתח תבניות...','בוחר מספרים...'],
+    hot:['סורק הגרלות אחרונות...','מדרג לפי תדירות...','מסנן קרים...','בוחר חמים...'],
+    due:['בודק כמה הגרלות לא יצא...','מוצא שלא יצאו הרבה...','בודק ממוצע...','בוחר "בתורם"...']
+  }[strat];
+
+  const think=document.getElementById('thinking');
+  think.classList.add('show');
+  ['t1','t2','t3','t4'].forEach((id,i)=>{
+    document.getElementById(id).classList.remove('done','active');
+    document.getElementById(id+'l').textContent=steps[i];
+  });
+
+  const history=currentData?.history||DEFAULT_DATA.history;
+  const[pick]=await Promise.all([
+    claudeCall(`Analyze Israel Pais Lotto (balls 1-37, strong 1-7). History: ${JSON.stringify(history.slice(-20))}. Strategy: "${strat}". Return ONLY raw JSON: {"numbers":[6 distinct sorted ints 1-37],"strong":<1-7>,"reasons":["short Hebrew reason",...6 items]}`)
+      .then(r=>{const j=extractJSON(r);if(!Array.isArray(j.numbers)||j.numbers.length!==6)throw new Error('bad');return j;})
+      .catch(()=>null),
+    (async()=>{
+      for(let i=0;i<4;i++){
+        const el=document.getElementById(['t1','t2','t3','t4'][i]);
+        el.classList.add('active');
+        await sleep(500+Math.random()*150);
+        el.classList.remove('active');el.classList.add('done');
+        el.querySelector('span:first-child').textContent='✅';
+      }
+    })()
+  ]);
+
+  if(!pick){
+    const pool=[...Array(37)].map((_,i)=>i+1).sort(()=>Math.random()-.5);
+    _nums=pool.slice(0,6).sort((a,b)=>a-b);_strong=Math.ceil(Math.random()*7);
+    _reasons=_nums.map(()=>'בחירה חכמה');
+  }else{_nums=pick.numbers;_strong=pick.strong;_reasons=pick.reasons||_nums.map(()=>'');}
+
+  _renderBalls(false);
+  document.getElementById('blur-overlay').classList.remove('hidden');
+  document.getElementById('strong-hint').textContent='☝️ המספר החזק מוסתר';
+  document.getElementById('result-wrap').classList.add('show');
+  think.classList.remove('show');
+  setTimeout(()=>document.querySelectorAll('.why-fill[data-w]').forEach(b=>b.style.width=b.dataset.w+'%'),80);
+  btn.disabled=false;
+  document.getElementById('go-icon').className='';
+  document.getElementById('go-icon').textContent='✨';
+  document.getElementById('go-txt').textContent='צור שורת מספרים בשבילי';
+  running=false;
+}
+
+function _renderBalls(showReasons){
+  const rb=document.getElementById('result-balls');rb.innerHTML='';
+  _nums.forEach((n,i)=>{
+    const b=document.createElement('div');b.className='rball rball-main';b.textContent=String(n);
+    b.setAttribute('role','listitem');b.style.animationDelay=i*.08+'s';rb.appendChild(b);
+  });
+  const pl=document.createElement('span');pl.className='plus-sep';pl.textContent='+';rb.appendChild(pl);
+  const sb=document.createElement('div');sb.className='rball rball-strong';sb.textContent=String(_strong);
+  sb.setAttribute('role','listitem');sb.style.animationDelay='.55s';rb.appendChild(sb);
+  const wg=document.getElementById('why-grid');wg.innerHTML='';
+  _nums.forEach((n,i)=>{
+    const pct=55+Math.floor(Math.random()*45);
+    let content=_reasons[i]||'';
+    if(!showReasons){[n,_strong].forEach(num=>{content=content.replace(new RegExp('(?<![\\u0590-\\u05FF\\w])'+num+'(?![\\u0590-\\u05FF\\w])','g'),'<span class="num-mask">??</span>');});}
+    const c=document.createElement('div');c.className='why-card';
+    c.innerHTML=`<div class="why-ball-row"><div class="why-mini">${showReasons?n:'?'}</div></div><p class="why-reason">${content}</p><div class="why-bar"><div class="why-fill" data-w="${pct}"></div></div>`;
+    wg.appendChild(c);
+  });
+}
+
+function copyNumbers(){
+  gtag_event('copy_numbers',{event_category:'engagement'});
+  const txt=_nums.join(', ')+' | חזק: '+_strong;
+  navigator.clipboard.writeText(txt).then(()=>{
+    const btn=document.getElementById('copy-btn');btn.textContent='✅ הועתק!';
+    setTimeout(()=>{btn.textContent='📋 העתק מספרים';},2000);
+  }).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=txt;
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+    const btn=document.getElementById('copy-btn');btn.textContent='✅ הועתק!';
+    setTimeout(()=>{btn.textContent='📋 העתק מספרים';},2000);
+  });
+}
+
+function startExpiryCountdown(expiresAt){
+  const tick=()=>{
+    if(Date.now()>=expiresAt){
+      document.getElementById('blur-overlay').classList.remove('hidden');
+      document.getElementById('copy-btn').style.display='none';
+      revealed=false;return;
+    }
+    setTimeout(tick,10000);
+  };tick();
+}
+
+function onPayClick(){
+  gtag_event('reveal_click',{event_category:'monetization'});
+  gtag_event('paypal_checkout_click',{event_category:'monetization',currency:'ILS',value:5});
+  localStorage.setItem(PENDING_KEY,JSON.stringify({nums:_nums,strong:_strong,reasons:_reasons,ts:Date.now()}));
+}
+
+function checkReturnFromStripe(){
+  const params=new URLSearchParams(window.location.search);
+  const path=window.location.pathname;
+  const isSuccess=params.get('payment')==='success'||params.get('st')==='COMPLETED'||path.includes('purchase=success');
+  if(!isSuccess)return;
+  const raw=localStorage.getItem(PENDING_KEY);
+  if(!raw){alert('⚠️ לא נמצאו נתונים שמורים. צור קשר עם התמיכה.');return;}
+  let p;try{p=JSON.parse(raw);}catch{return;}
+  if(Date.now()-p.ts>EXPIRY_MS){localStorage.removeItem(PENDING_KEY);alert('⏰ פג תוקף. אנא צור שורה חדשה.');return;}
+  const expiresAt=p.ts+EXPIRY_MS;
+  _nums=p.nums;_strong=p.strong;_reasons=p.reasons||_nums.map(()=>'');
+  _renderBalls(true);
+  document.getElementById('result-wrap').classList.add('show');
+  document.getElementById('blur-overlay').classList.add('hidden');
+  document.getElementById('strong-hint').textContent='☝️ מספר חזק';
+  document.getElementById('copy-btn').style.display='block';
+  revealed=true;
+  setTimeout(()=>document.querySelectorAll('.why-fill[data-w]').forEach(b=>b.style.width=b.dataset.w+'%'),80);
+  localStorage.removeItem(PENDING_KEY);
+  window.history.replaceState({},'',window.location.pathname);
+  startExpiryCountdown(expiresAt);
+  gtag_event('purchase',{event_category:'monetization',currency:'ILS',value:5});
+  gtag_event('numbers_revealed',{event_category:'monetization'});
+  const banner=document.createElement('div');
+  banner.setAttribute('role','alert');
+  banner.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2e7d32;color:#fff;padding:12px 28px;border-radius:50px;font-family:Heebo,sans-serif;font-size:15px;font-weight:700;box-shadow:0 4px 16px rgba(0,0,0,.3);z-index:9999;white-space:nowrap';
+  banner.textContent='✅ התשלום התקבל! המספרים גלויים';
+  document.body.appendChild(banner);setTimeout(()=>banner.remove(),4000);
+}
+
+// Modals
+function makeTrap(sel,closeFn){
+  return e=>{
+    if(e.key==='Escape'){closeFn();return;}
+    if(e.key!=='Tab')return;
+    const els=[...document.querySelector(sel).querySelectorAll('a[href],button:not([disabled])')];
+    if(!els.length)return;
+    if(e.shiftKey){if(document.activeElement===els[0]){e.preventDefault();els[els.length-1].focus();}}
+    else{if(document.activeElement===els[els.length-1]){e.preventDefault();els[0].focus();}}
+  };
+}
+let accTrap=null,payTrap=null,termsTrap=null;
+
+function openPayModal(){
+  gtag_event('reveal_click',{event_category:'monetization'});
+  lastFocus=document.activeElement;
+  document.getElementById('modal-bg').classList.add('open');
+  payTrap=makeTrap('#modal-bg .modal',closePayModal);
+  document.addEventListener('keydown',payTrap);
+  setTimeout(()=>{const f=document.querySelector('#modal-bg a,#modal-bg button:not([disabled])');if(f)f.focus();},50);
+}
+function closePayModal(){document.getElementById('modal-bg').classList.remove('open');document.removeEventListener('keydown',payTrap);if(lastFocus)lastFocus.focus();}
+function payBgClose(e){if(e.target===document.getElementById('modal-bg'))closePayModal();}
+
+function openAccModal(e){if(e)e.preventDefault();lastFocus=document.activeElement;document.getElementById('acc-modal-bg').classList.add('open');accTrap=makeTrap('#acc-modal-bg .modal',closeAccModal);document.addEventListener('keydown',accTrap);setTimeout(()=>{const f=document.querySelector('#acc-modal-bg .modal button');if(f)f.focus();},50);}
+function closeAccModal(){document.getElementById('acc-modal-bg').classList.remove('open');document.removeEventListener('keydown',accTrap);if(lastFocus)lastFocus.focus();}
+function accBgClose(e){if(e.target===document.getElementById('acc-modal-bg'))closeAccModal();}
+
+function openTermsModal(e){if(e)e.preventDefault();lastFocus=document.activeElement;document.getElementById('terms-modal-bg').classList.add('open');termsTrap=makeTrap('#terms-modal-bg .modal',closeTermsModal);document.addEventListener('keydown',termsTrap);setTimeout(()=>{const f=document.querySelector('#terms-modal-bg .modal button');if(f)f.focus();},50);}
+function closeTermsModal(){document.getElementById('terms-modal-bg').classList.remove('open');document.removeEventListener('keydown',termsTrap);if(lastFocus)lastFocus.focus();}
+function termsBgClose(e){if(e.target===document.getElementById('terms-modal-bg'))closeTermsModal();}
+
+init();
+checkReturnFromStripe();
+</script>
 </body>
 </html>
