@@ -285,7 +285,7 @@ body{font-family:'Heebo',sans-serif;background:#f0f4f8;color:#1a1a1a;direction:r
   <div class="modal acc-modal">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;border-bottom:2px solid #f5c0c8;padding-bottom:12px">
       <h2 style="font-size:clamp(16px,3vw,20px);font-weight:900;color:#c8102e">📋 תנאי שימוש</h2>
-      <button onclick="closeTermsModal()" aria-label="סגור" style="background:none;border:none;font-size:22px;cursor:pointer;color:#333;padding:4px 8px">✕</button>
+      <button onclick="document.getElementById('terms-modal-bg').classList.remove('open')" aria-label="סגור" style="background:none;border:none;font-size:22px;cursor:pointer;color:#333;padding:4px 8px">✕</button>
     </div>
     <p style="font-size:11px;color:#555;margin-bottom:14px">עודכן לאחרונה: מרץ 2026</p>
     <div style="display:flex;flex-direction:column;gap:16px;font-size:12px;color:#222;line-height:1.9;text-align:right">
@@ -300,7 +300,7 @@ body{font-family:'Heebo',sans-serif;background:#f0f4f8;color:#1a1a1a;direction:r
       <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">9. דין וסמכות</h3><p>דיני מדינת ישראל. בית משפט מחוז תל אביב-יפו.</p></div>
       <div><h3 style="font-size:13px;font-weight:900;color:#c8102e;margin-bottom:4px">10. יצירת קשר</h3><p><a href="mailto:Info@lotoisrael.com" style="color:#c8102e;font-weight:700">Info@lotoisrael.com</a></p></div>
     </div>
-    <button class="acc-close-btn" onclick="closeTermsModal()">סגור</button>
+    <button class="acc-close-btn" onclick="document.getElementById('terms-modal-bg').classList.remove('open')">סגור</button>
   </div>
 </div>
 
