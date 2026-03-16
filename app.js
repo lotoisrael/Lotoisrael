@@ -315,7 +315,7 @@ function startExpiryCountdown(expiresAt) {
 
 // ─── Stripe ───────────────────────────────────────────────────
 function onStripeClick() {
-  gtag_event('stripe_checkout_click', { event_category: 'monetization', currency: 'ILS', value: 5 });
+  gtag_event('paypal_checkout_click', { event_category: 'monetization', currency: 'ILS', value: 5 });
   localStorage.setItem(PENDING_KEY, JSON.stringify({ nums: _nums, strong: _strong, reasons: _reasons, ts: Date.now() }));
 }
 
