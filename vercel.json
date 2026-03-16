@@ -8,6 +8,7 @@
   ],
   "rewrites": [
     { "source": "/api/lotto", "destination": "/api/lotto.js" },
-    { "source": "/api/config", "destination": "/api/config.js" }
+    { "source": "/api/config", "destination": "/api/config.js" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
