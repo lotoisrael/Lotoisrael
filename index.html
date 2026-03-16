@@ -216,7 +216,7 @@ body{font-family:'Heebo',sans-serif;background:#f0f4f8;color:#1a1a1a;direction:r
   <nav class="footer-links">
     <a href="#" onclick="openAccModal(event)">♿ הצהרת נגישות</a>
     <a href="#" onclick="openTermsModal(event)">תנאי שימוש</a>
-    <a href="#" onclick="openPrivacyModal(event)">מדיניות פרטיות</a>
+    <a href="#" onclick="event.preventDefault();document.getElementById('privacy-modal-bg').classList.add('open');">מדיניות פרטיות</a>
     <a href="mailto:Info@lotoisrael.com">צור קשר</a>
   </nav>
   <p>האתר אינו קשור למפעל הפיס ואינו פועל מטעמו.</p>
@@ -335,7 +335,7 @@ body{font-family:'Heebo',sans-serif;background:#f0f4f8;color:#1a1a1a;direction:r
 <!-- COOKIE BANNER -->
 <div id="cookie-banner" style="display:none;position:fixed;bottom:0;right:0;left:0;background:#1a1a1a;color:#fff;padding:14px 20px;z-index:999;font-family:'Heebo',sans-serif;font-size:12px;line-height:1.8;direction:rtl">
   <div style="max-width:540px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
-    <p style="margin:0;flex:1">🍪 אתר זה משתמש בעוגיות לניתוח תנועה אנונימי ולשיפור חוויית המשתמש. <a href="#" onclick="openPrivacyModal(event)" style="color:#f5c518;font-weight:700">למדיניות הפרטיות</a></p>
+    <p style="margin:0;flex:1">🍪 אתר זה משתמש בעוגיות לניתוח תנועה אנונימי ולשיפור חוויית המשתמש. <a href="#" onclick="event.preventDefault();document.getElementById('privacy-modal-bg').classList.add('open');" style="color:#f5c518;font-weight:700">למדיניות הפרטיות</a></p>
     <button onclick="acceptCookies()" style="background:#c8102e;color:#fff;border:none;border-radius:50px;padding:8px 20px;font-family:'Heebo',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">הבנתי ✓</button>
   </div>
 </div>
