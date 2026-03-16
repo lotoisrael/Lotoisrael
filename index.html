@@ -615,8 +615,7 @@ function openTermsModal(e){if(e)e.preventDefault();lastFocus=document.activeElem
 function closeTermsModal(){document.getElementById('terms-modal-bg').classList.remove('open');document.removeEventListener('keydown',termsTrap);if(lastFocus)lastFocus.focus();}
 function termsBgClose(e){if(e.target===document.getElementById('terms-modal-bg'))closeTermsModal();}
 
-init();
-checkReturnFromStripe();
+try { init(); checkReturnFromStripe(); } catch(e) { console.error('Boot error:',e); document.getElementById('results-card').innerHTML='<p style="text-align:center;padding:20px;color:#c8102e">שגיאה בטעינה. אנא רענן את הדף.</p>'; document.getElementById('go-btn').disabled=false; }
 </script>
 </body>
 </html>
