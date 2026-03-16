@@ -466,16 +466,20 @@ function init(){
   const now=Date.now();
   const cached=cacheGet();
   const cacheValid=cached?.data&&cached?.savedAt&&cached?.nextDraw&&now<cached.nextDraw;
+  // תמיד מציג מיד — cache או DEFAULT_DATA
   currentData=cacheValid?cached.data:DEFAULT_DATA;
   renderResults(currentData);
   renderNextDraw();
   document.getElementById('go-btn').disabled=false;
+  // fetch ברקע בלי לחסום
   if(!cacheValid){
     fetchLive().then(data=>{
       currentData=data;
       cacheSet({data,savedAt:now,nextDraw:nextDrawAfter(now)});
       renderResults(data);
-    }).catch(()=>{});
+    }).catch(()=>{
+      // נשאר עם DEFAULT_DATA — כבר מוצג
+    });
   }
   scheduleResultsRefresh();
 }
