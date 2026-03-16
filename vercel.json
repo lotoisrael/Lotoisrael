@@ -1,5 +1,13 @@
 {
+  "redirects": [
+    {
+      "source": "/purchase=success",
+      "destination": "/?payment=success",
+      "permanent": false
+    }
+  ],
   "rewrites": [
-    { "source": "/api/lotto", "destination": "/api/lotto.js" }
+    { "source": "/api/lotto", "destination": "/api/lotto.js" },
+    { "source": "/api/config", "destination": "/api/config.js" }
   ]
 }
