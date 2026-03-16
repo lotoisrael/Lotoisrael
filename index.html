@@ -658,8 +658,8 @@ function checkReturnFromStripe(){
 function openTermsModal(e){if(e)e.preventDefault();lastFocus=document.activeElement;document.getElementById('terms-modal-bg').classList.add('open');termsTrap=makeTrap('#terms-modal-bg .modal',closeTermsModal);document.addEventListener('keydown',termsTrap);setTimeout(()=>{const f=document.querySelector('#terms-modal-bg .modal button');if(f)f.focus();},50);}
 function closeTermsModal(){document.getElementById('terms-modal-bg').classList.remove('open');document.removeEventListener('keydown',termsTrap);if(lastFocus)lastFocus.focus();}
 
-checkReturnFromStripe();
 init();
+checkReturnFromStripe();
 </script>
 </body>
 </html>
