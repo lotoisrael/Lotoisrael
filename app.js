@@ -1,49 +1,49 @@
 // ─── Constants ───────────────────────────────────────────────
 const PENDING_KEY = 'loto_pending_reveal';
 const EXPIRY_MS = 12 * 60 * 60 * 1000;
-const CACHE_KEY = 'loto_v5';
+const CACHE_KEY = 'loto_v6';
 const sleep = ms => new Promise(r => setTimeout(r, ms));
+const NEXT_DRAW_DATE = new Date('2026-03-17T21:00:00Z').getTime();
 
-// ─── Default Data ─────────────────────────────────────────────
+// ─── Fallback Data ────────────────────────────────────────────
+// משמש רק אם ה-API נכשל לחלוטין
 const DEFAULT_DATA = {
   drawNumber: 3906, date: '14/03/2026',
-  numbers: [5, 7, 20, 22, 31, 35], strongNumber: 2,
+  numbers: [5,7,20,22,31,35], strongNumber: 2,
   firstPrize: 8000000, totalPrizes: 4240648,
   history: [
-    { numbers: [5, 7, 20, 22, 31, 35], strong: 2 },
-    { numbers: [19, 20, 23, 24, 31, 33], strong: 6 },
-    { numbers: [3, 8, 10, 17, 29, 35], strong: 7 },
-    { numbers: [13, 15, 16, 20, 35, 36], strong: 7 },
-    { numbers: [4, 8, 11, 18, 19, 35], strong: 7 },
-    { numbers: [7, 9, 25, 26, 35, 36], strong: 3 },
-    { numbers: [7, 10, 14, 25, 29, 36], strong: 7 },
-    { numbers: [6, 9, 10, 11, 21, 22], strong: 2 },
-    { numbers: [1, 3, 8, 20, 24, 37], strong: 1 },
-    { numbers: [13, 14, 26, 31, 33, 36], strong: 4 },
-    { numbers: [5, 8, 30, 32, 33, 34], strong: 2 },
-    { numbers: [5, 23, 25, 27, 28, 32], strong: 2 },
-    { numbers: [5, 14, 18, 22, 26, 31], strong: 5 },
-    { numbers: [2, 11, 15, 19, 28, 34], strong: 3 },
-    { numbers: [6, 12, 17, 23, 30, 37], strong: 6 },
-    { numbers: [1, 9, 16, 22, 27, 33], strong: 4 },
-    { numbers: [4, 10, 18, 24, 31, 36], strong: 1 },
-    { numbers: [3, 7, 14, 20, 28, 35], strong: 7 },
-    { numbers: [8, 13, 19, 25, 32, 37], strong: 2 },
-    { numbers: [2, 6, 15, 21, 29, 34], strong: 5 },
-    { numbers: [5, 11, 17, 23, 30, 36], strong: 3 },
-    { numbers: [1, 8, 14, 22, 28, 33], strong: 6 },
-    { numbers: [4, 9, 16, 24, 31, 37], strong: 4 },
-    { numbers: [3, 10, 18, 20, 27, 35], strong: 1 },
-    { numbers: [7, 12, 15, 23, 29, 36], strong: 7 },
-    { numbers: [2, 6, 13, 19, 26, 34], strong: 2 },
-    { numbers: [5, 11, 17, 22, 30, 37], strong: 5 },
-    { numbers: [1, 8, 14, 21, 28, 33], strong: 3 },
-    { numbers: [4, 9, 16, 24, 29, 36], strong: 6 },
-    { numbers: [3, 7, 15, 20, 27, 35], strong: 4 },
+    {numbers:[5,7,20,22,31,35],strong:2},
+    {numbers:[19,20,23,24,31,33],strong:6},
+    {numbers:[3,8,10,17,29,35],strong:7},
+    {numbers:[13,15,16,20,35,36],strong:7},
+    {numbers:[4,8,11,18,19,35],strong:7},
+    {numbers:[7,9,25,26,35,36],strong:3},
+    {numbers:[7,10,14,25,29,36],strong:7},
+    {numbers:[6,9,10,11,21,22],strong:2},
+    {numbers:[1,3,8,20,24,37],strong:1},
+    {numbers:[13,14,26,31,33,36],strong:4},
+    {numbers:[5,8,30,32,33,34],strong:2},
+    {numbers:[5,23,25,27,28,32],strong:2},
+    {numbers:[5,14,18,22,26,31],strong:5},
+    {numbers:[2,11,15,19,28,34],strong:3},
+    {numbers:[6,12,17,23,30,37],strong:6},
+    {numbers:[1,9,16,22,27,33],strong:4},
+    {numbers:[4,10,18,24,31,36],strong:1},
+    {numbers:[3,7,14,20,28,35],strong:7},
+    {numbers:[8,13,19,25,32,37],strong:2},
+    {numbers:[2,6,15,21,29,34],strong:5},
+    {numbers:[5,11,17,23,30,36],strong:3},
+    {numbers:[1,8,14,22,28,33],strong:6},
+    {numbers:[4,9,16,24,31,37],strong:4},
+    {numbers:[3,10,18,20,27,35],strong:1},
+    {numbers:[7,12,15,23,29,36],strong:7},
+    {numbers:[2,6,13,19,26,34],strong:2},
+    {numbers:[5,11,17,22,30,37],strong:5},
+    {numbers:[1,8,14,21,28,33],strong:3},
+    {numbers:[4,9,16,24,29,36],strong:6},
+    {numbers:[3,7,15,20,27,35],strong:4},
   ]
 };
-
-const NEXT_DRAW_DATE = new Date('2026-03-17T21:00:00Z').getTime();
 
 // ─── State ────────────────────────────────────────────────────
 let currentData = null, strat = 'smart', running = false, revealed = false;
@@ -116,7 +116,9 @@ async function fetchLive() {
     if (!res.ok) throw new Error(`http ${res.status}`);
     const data = await res.json();
     if (data.error || !data.numbers || data.numbers.length < 6) throw new Error('bad data');
-    return { ...data, history: DEFAULT_DATA.history };
+    // אם ה-API לא מחזיר history — נשתמש ב-DEFAULT
+    if (!data.history || data.history.length < 5) data.history = DEFAULT_DATA.history;
+    return data;
   } catch (e) { clearTimeout(tid); throw e; }
 }
 
@@ -137,12 +139,16 @@ function scheduleResultsRefresh() {
 function init() {
   const now = Date.now();
   const cached = cacheGet();
-  const cacheValid = cached?.data && cached?.savedAt && cached?.nextDraw && now < cached.nextDraw && cached.data.drawNumber >= 3906;
+  const cacheValid = cached?.data && cached?.savedAt && cached?.nextDraw && now < cached.nextDraw;
+
+  // מיד מציג DEFAULT_DATA או cache — אפס המתנה
   currentData = cacheValid ? cached.data : DEFAULT_DATA;
   renderResults(currentData);
   renderNextDraw();
   document.getElementById('go-btn').disabled = false;
   document.getElementById('go-btn').removeAttribute('aria-disabled');
+
+  // fetch ברקע — אם מצליח מעדכן, אם נכשל נשאר עם מה שיש
   if (!cacheValid) {
     fetchLive().then(data => {
       currentData = data;
