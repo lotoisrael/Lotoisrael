@@ -51,6 +51,16 @@ let _nums=[],_strong=0,_reasons=[],lastFocus=null;
 // ─── GA4 ──────────────────────────────────────────────────────
 function gtag_event(n,p={}){if(typeof gtag==='function')gtag('event',n,p);}
 
+function trackClick(name){gtag_event('button_click',{event_category:'ui',button_name:name});}
+
+// ─── Global click tracker ─────────────────────────────────────
+document.addEventListener('click',e=>{
+  const el=e.target.closest('button,a,[onclick]');
+  if(!el)return;
+  const id=el.id||el.className||el.textContent?.trim().slice(0,30)||'unknown';
+  gtag_event('button_click',{event_category:'ui',button_name:id});
+});
+
 // ─── Cache ────────────────────────────────────────────────────
 function cacheGet(){try{const v=sessionStorage.getItem(CACHE_KEY);return v?JSON.parse(v):null;}catch{return null;}}
 function cacheSet(o){try{sessionStorage.setItem(CACHE_KEY,JSON.stringify(o));}catch{}}
@@ -265,7 +275,8 @@ function _renderBalls(showReasons){
 
 // ─── Copy ─────────────────────────────────────────────────────
 function copyNumbers(){
-  gtag_event('copy_numbers',{event_category:'engagement'});
+  gtag_event('copy_numbers',{event_category:'engagement',button_name:'copy_numbers_btn'});
+  gtag_event('button_click',{event_category:'ui',button_name:'copy_numbers_btn'});
   const txt=_nums.join(', ')+' | חזק: '+_strong;
   navigator.clipboard.writeText(txt).then(()=>{
     const btn=document.getElementById('copy-btn');
@@ -294,7 +305,8 @@ function startExpiryCountdown(expiresAt){
 
 // ─── PayPal ───────────────────────────────────────────────────
 function onPayClick(){
-  gtag_event('paypal_checkout_click',{event_category:'monetization',currency:'ILS',value:5});
+  gtag_event('paypal_checkout_click',{event_category:'monetization',currency:'ILS',value:5,button_name:'paypal_pay_btn'});
+  gtag_event('button_click',{event_category:'ui',button_name:'paypal_pay_btn'});
   localStorage.setItem(PENDING_KEY,JSON.stringify({nums:_nums,strong:_strong,reasons:_reasons,ts:Date.now()}));
 }
 
@@ -319,8 +331,9 @@ function checkReturnFromStripe(){
   localStorage.removeItem(PENDING_KEY);
   window.history.replaceState({},'',window.location.pathname);
   startExpiryCountdown(expiresAt);
-  gtag_event('purchase',{event_category:'monetization',currency:'ILS',value:5});
+  gtag_event('purchase',{event_category:'monetization',currency:'ILS',value:5,transaction_id:Date.now().toString()});
   gtag_event('numbers_revealed',{event_category:'monetization'});
+  gtag_event('payment_return',{event_category:'monetization',description:'user_returned_after_payment'});
   const banner=document.createElement('div');
   banner.setAttribute('role','alert');
   banner.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2e7d32;color:#fff;padding:12px 28px;border-radius:50px;font-family:Heebo,sans-serif;font-size:15px;font-weight:700;box-shadow:0 4px 16px rgba(0,0,0,.3);z-index:9999;white-space:nowrap';
@@ -352,7 +365,8 @@ function makeTrap(sel,closeFn){
 let accTrap=null,payTrap=null,termsTrap=null,privacyTrap=null;
 
 function openPayModal(){
-  gtag_event('reveal_click',{event_category:'monetization'});
+  gtag_event('reveal_click',{event_category:'monetization',button_name:'reveal_numbers_btn'});
+  gtag_event('button_click',{event_category:'ui',button_name:'reveal_numbers_btn'});
   lastFocus=document.activeElement;
   document.getElementById('modal-bg').classList.add('open');
   payTrap=makeTrap('#modal-bg .modal',closePayModal);
@@ -420,4 +434,4 @@ try{
   console.error('Boot error:',e);
   document.getElementById('results-card').innerHTML='<p style="text-align:center;padding:20px;color:#c8102e">שגיאה בטעינה. אנא רענן את הדף.</p>';
   document.getElementById('go-btn').disabled=false;
-  }
+}
