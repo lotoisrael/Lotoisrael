@@ -1,1 +1,969 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" id="html-root">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LotoIsrael – המאמן שלך</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;700;900&family=Assistant:wght@300;400;600;700&family=DM+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; overflow:hidden; }
 
+:root {
+  --red:     #E8232A;
+  --red2:    #B8181E;
+  --yellow:  #FFD700;
+  --bg:      #0C0B09;
+  --card:    #141210;
+  --lifted:  #1E1B15;
+  --border:  rgba(255,255,255,0.07);
+  --cream:   #FFF8EE;
+  --warm:    #E8D4B4;
+  --dim:     #7A6B58;
+  --dim2:    #3A3025;
+  --green:   #22C55E;
+}
+
+body {
+  font-family: 'Assistant', sans-serif;
+  background: var(--bg);
+  color: var(--cream);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+[dir="ltr"] { font-family: 'DM Sans', sans-serif; }
+
+/* ── GRAIN ── */
+body::before {
+  content:''; position:fixed; inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity:0.025; pointer-events:none; z-index:9999;
+}
+
+/* ── HEADER ── */
+.header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 24px;
+  border-bottom:1px solid var(--border);
+  background:rgba(12,11,9,0.95);
+  backdrop-filter:blur(10px);
+  flex-shrink:0;
+  position:relative; z-index:10;
+}
+
+.logo {
+  font-family:'Rubik',sans-serif;
+  font-weight:900; font-size:20px;
+  color:var(--yellow);
+  text-decoration:none;
+}
+.logo span { color:var(--red); }
+
+.coach-info { display:flex; align-items:center; gap:10px; }
+
+.coach-av {
+  width:36px; height:36px; border-radius:50%;
+  background:linear-gradient(135deg,var(--red),#FF7C30);
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px;
+  flex-shrink:0;
+  box-shadow:0 0 16px rgba(232,35,42,0.4);
+  animation:avPulse 3s ease-in-out infinite;
+}
+@keyframes avPulse {
+  0%,100%{box-shadow:0 0 10px rgba(232,35,42,0.3);}
+  50%{box-shadow:0 0 24px rgba(232,35,42,0.6);}
+}
+
+.coach-meta { line-height:1.2; }
+.coach-meta-name { font-size:14px; font-weight:700; color:white; }
+.coach-meta-status { font-size:11px; color:var(--green); display:flex; align-items:center; gap:4px; }
+.status-dot { width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+
+.progress-wrap { display:flex; align-items:center; gap:10px; }
+.prog-label { font-size:12px; color:var(--dim); }
+.prog-track {
+  width:80px; height:4px;
+  background:rgba(255,255,255,0.07);
+  border-radius:2px; overflow:hidden;
+}
+.prog-fill {
+  height:100%; border-radius:2px;
+  background:linear-gradient(to left,var(--yellow),var(--red));
+  transition:width 0.6s ease;
+}
+[dir="ltr"] .prog-fill { background:linear-gradient(to right,var(--red),var(--yellow)); }
+
+/* ── CHAT AREA ── */
+.chat-area {
+  flex:1; overflow-y:auto; overflow-x:hidden;
+  padding:24px 16px 16px;
+  display:flex; flex-direction:column; gap:12px;
+  scroll-behavior:smooth;
+}
+
+/* scrollbar */
+.chat-area::-webkit-scrollbar { width:4px; }
+.chat-area::-webkit-scrollbar-track { background:transparent; }
+.chat-area::-webkit-scrollbar-thumb { background:var(--dim2); border-radius:2px; }
+
+.msg-row {
+  display:flex; gap:10px; align-items:flex-end;
+  animation:msgIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes msgIn {
+  from{opacity:0;transform:translateY(16px) scale(0.96);}
+  to{opacity:1;transform:translateY(0) scale(1);}
+}
+
+.msg-row.user-row { flex-direction:row-reverse; }
+
+.msg-av {
+  width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px; flex-shrink:0;
+}
+.msg-av.coach-av-sm {
+  background:linear-gradient(135deg,var(--red),#FF7C30);
+}
+.msg-av.user-av-sm {
+  background:var(--lifted);
+  border:1px solid var(--border);
+  font-size:16px;
+}
+
+.bubble {
+  max-width:75%;
+  padding:12px 16px;
+  border-radius:18px;
+  font-size:15px;
+  line-height:1.6;
+  position:relative;
+}
+
+.bubble.coach {
+  background:var(--lifted);
+  border:1px solid var(--border);
+  color:var(--warm);
+  border-bottom-right-radius:4px;
+}
+[dir="rtl"] .bubble.coach { border-bottom-right-radius:4px; border-bottom-left-radius:18px; }
+[dir="ltr"] .bubble.coach { border-bottom-left-radius:4px; border-bottom-right-radius:18px; }
+
+.bubble.user {
+  background:var(--red);
+  color:white;
+  border-bottom-left-radius:4px;
+}
+[dir="rtl"] .bubble.user { border-bottom-left-radius:4px; border-bottom-right-radius:18px; }
+[dir="ltr"] .bubble.user { border-bottom-right-radius:4px; border-bottom-left-radius:18px; }
+
+/* Typing indicator */
+.typing-bubble {
+  background:var(--lifted);
+  border:1px solid var(--border);
+  border-radius:18px;
+  border-bottom-right-radius:4px;
+  padding:14px 18px;
+  display:inline-flex; gap:5px; align-items:center;
+}
+[dir="rtl"] .typing-bubble { border-bottom-right-radius:4px; border-bottom-left-radius:18px; }
+[dir="ltr"] .typing-bubble { border-bottom-left-radius:4px; border-bottom-right-radius:18px; }
+
+.t-dot {
+  width:7px;height:7px;border-radius:50%;background:var(--dim);
+  animation:tdot 1.3s ease-in-out infinite;
+}
+.t-dot:nth-child(2){animation-delay:0.2s;}
+.t-dot:nth-child(3){animation-delay:0.4s;}
+@keyframes tdot{0%,80%,100%{transform:translateY(0);opacity:0.35;}40%{transform:translateY(-6px);opacity:1;}}
+
+/* Quick reply chips */
+.chips-row {
+  display:flex; flex-wrap:wrap; gap:8px;
+  padding:4px 0 0 40px;
+  animation:msgIn 0.3s 0.1s ease both;
+}
+[dir="ltr"] .chips-row { padding:4px 40px 0 0; }
+
+.chip {
+  background:rgba(232,35,42,0.08);
+  border:1px solid rgba(232,35,42,0.25);
+  color:#FF9098;
+  border-radius:50px;
+  padding:8px 16px;
+  font-size:13px; font-weight:600;
+  cursor:pointer;
+  font-family:inherit;
+  transition:all 0.2s;
+  white-space:nowrap;
+}
+.chip:hover { background:rgba(232,35,42,0.18); border-color:var(--red); color:white; transform:translateY(-2px); }
+.chip:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
+
+/* ── SIGNUP CARD (in-chat) ── */
+.signup-card {
+  background:linear-gradient(135deg,#1A1008,#120C06);
+  border:1px solid rgba(255,215,0,0.2);
+  border-radius:20px;
+  padding:24px;
+  margin:8px 0;
+  animation:msgIn 0.4s 0.2s ease both;
+  max-width:480px;
+}
+
+.signup-card-header {
+  display:flex; align-items:center; gap:12px; margin-bottom:16px;
+}
+.signup-card-icon { font-size:28px; }
+.signup-card-title {
+  font-family:'Rubik',sans-serif;
+  font-size:18px; font-weight:700; color:white;
+}
+.signup-card-sub { font-size:13px; color:var(--dim); margin-top:2px; }
+
+.signup-form-inline { display:flex; flex-direction:column; gap:10px; }
+
+.signup-input-inline {
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:12px;
+  padding:13px 16px;
+  font-size:15px; color:white;
+  font-family:inherit;
+  outline:none; direction:inherit;
+  transition:border-color 0.2s;
+}
+.signup-input-inline::placeholder { color:var(--dim); }
+.signup-input-inline:focus { border-color:rgba(255,215,0,0.4); }
+
+.signup-btn-inline {
+  background:var(--red);
+  color:white; border:none; border-radius:12px;
+  padding:14px; font-size:15px; font-weight:700;
+  cursor:pointer; font-family:inherit;
+  transition:all 0.2s;
+  box-shadow:0 4px 20px rgba(232,35,42,0.3);
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.signup-btn-inline:hover { background:var(--red2); transform:translateY(-2px); }
+
+.signup-note-inline { font-size:11px; color:var(--dim2); text-align:center; }
+
+/* ── REPORT CARD ── */
+.report-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  overflow:hidden;
+  max-width:480px;
+  animation:msgIn 0.5s 0.3s ease both;
+}
+
+.report-header {
+  background:linear-gradient(135deg,#1A0A0A,#0F0705);
+  padding:20px 20px 16px;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:12px;
+}
+.report-icon { font-size:28px; }
+.report-title {
+  font-family:'Rubik',sans-serif;
+  font-size:17px; font-weight:700; color:white;
+}
+.report-sub { font-size:12px; color:var(--dim); margin-top:2px; }
+
+.report-body { padding:16px 20px; display:flex; flex-direction:column; gap:12px; }
+
+.report-row { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+.report-label { font-size:13px; color:var(--dim); flex-shrink:0; }
+.report-value { font-size:13px; font-weight:600; color:var(--warm); text-align:end; }
+[dir="ltr"] .report-value { text-align:start; }
+
+.report-bar-row { display:flex; flex-direction:column; gap:6px; }
+.report-bar-label { display:flex; justify-content:space-between; font-size:12px; }
+.report-bar-label span:first-child { color:var(--dim); }
+.report-bar-label span:last-child { font-weight:700; }
+.report-bar-bg { height:6px; background:rgba(255,255,255,0.06); border-radius:3px; overflow:hidden; }
+.report-bar-fill { height:100%; border-radius:3px; transition:width 1.2s cubic-bezier(0.4,0,0.2,1); }
+
+.report-insight {
+  background:rgba(255,215,0,0.06);
+  border:1px solid rgba(255,215,0,0.15);
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:13px; color:#E8C96A;
+  line-height:1.6;
+}
+.report-insight::before { content:'💡 '; }
+
+.report-cta {
+  background:var(--red);
+  color:white; border:none; border-radius:12px;
+  padding:13px; font-size:14px; font-weight:700;
+  cursor:pointer; font-family:inherit;
+  transition:all 0.2s; width:100%;
+  box-shadow:0 4px 16px rgba(232,35,42,0.3);
+}
+.report-cta:hover { background:var(--red2); transform:translateY(-2px); }
+
+/* ── INPUT BAR ── */
+.input-bar {
+  padding:12px 16px;
+  border-top:1px solid var(--border);
+  background:rgba(12,11,9,0.97);
+  backdrop-filter:blur(10px);
+  flex-shrink:0;
+  display:flex; gap:10px; align-items:flex-end;
+}
+
+.input-box {
+  flex:1;
+  background:var(--lifted);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:11px 18px;
+  font-size:15px; color:white;
+  font-family:inherit; direction:inherit;
+  outline:none; resize:none;
+  max-height:120px; overflow-y:auto;
+  line-height:1.5;
+  transition:border-color 0.2s;
+}
+.input-box::placeholder { color:var(--dim); }
+.input-box:focus { border-color:rgba(232,35,42,0.4); }
+
+.send-btn {
+  width:42px;height:42px;border-radius:50%;
+  background:var(--red); border:none; cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px; flex-shrink:0;
+  transition:all 0.2s;
+  box-shadow:0 4px 14px rgba(232,35,42,0.35);
+}
+.send-btn:hover { background:var(--red2); transform:scale(1.08); }
+.send-btn:disabled { opacity:0.3; cursor:not-allowed; transform:none; }
+
+/* ── LANG TOGGLE ── */
+.lang-toggle {
+  display:flex;
+  background:rgba(255,255,255,0.05);
+  border:1px solid var(--border);
+  border-radius:50px;
+  overflow:hidden; font-size:12px;
+}
+.lang-btn {
+  padding:5px 12px; cursor:pointer;
+  color:var(--dim); transition:all 0.15s;
+  user-select:none; font-family:inherit;
+  font-size:12px; background:none; border:none;
+}
+.lang-btn.active { background:var(--yellow); color:var(--bg); border-radius:50px; font-weight:700; }
+
+@media (max-width:600px) {
+  .progress-wrap { display:none; }
+  .header { padding:12px 16px; }
+  .bubble { font-size:14px; max-width:85%; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<div class="header">
+  <a href="/" class="logo">Loto<span>Israel</span></a>
+
+  <div class="coach-info">
+    <div class="coach-av">🤖</div>
+    <div class="coach-meta">
+      <div class="coach-meta-name" id="coach-name">המאמן שלך</div>
+      <div class="coach-meta-status">
+        <div class="status-dot"></div>
+        <span id="coach-status">מקשיב...</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="progress-wrap">
+      <span class="prog-label" id="prog-label">0 / 5</span>
+      <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btn-he" onclick="setLang('he')">עב</button>
+      <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── CHAT ── -->
+<div class="chat-area" id="chat-area"></div>
+
+<!-- ── INPUT ── -->
+<div class="input-bar">
+  <textarea class="input-box" id="input-box" rows="1"
+    placeholder="כתוב כאן..." onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+  <button class="send-btn" id="send-btn" onclick="sendMessage()" title="שלח">➤</button>
+</div>
+
+<script>
+/* ════════════════════════════
+   STATE
+════════════════════════════ */
+const S = {
+  lang: 'he',
+  phase: 'chat',        // 'chat' | 'signup' | 'report'
+  msgCount: 0,
+  totalQ: 5,
+  answers: {},
+  signedUp: false,
+  history: [],          // for Anthropic API
+  isTyping: false,
+  userEmoji: '🙂'
+};
+
+/* ════════════════════════════
+   SYSTEM PROMPTS
+════════════════════════════ */
+const SYSTEM = {
+  he: `אתה מאמן דייטינג וזוגיות אישי חם, שובב ואנושי של LotoIsrael.
+המטרה שלך: לנהל שיחת היכרות קצרה עם משתמש חדש כדי להבין מי הוא ומה הוא מחפש.
+שאל בדיוק 5 שאלות, אחת בכל פעם, בסדר הזה:
+1. מה המצב הזוגי שלהם עכשיו
+2. מה הכי חשוב להם בבן/בת זוג (בקש 2-3 דברים)
+3. מה לדעתם עצר אותם מזוגיות עד עכשיו
+4. מה הם רוצים לשפר בעצמם
+5. כמה הם בנוח על דייט ראשון (בקש ציון 1-10)
+
+חוקים קשיחים:
+- שאלה אחת בכל פעם. אל תשאל כמה שאלות יחד.
+- תגובות קצרות וחמות (2-4 משפטים מקסימום)
+- תגיב על מה שאמרו לפני שאתה שואל את השאלה הבאה
+- אחרי שאלה 5, אמור בדיוק: "DONE" (מילה אחת בלבד)
+- אל תציע עצות עדיין - זה שלב ההיכרות בלבד
+- דבר בעברית תקינה, חמה, לא פורמלית`,
+
+  en: `You are a warm, playful, human dating and relationship coach for LotoIsrael.
+Your goal: conduct a short onboarding interview with a new user to understand who they are.
+Ask exactly 5 questions, one at a time, in this order:
+1. Their current relationship status
+2. What matters most to them in a partner (ask for 2-3 things)
+3. What they think has held them back from a relationship
+4. What they want to improve about themselves
+5. How comfortable they are on a first date (ask for a score 1-10)
+
+Strict rules:
+- One question at a time. Never ask multiple questions together.
+- Short warm responses (2-4 sentences max)
+- Acknowledge what they said before asking the next question
+- After question 5, say exactly: "DONE" (one word only)
+- Don't give advice yet - this is the getting-to-know-you phase only
+- Speak in natural, warm, informal English`
+};
+
+/* ════════════════════════════
+   COPY
+════════════════════════════ */
+const T = {
+  he: {
+    coachName: 'המאמן שלך',
+    coachStatus: 'מקשיב...',
+    coachTyping: 'מקליד...',
+    inputPh: 'כתוב כאן...',
+    progLabel: (n,t) => `${n} / ${t}`,
+    openingMsg: 'היי! 👋 אני המאמן שלך ב-LotoIsrael.\nאשאל אותך כמה שאלות קצרות כדי להכיר אותך – ואז אכין לך דוח אישי מותאם.\nמוכן/ה? בואו נתחיל 🎰\n\nמה המצב הזוגי שלך כרגע? רווק/ה, אחרי פרידה, יוצא/ת לדייטים?',
+    fallback0: 'מבין! ועכשיו שאלה חשובה – מה הכי חשוב לך בבן/בת זוג? ציין 2-3 דברים שבאמת מדברים אליך.',
+    fallback1: 'זה מאוד מובן, תודה ששיתפת אותי. ולדעתך – מה עצר אותך מזוגיות עד עכשיו?',
+    fallback2: 'מעריך את הכנות שלך, זה לא פשוט לדבר על זה. מה אתה/את הכי רוצה לשפר בעצמך כרגע?',
+    fallback3: 'יפה מאוד. ושאלה אחרונה – על סקאלה של 1 עד 10, כמה אתה/את בנוח בדייט ראשון? 1 זה לחוץ מאוד, 10 זה רגוע לגמרי.',
+    fallbackDone: 'תודה רבה! ענית על כל השאלות 🙌\nעכשיו אני מכין לך את הדוח האישי...',
+    signupTitle: '🎰 הדוח שלך מוכן!',
+    signupSubtitle: 'הירשם כדי לראות את הניתוח האישי שלך',
+    signupEmailPh: 'האימייל שלך...',
+    signupNamePh: 'השם שלך...',
+    signupBtn: 'קבל את הדוח שלי 📊',
+    signupNote: 'חינמי · ללא כרטיס אשראי',
+    signupIntroMsg: '👏 כל הכבוד, עשית צעד ראשון חשוב!\nהכנתי לך דוח אישי על סמך מה שסיפרת לי.\nצריך רק את השם והאימייל שלך כדי לשמור ולשלוח אותו:',
+    reportTitle: 'הדוח האישי שלך',
+    reportSub: 'על בסיס שיחת ההיכרות שלנו',
+    reportCtaBtn: 'להתחיל לעבוד עם המאמן 💬',
+    reportSuccessMsg: (name) => `${name}, הדוח שלך מוכן! 🎉\nתסתכל/י על המספרים – זה הבסיס שנעבוד עליו ביחד.\nלחץ/י על הכפתור למטה כדי להתחיל את האימון.`,
+    reportInsight: (a) => generateInsightHe(a),
+    labels: { status:'מצב זוגי', important:'חשוב בזוגיות', blocker:'מה עצר', improve:'לשפר', comfort:'נוחות בדייט' },
+    barLabels: ['ביטחון עצמי','מוכנות רגשית','כישורי תקשורת'],
+  },
+  en: {
+    coachName: 'Your Coach',
+    coachStatus: 'Listening...',
+    coachTyping: 'Typing...',
+    inputPh: 'Type here...',
+    progLabel: (n,t) => `${n} / ${t}`,
+    openingMsg: "Hey! 👋 I'm your LotoIsrael coach.\nI'm going to ask you a few quick questions to get to know you better – then I'll put together your personal report.\nReady? Let's go 🎰\n\nWhat's your current relationship status?",
+    fallback0: "Got it! Now an important question – what matters most to you in a partner? Name 2-3 things that really speak to you.",
+    fallback1: "That makes a lot of sense, thanks for sharing. What do you think has held you back from a relationship until now?",
+    fallback2: "I appreciate your honesty, that's not easy to talk about. What do you most want to improve about yourself right now?",
+    fallback3: "Great. Last question – on a scale of 1 to 10, how comfortable are you on a first date? 1 is very anxious, 10 is totally relaxed.",
+    fallbackDone: "Thank you! You answered all the questions 🙌\nPreparing your personal report now...",
+    signupTitle: '🎰 Your report is ready!',
+    signupSubtitle: 'Sign up to see your personal analysis',
+    signupEmailPh: 'Your email...',
+    signupNamePh: 'Your name...',
+    signupBtn: 'Get my report 📊',
+    signupNote: 'Free · No credit card needed',
+    signupIntroMsg: "Great job – that was an important first step 🙌\nI've put together a personal report based on what you shared.\nJust need your email to save it:",
+    reportTitle: 'Your Personal Report',
+    reportSub: 'Based on our conversation',
+    reportCtaBtn: 'Start working with the coach 💬',
+    reportSuccessMsg: (name) => `${name}, report sent! 🎉\nNow we can get started. Click the button in the report to begin your coaching.`,
+    reportInsight: (a) => generateInsightEn(a),
+    labels: { status:'Status', important:'What matters', blocker:'What held back', improve:'To improve', comfort:'Date comfort' },
+    barLabels: ['Self-confidence','Emotional readiness','Communication'],
+  }
+};
+
+/* ════════════════════════════
+   INSIGHT GENERATORS
+════════════════════════════ */
+function generateInsightHe(a) {
+  const comfort = parseInt(a.comfort) || 5;
+  if (comfort <= 4) return 'החוזק הגדול שלך הוא שאתה מודע לאתגרים שלך – זה כבר חצי מהדרך. נעבוד על ביטחון מעשי שיניב תוצאות מיידיות.';
+  if (comfort >= 8) return 'יש לך בסיס חזק של ביטחון עצמי! נעבוד על לחדד את התקשורת הרגשית שלך כדי להפוך דייטים טובים לזוגיות אמיתית.';
+  return 'אתה במקום מאוזן – יש ביטחון בסיסי אבל יש מקום לצמוח. נתמקד בטכניקות שיעזרו לך להמיר דייטים ראשונים לשניים.';
+}
+function generateInsightEn(a) {
+  const comfort = parseInt(a.comfort) || 5;
+  if (comfort <= 4) return 'Your biggest strength is self-awareness – that\'s already half the battle. We\'ll work on practical confidence that gets immediate results.';
+  if (comfort >= 8) return 'You have a solid confidence foundation! We\'ll work on sharpening your emotional communication to turn good dates into real relationships.';
+  return 'You\'re in a balanced place – solid base but room to grow. We\'ll focus on techniques to convert first dates into second ones.';
+}
+
+/* ════════════════════════════
+   LANG
+════════════════════════════ */
+function setLang(lang) {
+  S.lang = lang;
+  const root = document.getElementById('html-root');
+  root.setAttribute('dir', lang === 'he' ? 'rtl' : 'ltr');
+  root.setAttribute('lang', lang);
+  document.getElementById('btn-he').classList.toggle('active', lang === 'he');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  const t = T[lang];
+  document.getElementById('coach-name').textContent = t.coachName;
+  document.getElementById('coach-status').textContent = t.coachStatus;
+  document.getElementById('input-box').placeholder = t.inputPh;
+
+  // Re-translate all coach bubbles that have a data-msgkey
+  document.querySelectorAll('.bubble.coach[data-msgkey]').forEach(bub => {
+    const key = bub.dataset.msgkey;
+    const val = t[key];
+    if (!val) return;
+    const text = typeof val === 'function' ? val(S.userName || '') : val;
+    bub.innerHTML = text.replace(/\n/g, '<br>');
+  });
+
+  // Re-translate fallback replies index labels (chips if any)
+  document.querySelectorAll('.chip[data-langkey]').forEach(chip => {
+    const key = chip.dataset.langkey;
+    chip.textContent = t[key] || chip.textContent;
+  });
+}
+
+/* ════════════════════════════
+   CHAT RENDERING
+════════════════════════════ */
+function addMsg(text, role, delay = 0, msgKey = null) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      const area = document.getElementById('chat-area');
+
+      const row = document.createElement('div');
+      row.className = `msg-row ${role === 'user' ? 'user-row' : ''}`;
+
+      const av = document.createElement('div');
+      av.className = `msg-av ${role === 'user' ? 'user-av-sm' : 'coach-av-sm'}`;
+      av.textContent = role === 'user' ? S.userEmoji : '🤖';
+
+      const bub = document.createElement('div');
+      bub.className = `bubble ${role === 'user' ? 'user' : 'coach'}`;
+      bub.innerHTML = text.replace(/\n/g, '<br>');
+      if (role === 'coach' && msgKey) bub.dataset.msgkey = msgKey;
+
+      row.appendChild(av);
+      row.appendChild(bub);
+      area.appendChild(row);
+      scrollBottom();
+      resolve();
+    }, delay);
+  });
+}
+
+function addChips(options, onSelect) {
+  const area = document.getElementById('chat-area');
+  const row = document.createElement('div');
+  row.className = 'chips-row';
+  row.id = 'chips-row';
+
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.textContent = opt;
+    btn.onclick = () => {
+      row.remove();
+      onSelect(opt);
+    };
+    row.appendChild(btn);
+  });
+  area.appendChild(row);
+  scrollBottom();
+}
+
+function removeChips() {
+  const r = document.getElementById('chips-row');
+  if (r) r.remove();
+}
+
+function showTyping() {
+  const area = document.getElementById('chat-area');
+  const row = document.createElement('div');
+  row.className = 'msg-row';
+  row.id = 'typing-row';
+  const av = document.createElement('div');
+  av.className = 'msg-av coach-av-sm'; av.textContent = '🤖';
+  const bub = document.createElement('div');
+  bub.className = 'typing-bubble';
+  bub.innerHTML = '<div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div>';
+  row.appendChild(av); row.appendChild(bub);
+  area.appendChild(row);
+  scrollBottom();
+  document.getElementById('coach-status').textContent = T[S.lang].coachTyping;
+}
+
+function hideTyping() {
+  const r = document.getElementById('typing-row');
+  if (r) r.remove();
+  document.getElementById('coach-status').textContent = T[S.lang].coachStatus;
+}
+
+function scrollBottom() {
+  const a = document.getElementById('chat-area');
+  setTimeout(() => a.scrollTop = a.scrollHeight, 50);
+}
+
+/* ════════════════════════════
+   PROGRESS
+════════════════════════════ */
+function updateProgress(n) {
+  S.msgCount = n;
+  const pct = Math.min((n / S.totalQ) * 100, 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = T[S.lang].progLabel(Math.min(n, S.totalQ), S.totalQ);
+}
+
+/* ════════════════════════════
+   CLAUDE API CALL
+════════════════════════════ */
+async function callClaude(userMsg) {
+  S.history.push({ role: 'user', content: userMsg });
+
+  showTyping();
+  setInputDisabled(true);
+
+  try {
+    const res = await fetch('/api/coach', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: S.history, lang: S.lang })
+    });
+
+    if (!res.ok) throw new Error('API error');
+
+    const data = await res.json();
+    const reply = data.reply || '';
+
+    hideTyping();
+    updateProgress(Math.floor(S.history.filter(m => m.role === 'user').length));
+
+    if (reply.trim() === 'DONE' || reply.trim().startsWith('DONE')) {
+      extractAnswers();
+      await triggerSignup();
+    } else {
+      // Store reply in history for context
+      S.history.push({ role: 'assistant', content: reply });
+      await addMsg(reply, 'coach');
+      setInputDisabled(false);
+      document.getElementById('input-box').focus();
+    }
+
+  } catch (err) {
+    // Fallback if no API or error
+    hideTyping();
+    updateProgress(Math.floor(S.history.filter(m => m.role === 'user').length));
+    const fb = getFallbackReply();
+    if (fb && fb.text) {
+      await addMsg(fb.text, 'coach', 0, fb.key);
+    }
+    setInputDisabled(false);
+    document.getElementById('input-box').focus();
+  }
+}
+
+/* Fallback for demo without API key */
+const fallbackReplies = ['fallback0','fallback1','fallback2','fallback3'];
+
+let fallbackIdx = 0;
+function getFallbackReply() {
+  if (fallbackIdx >= fallbackReplies.length) {
+    const key = 'fallbackDone';
+    setTimeout(async () => {
+      extractAnswers();
+      await triggerSignup();
+    }, 300);
+    return { text: T[S.lang][key], key };
+  }
+  const key = fallbackReplies[fallbackIdx++];
+  return { text: T[S.lang][key], key };
+}
+
+/* ════════════════════════════
+   EXTRACT ANSWERS FROM HISTORY
+════════════════════════════ */
+function extractAnswers() {
+  const userMsgs = S.history.filter(m => m.role === 'user').map(m => m.content);
+  S.answers = {
+    status: userMsgs[0] || '',
+    important: userMsgs[1] || '',
+    blocker: userMsgs[2] || '',
+    improve: userMsgs[3] || '',
+    comfort: (userMsgs[4] || '5').match(/\d+/)?.[0] || '5'
+  };
+}
+
+/* ════════════════════════════
+   SIGNUP FLOW
+════════════════════════════ */
+async function triggerSignup() {
+  S.phase = 'signup';
+  const t = T[S.lang];
+
+  await addMsg(t.signupIntroMsg, 'coach', 0, 'signupIntroMsg');
+
+  // Add signup card
+  await new Promise(r => setTimeout(r, 400));
+  const area = document.getElementById('chat-area');
+  const card = document.createElement('div');
+  card.className = 'signup-card';
+  card.innerHTML = `
+    <div class="signup-card-header">
+      <div class="signup-card-icon">🎰</div>
+      <div>
+        <div class="signup-card-title">${t.signupTitle}</div>
+        <div class="signup-card-sub">${t.signupSubtitle}</div>
+      </div>
+    </div>
+    <div class="signup-form-inline">
+      <input type="text" class="signup-input-inline" id="su-name" placeholder="${t.signupNamePh}" />
+      <input type="email" class="signup-input-inline" id="su-email" placeholder="${t.signupEmailPh}" />
+      <button class="signup-btn-inline" onclick="submitSignup()">
+        ${t.signupBtn}
+      </button>
+      <p class="signup-note-inline">${t.signupNote}</p>
+    </div>`;
+  area.appendChild(card);
+  scrollBottom();
+  setInputDisabled(true);
+}
+
+async function submitSignup() {
+  const name  = document.getElementById('su-name').value.trim();
+  const email = document.getElementById('su-email').value.trim();
+  if (!email.includes('@')) {
+    document.getElementById('su-email').style.borderColor = 'rgba(232,35,42,0.7)';
+    document.getElementById('su-email').focus();
+    return;
+  }
+  S.signedUp = true;
+  S.userName = name || (S.lang === 'he' ? 'חבר/ה' : 'friend');
+  S.userEmoji = '😊';
+
+  // Hide signup card
+  document.querySelector('.signup-card').style.opacity = '0.5';
+  document.querySelector('.signup-card').style.pointerEvents = 'none';
+
+  // Show report
+  await showReport();
+}
+
+/* ════════════════════════════
+   REPORT
+════════════════════════════ */
+async function showReport() {
+  S.phase = 'report';
+  const t = T[S.lang];
+  const a = S.answers;
+  const comfort = parseInt(a.comfort) || 5;
+
+  // Success message
+  await addMsg(t.reportSuccessMsg(S.userName), 'coach', 200, 'reportSuccessMsg');
+
+  // Build bar values from comfort score
+  const conf   = Math.min(95, comfort * 8 + 20);
+  const emot   = Math.min(90, comfort * 6 + 35);
+  const comm   = Math.min(88, comfort * 7 + 25);
+
+  const area = document.getElementById('chat-area');
+  await new Promise(r => setTimeout(r, 500));
+
+  const card = document.createElement('div');
+  card.className = 'report-card';
+
+  const statusMap = {
+    he: { label: 'מצב זוגי', val: shortenAnswer(a.status, 30, 'he') },
+    en: { label: 'Status', val: shortenAnswer(a.status, 30, 'en') }
+  }[S.lang];
+
+  card.innerHTML = `
+    <div class="report-header">
+      <div class="report-icon">📊</div>
+      <div>
+        <div class="report-title">${t.reportTitle}</div>
+        <div class="report-sub">${t.reportSub}</div>
+      </div>
+    </div>
+    <div class="report-body">
+      <div class="report-row">
+        <span class="report-label">${t.labels.status}</span>
+        <span class="report-value">${statusMap.val}</span>
+      </div>
+      <div class="report-row">
+        <span class="report-label">${t.labels.important}</span>
+        <span class="report-value">${shortenAnswer(a.important, 35, S.lang)}</span>
+      </div>
+      <div class="report-row">
+        <span class="report-label">${t.labels.blocker}</span>
+        <span class="report-value">${shortenAnswer(a.blocker, 35, S.lang)}</span>
+      </div>
+
+      <div style="height:1px;background:var(--border);margin:4px 0"></div>
+
+      <div class="report-bar-row">
+        <div class="report-bar-label">
+          <span>${t.barLabels[0]}</span>
+          <span style="color:var(--red)">${conf}%</span>
+        </div>
+        <div class="report-bar-bg">
+          <div class="report-bar-fill" id="bar1" style="width:0%;background:var(--red)"></div>
+        </div>
+      </div>
+      <div class="report-bar-row">
+        <div class="report-bar-label">
+          <span>${t.barLabels[1]}</span>
+          <span style="color:var(--yellow)">${emot}%</span>
+        </div>
+        <div class="report-bar-bg">
+          <div class="report-bar-fill" id="bar2" style="width:0%;background:var(--yellow)"></div>
+        </div>
+      </div>
+      <div class="report-bar-row">
+        <div class="report-bar-label">
+          <span>${t.barLabels[2]}</span>
+          <span style="color:var(--green)">${comm}%</span>
+        </div>
+        <div class="report-bar-bg">
+          <div class="report-bar-fill" id="bar3" style="width:0%;background:var(--green)"></div>
+        </div>
+      </div>
+
+      <div class="report-insight">${t.reportInsight(a)}</div>
+
+      <button class="report-cta" onclick="startCoaching()">${t.reportCtaBtn}</button>
+    </div>`;
+
+  area.appendChild(card);
+  scrollBottom();
+
+  // Animate bars
+  setTimeout(() => {
+    document.getElementById('bar1').style.width = conf + '%';
+    document.getElementById('bar2').style.width = emot + '%';
+    document.getElementById('bar3').style.width = comm + '%';
+  }, 600);
+
+  // Re-enable input for continued chat
+  setTimeout(() => {
+    setInputDisabled(false);
+    document.getElementById('input-box').focus();
+  }, 1000);
+}
+
+function shortenAnswer(text, max, lang) {
+  if (!text) return lang === 'he' ? 'לא צוין' : 'Not specified';
+  return text.length > max ? text.slice(0, max) + '...' : text;
+}
+
+function startCoaching() {
+  const btn = document.querySelector('.report-cta');
+  btn.textContent = S.lang === 'he' ? '✓ מעביר אותך... 🎰' : '✓ Taking you there... 🎰';
+  btn.style.background = 'var(--green)';
+  // In production: redirect to main chat dashboard
+}
+
+/* ════════════════════════════
+   INPUT
+════════════════════════════ */
+function setInputDisabled(val) {
+  S.isTyping = val;
+  document.getElementById('input-box').disabled = val;
+  document.getElementById('send-btn').disabled = val;
+  if (!val) document.getElementById('input-box').placeholder = T[S.lang].inputPh;
+  else document.getElementById('input-box').placeholder = S.lang === 'he' ? 'המאמן מקליד... ✍️' : 'Coach is typing...';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+async function sendMessage() {
+  const box = document.getElementById('input-box');
+  const text = box.value.trim();
+  if (!text || S.isTyping) return;
+
+  box.value = '';
+  box.style.height = 'auto';
+  removeChips();
+
+  await addMsg(text, 'user');
+  await callClaude(text);
+}
+
+/* ════════════════════════════
+   INIT
+════════════════════════════ */
+async function init() {
+  // Default: Hebrew. Switch to English only if ?lang=en in URL.
+  const params = new URLSearchParams(location.search);
+  const lang = params.get('lang') === 'en' ? 'en' : 'he';
+  setLang(lang);
+
+  // Opening message from coach (no API call)
+  await new Promise(r => setTimeout(r, 500));
+  showTyping();
+  await new Promise(r => setTimeout(r, 1400));
+  hideTyping();
+  await addMsg(T[lang].openingMsg, 'coach', 0, 'openingMsg');
+  document.getElementById('input-box').focus();
+}
+
+init();
+</script>
+</body>
+</html>
