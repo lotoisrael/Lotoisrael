@@ -1,1313 +1,764 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl" id="html-root">
+<html lang="he" dir="rtl" id="root">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>LotoIsrael – המאמן שלך</title>
-<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;700;900&family=Assistant:wght@300;400;600;700&family=DM+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+<title>לוטו – המאמן שלך</title>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer=window.dataLayer||[];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js',new Date());
+  gtag('config','G-XXXXXXXXXX');
+  function track(event,params){gtag('event',event,params||{});}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700;900&family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-
-:root {
-  --red:     #E8232A;
-  --red2:    #B8181E;
-  --yellow:  #FFD700;
-  --bg:      #0C0B09;
-  --card:    #141210;
-  --lifted:  #1E1B15;
-  --border:  rgba(255,255,255,0.07);
-  --cream:   #FFF8EE;
-  --warm:    #E8D4B4;
-  --dim:     #7A6B58;
-  --dim2:    #3A3025;
-  --green:   #22C55E;
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --red:#E8232A;--red2:#B8181E;--yellow:#FFD700;
+  --bg:#0C0B09;--card:#161310;--lifted:#1E1B15;
+  --border:rgba(255,255,255,0.08);
+  --cream:#FFF8EE;--warm:#E8D4B4;--dim:#7A6B58;--dim2:#3A3025;--green:#22C55E;
 }
-
-html { height: 100%; }
-body {
-  font-family: 'Assistant', sans-serif;
-  background: var(--bg);
-  color: var(--cream);
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  height: 100dvh;
-  overflow: hidden;
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
-  padding-left: env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
-}
-[dir="ltr"] { font-family: 'DM Sans', sans-serif; }
-
-/* ── GRAIN ── */
-body::before {
-  content:''; position:fixed; inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity:0.025; pointer-events:none; z-index:9999;
-}
-
-/* ── HEADER ── */
-.header {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:12px 16px;
-  border-bottom:1px solid var(--border);
-  background:rgba(12,11,9,0.95);
-  backdrop-filter:blur(10px);
-  flex-shrink:0;
-  position:relative; z-index:10;
-  overflow:hidden;
-  gap:8px;
-}
-
-.logo {
-  font-family:'Rubik',sans-serif;
-  font-weight:900; font-size:18px;
-  color:var(--yellow);
-  text-decoration:none;
-  flex-shrink:0;
-}
-.logo span { color:var(--red); }
-
-.coach-info { display:flex; align-items:center; gap:10px; }
-
-.coach-av {
-  width:36px; height:36px; border-radius:50%;
-  background:linear-gradient(135deg,var(--red),#FF7C30);
-  display:flex; align-items:center; justify-content:center;
-  font-size:18px;
-  flex-shrink:0;
-  box-shadow:0 0 16px rgba(232,35,42,0.4);
-  animation:avPulse 3s ease-in-out infinite;
-}
-@keyframes avPulse {
-  0%,100%{box-shadow:0 0 10px rgba(232,35,42,0.3);}
-  50%{box-shadow:0 0 24px rgba(232,35,42,0.6);}
-}
-
-.coach-meta { line-height:1.2; }
-.coach-meta-name { font-size:13px; font-weight:700; color:white; }
-.coach-meta-status { font-size:10px; color:var(--green); display:flex; align-items:center; gap:4px; }
-
-.progress-wrap { display:flex; align-items:center; gap:8px; }
-.prog-label { font-size:11px; color:var(--dim); }
-.prog-track { width:60px; height:4px; background:rgba(255,255,255,0.07); border-radius:2px; overflow:hidden; }
-.prog-fill { height:100%; border-radius:2px; background:linear-gradient(to left,var(--yellow),var(--red)); transition:width 0.6s ease; }
-[dir="ltr"] .prog-fill { background:linear-gradient(to right,var(--red),var(--yellow)); }
-
-/* hide progress on small screens */
-@media (max-width: 400px) {
-  .progress-wrap { display: none; }
-  .coach-meta-name { font-size:12px; }
-}
-.status-dot { width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s ease-in-out infinite; }
-@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
-
-/* ── CHAT AREA ── */
-.chat-area {
-  flex:1; overflow-y:auto; overflow-x:hidden;
-  padding:24px 16px 16px;
-  display:flex; flex-direction:column; gap:12px;
-  scroll-behavior:smooth;
-}
-
-/* scrollbar */
-.chat-area::-webkit-scrollbar { width:4px; }
-.chat-area::-webkit-scrollbar-track { background:transparent; }
-.chat-area::-webkit-scrollbar-thumb { background:var(--dim2); border-radius:2px; }
-
-.msg-row {
-  display:flex; gap:10px; align-items:flex-end;
-  animation:msgIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
-}
-@keyframes msgIn {
-  from{opacity:0;transform:translateY(16px) scale(0.96);}
-  to{opacity:1;transform:translateY(0) scale(1);}
-}
-
-.msg-row.user-row { flex-direction:row-reverse; }
-
-.msg-av {
-  width:30px;height:30px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px; flex-shrink:0;
-}
-.msg-av.coach-av-sm {
-  background:linear-gradient(135deg,var(--red),#FF7C30);
-}
-.msg-av.user-av-sm {
-  background:var(--lifted);
-  border:1px solid var(--border);
-  font-size:16px;
-}
-
-.bubble {
-  max-width:75%;
-  padding:12px 16px;
-  border-radius:18px;
-  font-size:15px;
-  line-height:1.6;
-  position:relative;
-}
-
-.bubble.coach {
-  background:var(--lifted);
-  border:1px solid var(--border);
-  color:var(--warm);
-  border-bottom-right-radius:4px;
-}
-[dir="rtl"] .bubble.coach { border-bottom-right-radius:4px; border-bottom-left-radius:18px; }
-[dir="ltr"] .bubble.coach { border-bottom-left-radius:4px; border-bottom-right-radius:18px; }
-
-.bubble.user {
-  background:var(--red);
-  color:white;
-  border-bottom-left-radius:4px;
-}
-[dir="rtl"] .bubble.user { border-bottom-left-radius:4px; border-bottom-right-radius:18px; }
-[dir="ltr"] .bubble.user { border-bottom-right-radius:4px; border-bottom-left-radius:18px; }
-
-/* Typing indicator */
-.typing-bubble {
-  background:var(--lifted);
-  border:1px solid var(--border);
-  border-radius:18px;
-  border-bottom-right-radius:4px;
-  padding:14px 18px;
-  display:inline-flex; gap:5px; align-items:center;
-}
-[dir="rtl"] .typing-bubble { border-bottom-right-radius:4px; border-bottom-left-radius:18px; }
-[dir="ltr"] .typing-bubble { border-bottom-left-radius:4px; border-bottom-right-radius:18px; }
-
-.t-dot {
-  width:7px;height:7px;border-radius:50%;background:var(--dim);
-  animation:tdot 1.3s ease-in-out infinite;
-}
-.t-dot:nth-child(2){animation-delay:0.2s;}
-.t-dot:nth-child(3){animation-delay:0.4s;}
-@keyframes tdot{0%,80%,100%{transform:translateY(0);opacity:0.35;}40%{transform:translateY(-6px);opacity:1;}}
-
-/* Quick reply chips */
-.chips-row {
-  display:flex; flex-wrap:wrap; gap:8px;
-  padding:4px 0 0 40px;
-  animation:msgIn 0.3s 0.1s ease both;
-}
-[dir="ltr"] .chips-row { padding:4px 40px 0 0; }
-
-.chip {
-  background:rgba(232,35,42,0.08);
-  border:1px solid rgba(232,35,42,0.25);
-  color:#FF9098;
-  border-radius:50px;
-  padding:8px 16px;
-  font-size:13px; font-weight:600;
-  cursor:pointer;
-  font-family:inherit;
-  transition:all 0.2s;
-  white-space:nowrap;
-}
-.chip:hover { background:rgba(232,35,42,0.18); border-color:var(--red); color:white; transform:translateY(-2px); }
-.chip:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
-
-/* ── SIGNUP CARD (in-chat) ── */
-.signup-card {
-  background:linear-gradient(135deg,#1A1008,#120C06);
-  border:1px solid rgba(255,215,0,0.2);
-  border-radius:20px;
-  padding:24px;
-  margin:8px 0;
-  animation:msgIn 0.4s 0.2s ease both;
-  max-width:480px;
-}
-
-.signup-card-header {
-  display:flex; align-items:center; gap:12px; margin-bottom:16px;
-}
-.signup-card-icon { font-size:28px; }
-.signup-card-title {
-  font-family:'Rubik',sans-serif;
-  font-size:18px; font-weight:700; color:white;
-}
-.signup-card-sub { font-size:13px; color:var(--dim); margin-top:2px; }
-
-.signup-form-inline { display:flex; flex-direction:column; gap:10px; }
-
-.signup-input-inline {
-  background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.1);
-  border-radius:12px;
-  padding:13px 16px;
-  font-size:15px; color:white;
-  font-family:inherit;
-  outline:none; direction:inherit;
-  transition:border-color 0.2s;
-}
-.signup-input-inline::placeholder { color:var(--dim); }
-.signup-input-inline:focus { border-color:rgba(255,215,0,0.4); }
-
-.signup-btn-inline {
-  background:var(--red);
-  color:white; border:none; border-radius:12px;
-  padding:14px; font-size:15px; font-weight:700;
-  cursor:pointer; font-family:inherit;
-  transition:all 0.2s;
-  box-shadow:0 4px 20px rgba(232,35,42,0.3);
-  display:flex; align-items:center; justify-content:center; gap:8px;
-}
-.signup-btn-inline:hover { background:var(--red2); transform:translateY(-2px); }
-
-.signup-note-inline { font-size:11px; color:var(--dim2); text-align:center; }
-
-/* ── REPORT CARD ── */
-.report-card {
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:20px;
-  overflow:hidden;
-  max-width:480px;
-  animation:msgIn 0.5s 0.3s ease both;
-}
-
-.report-header {
-  background:linear-gradient(135deg,#1A0A0A,#0F0705);
-  padding:20px 20px 16px;
-  border-bottom:1px solid var(--border);
-  display:flex; align-items:center; gap:12px;
-}
-.report-icon { font-size:28px; }
-.report-title {
-  font-family:'Rubik',sans-serif;
-  font-size:17px; font-weight:700; color:white;
-}
-.report-sub { font-size:12px; color:var(--dim); margin-top:2px; }
-
-.report-body { padding:16px 20px; display:flex; flex-direction:column; gap:12px; }
-
-.report-row { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
-.report-label { font-size:13px; color:var(--dim); flex-shrink:0; }
-.report-value { font-size:13px; font-weight:600; color:var(--warm); text-align:end; }
-[dir="ltr"] .report-value { text-align:start; }
-
-.report-bar-row { display:flex; flex-direction:column; gap:6px; }
-.report-bar-label { display:flex; justify-content:space-between; font-size:12px; }
-.report-bar-label span:first-child { color:var(--dim); }
-.report-bar-label span:last-child { font-weight:700; }
-.report-bar-bg { height:6px; background:rgba(255,255,255,0.06); border-radius:3px; overflow:hidden; }
-.report-bar-fill { height:100%; border-radius:3px; transition:width 1.2s cubic-bezier(0.4,0,0.2,1); }
-
-.report-insight {
-  background:rgba(255,215,0,0.06);
-  border:1px solid rgba(255,215,0,0.15);
-  border-radius:12px;
-  padding:12px 14px;
-  font-size:13px; color:#E8C96A;
-  line-height:1.6;
-}
-.report-insight::before { content:'💡 '; }
-
-.report-cta {
-  background:var(--red);
-  color:white; border:none; border-radius:12px;
-  padding:13px; font-size:14px; font-weight:700;
-  cursor:pointer; font-family:inherit;
-  transition:all 0.2s; width:100%;
-  box-shadow:0 4px 16px rgba(232,35,42,0.3);
-}
-.report-cta:hover { background:var(--red2); transform:translateY(-2px); }
-
-/* ── INPUT BAR ── */
-.input-bar {
-  padding:12px 16px;
-  border-top:1px solid var(--border);
-  background:rgba(12,11,9,0.97);
-  backdrop-filter:blur(10px);
-  flex-shrink:0;
-  display:flex; gap:10px; align-items:flex-end;
-}
-
-.input-box {
-  flex:1;
-  background:var(--lifted);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:11px 18px;
-  font-size:15px; color:white;
-  font-family:inherit; direction:inherit;
-  outline:none; resize:none;
-  max-height:120px; overflow-y:auto;
-  line-height:1.5;
-  transition:border-color 0.2s;
-}
-.input-box::placeholder { color:var(--dim); }
-.input-box:focus { border-color:rgba(232,35,42,0.4); }
-
-.send-btn {
-  width:42px;height:42px;border-radius:50%;
-  background:var(--red); border:none; cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px; flex-shrink:0;
-  transition:all 0.2s;
-  box-shadow:0 4px 14px rgba(232,35,42,0.35);
-}
-.send-btn:hover { background:var(--red2); transform:scale(1.08); }
-.send-btn:disabled { opacity:0.3; cursor:not-allowed; transform:none; }
-
-/* ── LANG TOGGLE ── */
-.lang-toggle {
-  display:flex;
-  background:rgba(255,255,255,0.05);
-  border:1px solid var(--border);
-  border-radius:50px;
-  overflow:hidden; font-size:12px;
-}
-.lang-btn {
-  padding:5px 12px; cursor:pointer;
-  color:var(--dim); transition:all 0.15s;
-  user-select:none; font-family:inherit;
-  font-size:12px; background:none; border:none;
-}
-.lang-btn.active { background:var(--yellow); color:var(--bg); border-radius:50px; font-weight:700; }
-
-/* ── AUTH OVERLAY ── */
-.auth-overlay {
-  position: fixed; inset: 0; z-index: 500;
-  background: var(--bg);
-  display: flex; align-items: center; justify-content: center;
-  padding: 24px;
-  animation: fadeIn 0.3s ease;
-}
-@keyframes fadeIn { from{opacity:0} to{opacity:1} }
-
-.auth-box {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 32px 28px;
-  width: 100%; max-width: 360px;
-  text-align: center;
-}
-.auth-logo {
-  font-family:'Rubik',sans-serif;
-  font-weight:900; font-size:26px;
-  color:var(--yellow); margin-bottom:4px;
-}
-.auth-logo span { color:var(--red); }
-.auth-tagline { font-size:13px; color:var(--dim); margin-bottom:24px; }
-.auth-title {
-  font-family:'Rubik',sans-serif;
-  font-size:19px; font-weight:700; color:white; margin-bottom:20px;
-}
-
-/* Google button */
-.btn-google {
-  width:100%; background:white; color:#1A1A1A;
-  border:none; border-radius:12px; padding:13px 16px;
-  font-size:15px; font-weight:600; cursor:pointer;
-  font-family:inherit; transition:all 0.2s;
-  display:flex; align-items:center; justify-content:center; gap:10px;
-  margin-bottom:16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-}
-.btn-google:hover { transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,0.4); }
-.btn-google img { width:18px; height:18px; }
-
-/* Divider */
-.auth-divider {
-  display:flex; align-items:center; gap:12px;
-  margin-bottom:16px;
-}
-.auth-divider::before, .auth-divider::after {
-  content:''; flex:1; height:1px; background:var(--border);
-}
-.auth-divider span { font-size:12px; color:var(--dim); white-space:nowrap; }
-
-/* Inputs */
-.auth-input {
-  width:100%; background:var(--lifted);
-  border:1px solid var(--border); border-radius:12px;
-  padding:12px 16px; font-size:15px; color:white;
-  font-family:inherit; outline:none; direction:ltr;
-  margin-bottom:10px; transition:border-color 0.2s;
-  text-align:start;
-}
-.auth-input:focus { border-color:rgba(232,35,42,0.5); }
-
-.btn-email {
-  width:100%; background:var(--red); color:white;
-  border:none; border-radius:12px; padding:13px;
-  font-size:15px; font-weight:700; cursor:pointer;
-  font-family:inherit; transition:all 0.2s;
-  box-shadow:0 4px 16px rgba(232,35,42,0.3);
-  margin-bottom:10px;
-}
-.btn-email:hover { background:var(--red2); transform:translateY(-2px); }
-.btn-email:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
-
-/* Toggle login/register */
-.auth-toggle {
-  font-size:13px; color:var(--dim); margin-top:4px;
-}
-.auth-toggle a {
-  color:var(--yellow); cursor:pointer; font-weight:600; text-decoration:none;
-}
-.auth-toggle a:hover { text-decoration:underline; }
-
-.auth-error {
-  background:rgba(232,35,42,0.1); border:1px solid rgba(232,35,42,0.25);
-  border-radius:10px; padding:10px 14px;
-  color:#FF9098; font-size:13px; margin-bottom:10px; display:none;
-}
-
-.auth-note { font-size:11px; color:var(--dim2); margin-top:12px; }
-
-/* User badge in header */
-.user-badge {
-  display:none; align-items:center; gap:6px;
-  background:rgba(255,255,255,0.05);
-  border:1px solid var(--border);
-  border-radius:50px; padding:5px 12px;
-  font-size:12px; color:var(--dim); cursor:pointer;
-}
-.user-badge:hover { border-color:rgba(232,35,42,0.3); }
-.user-badge .ub-dot { width:7px; height:7px; border-radius:50%; background:var(--green); }
-
+html{height:100%;height:100dvh}
+body{font-family:'Assistant',sans-serif;background:var(--bg);color:var(--cream);display:flex;flex-direction:column;height:100%;height:100dvh;overflow:hidden;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border);background:rgba(12,11,9,.97);flex-shrink:0;gap:8px}
+.logo{font-family:'Rubik',sans-serif;font-weight:900;font-size:18px;color:var(--yellow);text-decoration:none;flex-shrink:0}
+.logo span{color:var(--red)}
+.cinfo{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.cav{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--red),#FF7C30);display:flex;align-items:center;justify-content:center;font-size:15px}
+.clbl{line-height:1.2}
+.cname{font-size:13px;font-weight:700;color:white}
+.cst{font-size:10px;color:var(--green);display:flex;align-items:center;gap:3px}
+.sdot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hright{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.sbadge{background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.25);color:var(--yellow);border-radius:50px;padding:4px 10px;font-size:11px;font-weight:600;white-space:nowrap;display:none}
+.ltog{display:flex;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:50px;overflow:hidden}
+.lb{padding:5px 10px;cursor:pointer;color:var(--dim);font-size:11px;font-weight:600;background:none;border:none;font-family:inherit;transition:all .15s}
+.lb.on{background:var(--yellow);color:var(--bg);border-radius:50px}
+.ubdg{display:none;align-items:center;gap:5px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:50px;padding:4px 10px;font-size:11px;color:var(--dim);cursor:pointer}
+.ubdg .ud{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.chat{flex:1;overflow-y:auto;overflow-x:hidden;padding:14px 12px 10px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
+.chat::-webkit-scrollbar{width:3px}
+.chat::-webkit-scrollbar-thumb{background:var(--dim2);border-radius:2px}
+.mrow{display:flex;gap:8px;align-items:flex-end;animation:pop .3s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+.mrow.u{flex-direction:row-reverse}
+.mav{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.mav.c{background:linear-gradient(135deg,var(--red),#FF7C30)}
+.mav.u{background:var(--lifted);border:1px solid var(--border)}
+.bub{max-width:80%;padding:9px 13px;border-radius:15px;font-size:14px;line-height:1.6}
+.bub.c{background:var(--lifted);border:1px solid var(--border);color:var(--warm);border-bottom-right-radius:4px}
+[dir="ltr"] .bub.c{border-bottom-right-radius:15px;border-bottom-left-radius:4px}
+.bub.u{background:var(--red);color:white;border-bottom-left-radius:4px}
+[dir="ltr"] .bub.u{border-bottom-left-radius:15px;border-bottom-right-radius:4px}
+.tbub{background:var(--lifted);border:1px solid var(--border);border-radius:15px;border-bottom-right-radius:4px;padding:11px 14px;display:inline-flex;gap:4px;align-items:center}
+.td{width:6px;height:6px;border-radius:50%;background:var(--dim);animation:td 1.2s ease-in-out infinite}
+.td:nth-child(2){animation-delay:.2s}.td:nth-child(3){animation-delay:.4s}
+@keyframes td{0%,80%,100%{transform:translateY(0);opacity:.3}40%{transform:translateY(-5px);opacity:1}}
+.chips{display:flex;flex-wrap:wrap;gap:7px;padding:2px 0 2px 34px}
+[dir="ltr"] .chips{padding:2px 34px 2px 0}
+.chip{background:rgba(232,35,42,.08);border:1px solid rgba(232,35,42,.28);color:#FF9098;border-radius:50px;padding:7px 13px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .18s;white-space:nowrap}
+.chip:hover{background:rgba(232,35,42,.2);color:white;transform:translateY(-2px)}
+.ibar{padding:9px 11px;border-top:1px solid var(--border);background:rgba(12,11,9,.97);flex-shrink:0;display:flex;gap:8px;align-items:flex-end}
+.ibox{flex:1;background:var(--lifted);border:1px solid var(--border);border-radius:20px;padding:9px 15px;font-size:14px;color:white;font-family:inherit;direction:inherit;outline:none;resize:none;max-height:90px;overflow-y:auto;line-height:1.5;transition:border-color .2s}
+.ibox:focus{border-color:rgba(232,35,42,.4)}
+.ibox::placeholder{color:var(--dim)}
+.sbtn{width:36px;height:36px;border-radius:50%;background:var(--red);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;transition:all .2s;box-shadow:0 3px 10px rgba(232,35,42,.35)}
+.sbtn:hover{background:var(--red2);transform:scale(1.08)}
+.sbtn:disabled{opacity:.3;cursor:not-allowed;transform:none}
+/* Vision card */
+.vcard{background:linear-gradient(135deg,#1A0A0A,#0F0705);border:1px solid rgba(255,215,0,.2);border-radius:16px;padding:16px;max-width:380px;width:100%;animation:pop .4s ease both}
+.vc-t{font-family:'Rubik',sans-serif;font-size:15px;font-weight:700;color:white;margin-bottom:10px}
+.vc-row{display:flex;justify-content:space-between;margin-bottom:7px;font-size:12px}
+.vc-l{color:var(--dim)}.vc-v{color:var(--warm);font-weight:600;text-align:end;max-width:60%}
+[dir="ltr"] .vc-v{text-align:start}
+.vc-div{height:1px;background:var(--border);margin:8px 0}
+.vc-br{margin-bottom:7px}
+.vc-bl{display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px}
+.vc-bl span:first-child{color:var(--dim)}
+.vc-bg{height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+.vc-bf{height:100%;border-radius:2px;transition:width 1s ease}
+.vc-ins{background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.15);border-radius:9px;padding:9px 11px;font-size:12px;color:#E8C96A;margin-top:9px;line-height:1.5}
+.vc-ins::before{content:'💡 '}
+/* Motivation card */
+.mot-card{background:linear-gradient(135deg,rgba(232,35,42,.12),rgba(255,215,0,.06));border:1px solid rgba(255,215,0,.2);border-radius:14px;padding:14px 16px;max-width:380px;font-size:14px;color:var(--warm);line-height:1.65;font-style:italic;animation:pop .4s ease both}
+.mot-card::before{content:'✨ ';font-style:normal}
+/* Auth */
+.auth-ov{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px;animation:fi .3s ease}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+.abox{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:26px 22px;width:100%;max-width:320px;text-align:center}
+.a-logo{font-family:'Rubik',sans-serif;font-weight:900;font-size:22px;color:var(--yellow);margin-bottom:3px}
+.a-logo span{color:var(--red)}
+.a-tag{font-size:12px;color:var(--dim);margin-bottom:18px}
+.a-title{font-family:'Rubik',sans-serif;font-size:17px;font-weight:700;color:white;margin-bottom:16px}
+.a-err{background:rgba(232,35,42,.1);border:1px solid rgba(232,35,42,.25);border-radius:8px;padding:8px 11px;color:#FF9098;font-size:12px;margin-bottom:9px;display:none}
+.ain{width:100%;background:var(--lifted);border:1px solid var(--border);border-radius:9px;padding:10px 13px;font-size:14px;color:white;font-family:inherit;outline:none;direction:ltr;margin-bottom:8px;transition:border-color .2s;text-align:start}
+.ain:focus{border-color:rgba(232,35,42,.5)}
+.abtn{width:100%;background:var(--red);color:white;border:none;border-radius:9px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;box-shadow:0 3px 12px rgba(232,35,42,.3);margin-bottom:8px}
+.abtn:hover{background:var(--red2);transform:translateY(-2px)}
+.abtn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.a-note{font-size:11px;color:var(--dim2);margin-top:9px}
 </style>
 </head>
 <body>
 
-<!-- ── AUTH OVERLAY ── -->
-<div class="auth-overlay" id="auth-overlay">
-  <div class="auth-box">
-    <div class="auth-logo">Loto<span>Israel</span></div>
-    <div class="auth-tagline" id="auth-tagline">מאמן הדייטינג האישי שלך 🎰</div>
-    <div class="auth-title" id="auth-title">כניסה / הרשמה</div>
-
-    <!-- Google -->
-    <button class="btn-google" onclick="loginWithGoogle()">
-      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
-      <span id="google-btn-txt">המשך עם Google</span>
-    </button>
-
-    <div class="auth-divider"><span id="divider-txt">או עם אימייל</span></div>
-
-    <div class="auth-error" id="auth-error"></div>
-
-    <input type="email"    class="auth-input" id="auth-email"    placeholder="אימייל" autocomplete="email" />
-    <input type="password" class="auth-input" id="auth-password" placeholder="סיסמא (מינימום 6 תווים)" autocomplete="current-password" />
-    <button class="btn-email" id="btn-email" onclick="emailAuth()">
-      <span id="email-btn-txt">כניסה / הרשמה</span>
-    </button>
-
-    <div class="auth-toggle" id="auth-toggle">
-      <span id="toggle-txt">משתמש חדש?</span>
-      <a onclick="toggleMode()" id="toggle-link">צור חשבון</a>
-    </div>
-
-    <p class="auth-note" id="auth-note">חינמי · ללא כרטיס אשראי · הנתונים שלך שמורים</p>
+<!-- AUTH -->
+<div class="auth-ov" id="aov">
+  <div class="abox">
+    <div class="a-logo">Loto<span>Israel</span></div>
+    <div class="a-tag" id="a-tag">המאמן האישי שלך לזוגיות 🎰</div>
+    <div class="a-title" id="a-title">ברוך הבא!</div>
+    <div class="a-err" id="a-err"></div>
+    <input type="email" class="ain" id="ain-e" placeholder="האימייל שלך" autocomplete="email">
+    <input type="password" class="ain" id="ain-p" placeholder="סיסמא (6+ תווים)" autocomplete="current-password" style="display:none">
+    <button class="abtn" id="abtn" onclick="emailAuth()"><span id="abtxt">המשך</span></button>
+    <p class="a-note" id="a-note">חינמי · ללא כרטיס אשראי · הנתונים שמורים</p>
   </div>
 </div>
 
-<!-- ── HEADER ── -->
-<div class="header">
+<!-- HEADER -->
+<div class="hdr">
   <a href="/" class="logo">Loto<span>Israel</span></a>
-
-  <div class="coach-info">
-    <div class="coach-av">🤖</div>
-    <div class="coach-meta">
-      <div class="coach-meta-name" id="coach-name">המאמן שלך</div>
-      <div class="coach-meta-status">
-        <div class="status-dot"></div>
-        <span id="coach-status">מקשיב...</span>
-      </div>
+  <div class="cinfo">
+    <div class="cav">🤖</div>
+    <div class="clbl">
+      <div class="cname" id="cname">לוטו המאמן</div>
+      <div class="cst"><div class="sdot"></div><span id="cst">מקשיב...</span></div>
     </div>
   </div>
-
-  <div style="display:flex;align-items:center;gap:12px">
-    <div class="user-badge" id="user-badge" onclick="signOut()">
-      <div class="ub-dot"></div>
-      <span id="user-email-short"></span>
-    </div>
-    <div class="progress-wrap">
-      <span class="prog-label" id="prog-label">0 / 5</span>
-      <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
-    </div>
-    <div class="lang-toggle">
-      <button class="lang-btn active" id="btn-he" onclick="setLang('he')">עב</button>
-      <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+  <div class="hright">
+    <div class="sbadge" id="sbadge"></div>
+    <div class="ubdg" id="ubdg" onclick="signOut()"><div class="ud"></div><span id="uname"></span></div>
+    <div class="ltog">
+      <button class="lb on" id="btn-he" onclick="setLang('he')">עב</button>
+      <button class="lb" id="btn-en" onclick="setLang('en')">EN</button>
     </div>
   </div>
 </div>
 
-<!-- ── CHAT ── -->
-<div class="chat-area" id="chat-area"></div>
+<div class="chat" id="chat"></div>
 
-<!-- ── INPUT ── -->
-<div class="input-bar">
-  <textarea class="input-box" id="input-box" rows="1"
-    placeholder="כתוב כאן..." onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
-  <button class="send-btn" id="send-btn" onclick="sendMessage()" title="שלח">➤</button>
+<div class="ibar">
+  <textarea class="ibox" id="ibox" rows="1" placeholder="כתוב כאן..."
+    onkeydown="onKey(event)" oninput="autoH(this)"></textarea>
+  <button class="sbtn" id="sbtn" onclick="send()">➤</button>
 </div>
 
 <script>
-/* ════════════════════════════
-   STATE
-════════════════════════════ */
-const S = {
-  lang: 'he',
-  phase: 'chat',        // 'chat' | 'signup' | 'report'
-  msgCount: 0,
-  totalQ: 5,
-  answers: {},
-  signedUp: false,
-  history: [],          // for Anthropic API
-  isTyping: false,
-  userEmoji: '🙂'
+/* ══ STATE ══ */
+const A={
+  lang:'he', stage:'start', gender:null,
+  user:null, userName:'', email:'',
+  history:[], busy:false, visitCount:0,
+  data:{
+    answers:{},   // onboarding q0-q4
+    vision:{},    // vision goal/feel/change/fear/idealDate
+    match:null,   // current person name
+    dates:[],     // date history
+    step:{},      // current flow sub-step
+  }
 };
 
-/* ════════════════════════════
-   SYSTEM PROMPTS
-════════════════════════════ */
-const SYSTEM = {
-  he: `אתה מאמן דייטינג וזוגיות אישי חם, שובב ואנושי של LotoIsrael.
-המטרה שלך: לנהל שיחת היכרות קצרה עם משתמש חדש כדי להבין מי הוא ומה הוא מחפש.
-שאל בדיוק 5 שאלות, אחת בכל פעם, בסדר הזה:
-1. מה המצב הזוגי שלהם עכשיו
-2. מה הכי חשוב להם בבן/בת זוג (בקש 2-3 דברים)
-3. מה לדעתם עצר אותם מזוגיות עד עכשיו
-4. מה הם רוצים לשפר בעצמם
-5. כמה הם בנוח על דייט ראשון (בקש ציון 1-10)
+/* ══ MOTIVATION QUOTES (fallback if API unavailable) ══ */
+const QUOTES_HE=[
+  'אהבה אמיתית לא מגיעה לאלה שמחכים – היא מגיעה לאלה שפועלים.',
+  'כל פגישה היא הזדמנות. כל שיחה היא הגרלה. לך תזכה.',
+  'הדרך לזוגיות מתחילה בהכרה בעצמך.',
+  'האדם הנכון יבוא כשתהיה הגרסה הטובה ביותר של עצמך.',
+  'אל תפחד מדחייה – כל "לא" מקרב אותך ל"כן" הנכון.',
+  'זוגיות טובה מתחילה בשני אנשים שבחרו להיות טובים יותר.',
+  'הסוד בדייטינג הוא להיות נוכח, לא מושלם.',
+  'כל דייט הוא פרק חדש, לא רק עמוד אחד.'
+];
+const QUOTES_EN=[
+  'Real love doesn\'t come to those who wait – it comes to those who act.',
+  'Every meeting is an opportunity. Every conversation is a lottery. Go win.',
+  'The road to a relationship starts with knowing yourself.',
+  'The right person will come when you\'re the best version of yourself.',
+  'Don\'t fear rejection – every "no" brings you closer to the right "yes".',
+  'A great relationship starts with two people who chose to be better.',
+  'The secret in dating is to be present, not perfect.',
+  'Every date is a new chapter, not just one page.'
+];
+function randomQuote(){
+  const q=A.lang==='he'?QUOTES_HE:QUOTES_EN;
+  return q[Math.floor(Math.random()*q.length)];
+}
 
-חוקים קשיחים:
-- שאלה אחת בכל פעם. אל תשאל כמה שאלות יחד.
-- תגובות קצרות וחמות (2-4 משפטים מקסימום)
-- תגיב על מה שאמרו לפני שאתה שואל את השאלה הבאה
-- אחרי שאלה 5, אמור בדיוק: "DONE" (מילה אחת בלבד)
-- אל תציע עצות עדיין - זה שלב ההיכרות בלבד
-- דבר בעברית תקינה, חמה, לא פורמלית`,
-
-  en: `You are a warm, playful, human dating and relationship coach for LotoIsrael.
-Your goal: conduct a short onboarding interview with a new user to understand who they are.
-Ask exactly 5 questions, one at a time, in this order:
-1. Their current relationship status
-2. What matters most to them in a partner (ask for 2-3 things)
-3. What they think has held them back from a relationship
-4. What they want to improve about themselves
-5. How comfortable they are on a first date (ask for a score 1-10)
-
-Strict rules:
-- One question at a time. Never ask multiple questions together.
-- Short warm responses (2-4 sentences max)
-- Acknowledge what they said before asking the next question
-- After question 5, say exactly: "DONE" (one word only)
-- Don't give advice yet - this is the getting-to-know-you phase only
-- Speak in natural, warm, informal English`
-};
-
-/* ════════════════════════════
-   COPY
-════════════════════════════ */
-const T = {
-  he: {
-    coachName: 'המאמן שלך',
-    coachStatus: 'מקשיב...',
-    coachTyping: 'מקליד...',
-    inputPh: 'כתוב כאן...',
-    progLabel: (n,t) => `${n} / ${t}`,
-    openingMsg: 'היי! 👋 אני המאמן שלך ב-LotoIsrael.\nאשאל אותך כמה שאלות קצרות כדי להכיר אותך – ואז אכין לך דוח אישי מותאם.\nמוכן/ה? בואו נתחיל 🎰\n\nמה המצב הזוגי שלך כרגע? רווק/ה, אחרי פרידה, יוצא/ת לדייטים?',
-    fallback0: 'מבין! ועכשיו שאלה חשובה – מה הכי חשוב לך בבן/בת זוג? ציין 2-3 דברים שבאמת מדברים אליך.',
-    fallback1: 'זה מאוד מובן, תודה ששיתפת אותי. ולדעתך – מה עצר אותך מזוגיות עד עכשיו?',
-    fallback2: 'מעריך את הכנות שלך, זה לא פשוט לדבר על זה. מה אתה/את הכי רוצה לשפר בעצמך כרגע?',
-    fallback3: 'יפה מאוד. ושאלה אחרונה – על סקאלה של 1 עד 10, כמה אתה/את בנוח בדייט ראשון? 1 זה לחוץ מאוד, 10 זה רגוע לגמרי.',
-    fallbackDone: 'תודה רבה! ענית על כל השאלות 🙌\nעכשיו אני מכין לך את הדוח האישי...',
-    signupTitle: '🎰 הדוח שלך מוכן!',
-    signupSubtitle: 'הירשם כדי לראות את הניתוח האישי שלך',
-    signupEmailPh: 'האימייל שלך...',
-    signupNamePh: 'השם שלך...',
-    signupBtn: 'קבל את הדוח שלי 📊',
-    signupNote: 'חינמי · ללא כרטיס אשראי',
-    signupIntroMsg: '👏 כל הכבוד, עשית צעד ראשון חשוב!\nהכנתי לך דוח אישי על סמך מה שסיפרת לי.\nצריך רק את השם והאימייל שלך כדי לשמור ולשלוח אותו:',
-    reportTitle: 'הדוח האישי שלך',
-    reportSub: 'על בסיס שיחת ההיכרות שלנו',
-    reportCtaBtn: 'להתחיל לעבוד עם המאמן 💬',
-    reportSuccessMsg: (name) => `${name}, הדוח שלך מוכן! 🎉\nתסתכל/י על המספרים – זה הבסיס שנעבוד עליו ביחד.\nלחץ/י על הכפתור למטה כדי להתחיל את האימון.`,
-    reportInsight: (a) => generateInsightHe(a),
-    labels: { status:'מצב זוגי', important:'חשוב בזוגיות', blocker:'מה עצר', improve:'לשפר', comfort:'נוחות בדייט' },
-    barLabels: ['ביטחון עצמי','מוכנות רגשית','כישורי תקשורת'],
+/* ══ COPY ══ */
+const T={
+he:{
+  cn:'לוטו המאמן',ls:'מקשיב...',tp:'מקליד...',ph:'כתוב כאן...',
+  atag:'המאמן האישי שלך לזוגיות 🎰',
+  atitle_new:'ברוך הבא! 🎰',
+  atitle_back:'ברוך השב! 👋',
+  emailPh:'האימייל שלך',
+  pwPh:'סיסמא (6+ תווים)',
+  btnNew:'המשך',btnBack:'כניסה',
+  anote:'חינמי · ללא כרטיס אשראי · הנתונים שמורים',
+  authErr:'אימייל או סיסמא שגויים',
+  shortPw:'סיסמא קצרה מדי (6+ תווים)',
+  stages:{
+    start:'מתחיל',onboarding:'היכרות',vision:'חזון',
+    registered:'מוכן',coaching:'אימון',
   },
-  en: {
-    coachName: 'Your Coach',
-    coachStatus: 'Listening...',
-    coachTyping: 'Typing...',
-    inputPh: 'Type here...',
-    progLabel: (n,t) => `${n} / ${t}`,
-    openingMsg: "Hey! 👋 I'm your LotoIsrael coach.\nI'm going to ask you a few quick questions to get to know you better – then I'll put together your personal report.\nReady? Let's go 🎰\n\nWhat's your current relationship status?",
-    fallback0: "Got it! Now an important question – what matters most to you in a partner? Name 2-3 things that really speak to you.",
-    fallback1: "That makes a lot of sense, thanks for sharing. What do you think has held you back from a relationship until now?",
-    fallback2: "I appreciate your honesty, that's not easy to talk about. What do you most want to improve about yourself right now?",
-    fallback3: "Great. Last question – on a scale of 1 to 10, how comfortable are you on a first date? 1 is very anxious, 10 is totally relaxed.",
-    fallbackDone: "Thank you! You answered all the questions 🙌\nPreparing your personal report now...",
-    signupTitle: '🎰 Your report is ready!',
-    signupSubtitle: 'Sign up to see your personal analysis',
-    signupEmailPh: 'Your email...',
-    signupNamePh: 'Your name...',
-    signupBtn: 'Get my report 📊',
-    signupNote: 'Free · No credit card needed',
-    signupIntroMsg: "Great job – that was an important first step 🙌\nI've put together a personal report based on what you shared.\nJust need your email to save it:",
-    reportTitle: 'Your Personal Report',
-    reportSub: 'Based on our conversation',
-    reportCtaBtn: 'Start working with the coach 💬',
-    reportSuccessMsg: (name) => `${name}, report sent! 🎉\nNow we can get started. Click the button in the report to begin your coaching.`,
-    reportInsight: (a) => generateInsightEn(a),
-    labels: { status:'Status', important:'What matters', blocker:'What held back', improve:'To improve', comfort:'Date comfort' },
-    barLabels: ['Self-confidence','Emotional readiness','Communication'],
+  genderQ:'נתחיל – האם אתה…?',
+  genderC:['גבר','אישה'],
+  nameQ:{m:'מה שמך?',f:'מה שמך?'},
+  returningQ:'חזרת? הכנס/י את האימייל שלך:',
+  oQ:[
+    null,
+    {m:'מה המצב הזוגי שלך כרגע?',f:'מה המצב הזוגי שלך כרגע?'},
+    {m:'מה הכי חשוב לך בבת זוג? ציין 2-3 דברים.',f:'מה הכי חשוב לך בבן זוג? ציין 2-3 דברים.'},
+    {m:'מה לדעתך עצר אותך עד כה מזוגיות?',f:'מה לדעתך עצר אותך עד כה מזוגיות?'},
+    {m:'על סקאלה 1-10, כמה אתה מרגיש בנוח בדייט ראשון?',f:'על סקאלה 1-10, כמה את מרגישה בנוח בדייט ראשון?'},
+  ],
+  oC:[
+    [],
+    ['רווק','רווקה','אחרי פרידה','יוצא/ת לדייטים'],
+    ['קשר רגשי','הומור','יציבות','ערכים משותפים','משיכה'],
+    ['חוסר ביטחון','פחד מדחייה','תבניות חוזרות','לא יודע/ת איך'],
+    ['1','2','3','4','5','6','7','8','9','10'],
+  ],
+  visionIntro:(n,g)=>g==='m'
+    ?`תודה ${n}! 🙌\nעכשיו בואו נבנה יחד את החזון שלך לזוגיות.\n\nאיפה אתה רוצה להיות בעוד שנה מבחינה זוגית?`
+    :`תודה ${n}! 🙌\nעכשיו בואו נבנה יחד את החזון שלך לזוגיות.\n\nאיפה את רוצה להיות בעוד שנה מבחינה זוגית?`,
+  vQ:[
+    null,
+    {m:'מה תרגיש כשתמצא את האישה הנכונה?',f:'מה תרגישי כשתמצאי את הגבר הנכון?'},
+    {m:'מה אתה מוכן לשנות בעצמך כדי להגיע לשם?',f:'מה את מוכנה לשנות בעצמך כדי להגיע לשם?'},
+    {m:'מה הפחד הכי גדול שלך בדרך לזוגיות?',f:'מה הפחד הכי גדול שלך בדרך לזוגיות?'},
+    {m:'תאר בקצרה את הדייט האידיאלי שלך.',f:'תארי בקצרה את הדייט האידיאלי שלך.'},
+  ],
+  vC:[[],
+    ['שמחה ושלמות','ביטחון ואהבה','רוגע וביטחון'],
+    ['ביטחון עצמי','פתיחות רגשית','תקשורת','להיות נוכח יותר'],
+    [],[]
+  ],
+  emailPrompt:(n)=>`מדהים ${n}! 💛\nהחזון שלך שמור.\n\nכדי שנוכל לשמור את ההתקדמות שלך ולחזור מאיפה שעצרנו – הכנס/י את האימייל שלך:`,
+  readyMsg:(n,g)=>g==='m'
+    ?`${n}, אתה מוכן להתחיל! 🎰\nאני כאן איתך בכל שלב.\n\nמה הסטטוס שלך עכשיו?`
+    :`${n}, את מוכנה להתחיל! 🎰\nאני כאן איתך בכל שלב.\n\nמה הסטטוס שלך עכשיו?`,
+  statusC:['אין כלום','בהתכתבויות','יצאתי לדייט ראשון','יצאתי לכמה דייטים'],
+  // COACHING FLOW
+  coachGreet:(n)=>`אני כאן איתך ${n} 💪\nספר/י לי יותר – מה בדיוק קורה?`,
+  coachQ1:(g)=>g==='m'?'איך אתה מרגיש?':'איך את מרגישה?',
+  coachQ2:(g)=>g==='m'?'מה אתה רוצה שיקרה?':'מה את רוצה שיקרה?',
+  coachPush:(g)=>`אז יאללה לך תשיג את זה! 💪`,
+  statusQ:'מה הסטטוס עכשיו?',
+  wbMsg:(n,g)=>g==='m'?`ברוך השב ${n}! 🎰`:`ברוכה השבה ${n}! 🎰`,
+  vcTitle:'🌟 החזון שלך לזוגיות',
+  vcL:{goal:'מטרה לשנה הבאה',feel:'תחושה מיוחלת',change:'מה אשנה',fear:'הפחד הגדול',idealDate:'הדייט האידיאלי'},
+  bars:['ביטחון עצמי','מוכנות רגשית','כישורי תקשורת'],
+  ins:(c)=>{const v=parseInt(c)||5;if(v<=4)return 'נקודת הכוח שלך היא המודעות העצמית. נעבוד על ביטחון מעשי.';if(v>=8)return 'יש לך ביטחון טוב! נתמקד בעמיקת הקשר הרגשי.';return 'אתה במקום מאוזן. נתמקד בהמרת דייטים ראשונים לשניים.'},
+  rememberVision:'🌟 אל תשכח/י את החזון שלך:',
+},
+en:{
+  cn:'Loto Coach',ls:'Listening...',tp:'Typing...',ph:'Type here...',
+  atag:'Your personal dating & relationship coach 🎰',
+  atitle_new:'Welcome! 🎰',atitle_back:'Welcome back! 👋',
+  emailPh:'Your email',pwPh:'Password (6+ chars)',
+  btnNew:'Continue',btnBack:'Sign in',
+  anote:'Free · No credit card needed · Data saved',
+  authErr:'Wrong email or password',shortPw:'Password too short (6+ chars)',
+  stages:{start:'Starting',onboarding:'Getting to know you',vision:'Vision',registered:'Ready',coaching:'Coaching'},
+  genderQ:'Let\'s start – are you…?',genderC:['Male','Female'],
+  nameQ:{m:'What\'s your name?',f:'What\'s your name?'},
+  returningQ:'Welcome back! Enter your email:',
+  oQ:[null,
+    {m:'What\'s your current relationship status?',f:'What\'s your current relationship status?'},
+    {m:'What matters most to you in a partner? Name 2-3 things.',f:'What matters most to you in a partner? Name 2-3 things.'},
+    {m:'What do you think has held you back from a relationship?',f:'What do you think has held you back from a relationship?'},
+    {m:'On a scale 1-10, how comfortable are you on a first date?',f:'On a scale 1-10, how comfortable are you on a first date?'},
+  ],
+  oC:[[],['Single','After a breakup','Currently dating'],
+    ['Emotional connection','Humor','Stability','Shared values','Attraction'],
+    ['Lack of confidence','Fear of rejection','Repeating patterns',"Don't know how"],
+    ['1','2','3','4','5','6','7','8','9','10']
+  ],
+  visionIntro:(n)=>`Thanks ${n}! 🙌\nNow let's build your relationship vision.\n\nWhere do you want to be in a year, relationship-wise?`,
+  vQ:[null,
+    {m:'What will you feel when you find the right woman?',f:'What will you feel when you find the right man?'},
+    {m:'What are you willing to change to get there?',f:'What are you willing to change to get there?'},
+    {m:'What\'s your biggest fear on the road to a relationship?',f:'What\'s your biggest fear on the road to a relationship?'},
+    {m:'Describe your ideal first date briefly.',f:'Describe your ideal first date briefly.'},
+  ],
+  vC:[[],['Joy & wholeness','Confidence & love','Peace & security'],
+    ['Self-confidence','Emotional openness','Communication','Be more present'],
+    [],[]
+  ],
+  emailPrompt:(n)=>`Amazing ${n}! 💛\nYour vision is saved.\n\nTo save your progress and pick up where we left off – enter your email:`,
+  readyMsg:(n)=>`${n}, you're ready to start! 🎰\nI'm here with you at every stage.\n\nWhat's your status right now?`,
+  statusC:['Nothing yet','Texting someone','Had a first date','Had several dates'],
+  coachGreet:(n)=>`I'm here with you ${n} 💪\nTell me more – what exactly is going on?`,
+  coachQ1:()=>'How are you feeling?',
+  coachQ2:()=>'What do you want to happen?',
+  coachPush:()=>`Go get it! 💪`,
+  statusQ:'What\'s your status right now?',
+  wbMsg:(n)=>`Welcome back ${n}! 🎰`,
+  vcTitle:'🌟 Your Relationship Vision',
+  vcL:{goal:'Goal for next year',feel:'Desired feeling',change:"What I'll change",fear:'Biggest fear',idealDate:'Ideal first date'},
+  bars:['Self-confidence','Emotional readiness','Communication skills'],
+  ins:(c)=>{const v=parseInt(c)||5;if(v<=4)return "Your strength is self-awareness. We'll work on practical confidence.";if(v>=8)return "You have great confidence! We'll focus on deepening emotional connection.";return "You're balanced. We'll focus on converting first dates to second ones."},
+  rememberVision:'🌟 Don\'t forget your vision:',
+}};
+
+/* ══ SUPABASE ══ */
+let sb=null;
+async function initSB(){
+  try{
+    const r=await fetch('/api/env');
+    const{supabaseUrl,supabaseKey}=await r.json();
+    if(supabaseUrl?.includes('supabase')&&supabaseKey)
+      sb=supabase.createClient(supabaseUrl,supabaseKey);
+  }catch(e){}
+}
+async function saveData(){
+  if(!sb||!A.user)return;
+  try{
+    await sb.from('user_data').upsert({
+      user_id:A.user.id,email:A.email,
+      stage:A.stage,gender:A.gender,name:A.userName,
+      data:A.data,history:A.history.slice(-50),
+      visit_count:A.visitCount,lang:A.lang,
+      updated_at:new Date().toISOString()
+    },{onConflict:'user_id'});
+  }catch(e){}
+}
+async function loadData(){
+  if(!sb||!A.user)return false;
+  try{
+    const{data}=await sb.from('user_data').select('*').eq('user_id',A.user.id).single();
+    if(data){
+      A.stage=data.stage||'start';
+      A.gender=data.gender||null;
+      A.userName=data.name||'';
+      A.data=data.data||{answers:{},vision:{},match:null,dates:[],step:{}};
+      A.history=data.history||[];
+      A.visitCount=(data.visit_count||0)+1;
+      A.lang=data.lang||A.lang;
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+
+/* ══ AUTH ══ */
+let authPhase='check'; // 'check'|'new_pw'|'login'
+async function emailAuth(){
+  const em=g('ain-e').value.trim();
+  const pw=g('ain-p').value;
+  const t=T[A.lang];
+  if(!em.includes('@')){aerr('אימייל לא תקין');return;}
+  g('abtn').disabled=true;g('abtxt').textContent=A.lang==='he'?'טוען...':'Loading...';
+
+  if(!sb){
+    // Demo mode
+    A.email=em;A.userName=em.split('@')[0];
+    hideAuth();startApp(false);return;
   }
-};
 
-/* ════════════════════════════
-   INSIGHT GENERATORS
-════════════════════════════ */
-function generateInsightHe(a) {
-  const comfort = parseInt(a.comfort) || 5;
-  if (comfort <= 4) return 'החוזק הגדול שלך הוא שאתה מודע לאתגרים שלך – זה כבר חצי מהדרך. נעבוד על ביטחון מעשי שיניב תוצאות מיידיות.';
-  if (comfort >= 8) return 'יש לך בסיס חזק של ביטחון עצמי! נעבוד על לחדד את התקשורת הרגשית שלך כדי להפוך דייטים טובים לזוגיות אמיתית.';
-  return 'אתה במקום מאוזן – יש ביטחון בסיסי אבל יש מקום לצמוח. נתמקד בטכניקות שיעזרו לך להמיר דייטים ראשונים לשניים.';
-}
-function generateInsightEn(a) {
-  const comfort = parseInt(a.comfort) || 5;
-  if (comfort <= 4) return 'Your biggest strength is self-awareness – that\'s already half the battle. We\'ll work on practical confidence that gets immediate results.';
-  if (comfort >= 8) return 'You have a solid confidence foundation! We\'ll work on sharpening your emotional communication to turn good dates into real relationships.';
-  return 'You\'re in a balanced place – solid base but room to grow. We\'ll focus on techniques to convert first dates into second ones.';
-}
-
-/* ════════════════════════════
-   LANG
-════════════════════════════ */
-function setLang(lang) {
-  S.lang = lang;
-  const root = document.getElementById('html-root');
-  root.setAttribute('dir', lang === 'he' ? 'rtl' : 'ltr');
-  root.setAttribute('lang', lang);
-  document.getElementById('btn-he').classList.toggle('active', lang === 'he');
-  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
-  const t = T[lang];
-  document.getElementById('coach-name').textContent = t.coachName;
-  document.getElementById('coach-status').textContent = t.coachStatus;
-  document.getElementById('input-box').placeholder = t.inputPh;
-
-  // Re-translate all coach bubbles that have a data-msgkey
-  document.querySelectorAll('.bubble.coach[data-msgkey]').forEach(bub => {
-    const key = bub.dataset.msgkey;
-    const val = t[key];
-    if (!val) return;
-    const text = typeof val === 'function' ? val(S.userName || '') : val;
-    bub.innerHTML = text.replace(/\n/g, '<br>');
-  });
-
-  // Re-translate fallback replies index labels (chips if any)
-  document.querySelectorAll('.chip[data-langkey]').forEach(chip => {
-    const key = chip.dataset.langkey;
-    chip.textContent = t[key] || chip.textContent;
-  });
+  if(authPhase==='check'){
+    // Try sign in first
+    const{data,error}=await sb.auth.signInWithPassword({email:em,password:pw||'demo123'});
+    if(!error&&data.user){return;} // onAuthStateChange handles the rest
+    // Show password field for registration
+    g('ain-p').style.display='block';
+    g('a-title').textContent=t.atitle_new;
+    g('abtxt').textContent=t.btnNew;
+    authPhase='new_pw';
+    g('abtn').disabled=false;
+    return;
+  }
+  if(authPhase==='new_pw'){
+    if(pw.length<6){aerr(t.shortPw);g('abtn').disabled=false;g('abtxt').textContent=t.btnNew;return;}
+    // Try register
+    const{error:signUpErr}=await sb.auth.signUp({email:em,password:pw});
+    if(signUpErr){
+      // Maybe already exists – try login
+      const{error:loginErr}=await sb.auth.signInWithPassword({email:em,password:pw});
+      if(loginErr){aerr(t.authErr);g('abtn').disabled=false;g('abtxt').textContent=t.btnNew;return;}
+    }
+    // onAuthStateChange handles rest
+  }
 }
 
-/* ════════════════════════════
-   CHAT RENDERING
-════════════════════════════ */
-function addMsg(text, role, delay = 0, msgKey = null) {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      const area = document.getElementById('chat-area');
+function aerr(m){const e=g('a-err');e.textContent=m;e.style.display='block';setTimeout(()=>e.style.display='none',4000);}
+function hideAuth(){
+  g('aov').style.display='none';
+  const n=A.userName||A.user?.email?.split('@')[0];
+  if(n){g('ubdg').style.display='flex';g('uname').textContent=n;}
+}
+async function signOut(){
+  if(sb)await sb.auth.signOut();
+  A.user=null;A.userName='';A.stage='start';A.history=[];A.data={answers:{},vision:{},match:null,dates:[],step:{}};
+  g('ubdg').style.display='none';
+  g('chat').innerHTML='';
+  g('aov').style.display='flex';
+  g('abtn').disabled=false;g('abtxt').textContent=T[A.lang].btnNew;
+  g('a-err').style.display='none';
+  g('ain-p').style.display='none';
+  authPhase='check';
+  track('sign_out');
+}
 
-      const row = document.createElement('div');
-      row.className = `msg-row ${role === 'user' ? 'user-row' : ''}`;
+/* ══ LANG ══ */
+function setLang(l){
+  A.lang=l;
+  g('root').setAttribute('dir',l==='he'?'rtl':'ltr');
+  g('root').setAttribute('lang',l);
+  g('btn-he').classList.toggle('on',l==='he');
+  g('btn-en').classList.toggle('on',l==='en');
+  const t=T[l];
+  g('cname').textContent=t.cn;g('cst').textContent=t.ls;g('ibox').placeholder=t.ph;
+  g('a-tag').textContent=t.atag;g('a-note').textContent=t.anote;
+  g('ain-e').placeholder=t.emailPh;g('ain-p').placeholder=t.pwPh;
+  updateBadge();
+  history.replaceState(null,'',l==='en'?'?lang=en':'?lang=he');
+}
+function updateBadge(){const b=g('sbadge'),l=T[A.lang].stages[A.stage];if(l){b.textContent=l;b.style.display='block';}}
 
-      const av = document.createElement('div');
-      av.className = `msg-av ${role === 'user' ? 'user-av-sm' : 'coach-av-sm'}`;
-      av.textContent = role === 'user' ? S.userEmoji : '🤖';
-
-      const bub = document.createElement('div');
-      bub.className = `bubble ${role === 'user' ? 'user' : 'coach'}`;
-      bub.innerHTML = text.replace(/\n/g, '<br>');
-      if (role === 'coach' && msgKey) bub.dataset.msgkey = msgKey;
-
-      row.appendChild(av);
-      row.appendChild(bub);
-      area.appendChild(row);
-      scrollBottom();
-      resolve();
-    }, delay);
+/* ══ DOM ══ */
+function g(id){return document.getElementById(id);}
+function addMsg(txt,role){
+  return new Promise(res=>{
+    const area=g('chat');
+    const row=document.createElement('div');row.className='mrow'+(role==='user'?' u':'');
+    const av=document.createElement('div');av.className='mav '+(role==='user'?'u':'c');av.textContent=role==='user'?'😊':'🤖';
+    const bub=document.createElement('div');bub.className='bub '+(role==='user'?'u':'c');bub.innerHTML=txt.replace(/\n/g,'<br>');
+    if(role==='user'){row.appendChild(bub);row.appendChild(av);}else{row.appendChild(av);row.appendChild(bub);}
+    area.appendChild(row);scroll();
+    A.history.push({role:role==='user'?'user':'assistant',content:txt});
+    res();
   });
 }
+function addChips(opts,cb){
+  const area=g('chat');const row=document.createElement('div');row.className='chips';row.id='chips';
+  opts.forEach(o=>{const b=document.createElement('button');b.className='chip';b.textContent=o;b.onclick=()=>{rmChips();cb(o);};row.appendChild(b);});
+  area.appendChild(row);scroll();
+}
+function rmChips(){const r=g('chips');if(r)r.remove();}
+function showT(){
+  const area=g('chat');const row=document.createElement('div');row.className='mrow';row.id='trow';
+  const av=document.createElement('div');av.className='mav c';av.textContent='🤖';
+  const bub=document.createElement('div');bub.className='tbub';
+  bub.innerHTML='<div class="td"></div><div class="td"></div><div class="td"></div>';
+  row.appendChild(av);row.appendChild(bub);area.appendChild(row);scroll();
+  g('cst').textContent=T[A.lang].tp;
+}
+function hideT(){const r=g('trow');if(r)r.remove();g('cst').textContent=T[A.lang].ls;}
+function scroll(){setTimeout(()=>{const c=g('chat');c.scrollTop=c.scrollHeight;},60);}
+function dis(v){A.busy=v;g('ibox').disabled=v;g('sbtn').disabled=v;g('ibox').placeholder=v?(A.lang==='he'?'לוטו מקליד...':'Loto is typing...'):T[A.lang].ph;}
+function wait(ms){return new Promise(r=>setTimeout(r,ms));}
 
-function addChips(options, onSelect) {
-  const area = document.getElementById('chat-area');
-  const row = document.createElement('div');
-  row.className = 'chips-row';
-  row.id = 'chips-row';
+/* ══ SAY ══ */
+async function say(txt,ms=900){dis(true);showT();await wait(ms);hideT();await addMsg(txt,'coach');dis(false);}
+async function sayC(txt,chips,cb,ms=900){await say(txt,ms);addChips(chips,cb);}
 
-  options.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.className = 'chip';
-    btn.textContent = opt;
-    btn.onclick = () => {
-      row.remove();
-      onSelect(opt);
-    };
-    row.appendChild(btn);
+/* ══ VISION CARD ══ */
+function showVC(){
+  const t=T[A.lang],v=A.data.vision,c=parseInt(A.data.answers?.q4)||5;
+  const cf=Math.min(95,c*8+20),em=Math.min(90,c*6+35),co=Math.min(88,c*7+25);
+  const uid=Date.now();
+  const card=document.createElement('div');card.className='vcard';
+  card.innerHTML=`<div class="vc-t">${t.vcTitle}</div>
+${v.goal?`<div class="vc-row"><span class="vc-l">${t.vcL.goal}</span><span class="vc-v">${v.goal}</span></div>`:''}
+${v.feel?`<div class="vc-row"><span class="vc-l">${t.vcL.feel}</span><span class="vc-v">${v.feel}</span></div>`:''}
+${v.change?`<div class="vc-row"><span class="vc-l">${t.vcL.change}</span><span class="vc-v">${v.change}</span></div>`:''}
+${v.fear?`<div class="vc-row"><span class="vc-l">${t.vcL.fear}</span><span class="vc-v">${v.fear}</span></div>`:''}
+<div class="vc-div"></div>
+<div class="vc-br"><div class="vc-bl"><span>${t.bars[0]}</span><span style="color:var(--red)">${cf}%</span></div><div class="vc-bg"><div class="vc-bf" id="b1-${uid}" style="width:0%;background:var(--red)"></div></div></div>
+<div class="vc-br"><div class="vc-bl"><span>${t.bars[1]}</span><span style="color:var(--yellow)">${em}%</span></div><div class="vc-bg"><div class="vc-bf" id="b2-${uid}" style="width:0%;background:var(--yellow)"></div></div></div>
+<div class="vc-br"><div class="vc-bl"><span>${t.bars[2]}</span><span style="color:var(--green)">${co}%</span></div><div class="vc-bg"><div class="vc-bf" id="b3-${uid}" style="width:0%;background:var(--green)"></div></div></div>
+<div class="vc-ins">${t.ins(A.data.answers?.q4)}</div>`;
+  g('chat').appendChild(card);scroll();
+  setTimeout(()=>{
+    const b1=g(`b1-${uid}`);const b2=g(`b2-${uid}`);const b3=g(`b3-${uid}`);
+    if(b1)b1.style.width=cf+'%';if(b2)b2.style.width=em+'%';if(b3)b3.style.width=co+'%';
+  },400);
+}
+
+/* ══ MOTIVATION CARD ══ */
+async function showMotivation(){
+  const quote=randomQuote();
+  const card=document.createElement('div');card.className='mot-card';
+  card.textContent=quote;
+  g('chat').appendChild(card);scroll();
+  track('motivation_shown');
+}
+
+/* ══ ONBOARDING ══ */
+async function startOnboarding(){
+  A.stage='onboarding';A.data.step={qIdx:0};updateBadge();
+  const t=T[A.lang];
+  await sayC(t.genderQ,t.genderC,async(v)=>{
+    A.gender=v==='גבר'||v==='Male'?'m':'f';
+    await addMsg(v,'user');
+    const nq=t.nameQ[A.gender];
+    await say(nq,600);
+    track('onboarding_start',{gender:A.gender});
   });
-  area.appendChild(row);
-  scrollBottom();
 }
 
-function removeChips() {
-  const r = document.getElementById('chips-row');
-  if (r) r.remove();
+async function doOnboarding(msg){
+  const t=T[A.lang];
+  const qi=A.data.step.qIdx||0;
+  if(qi===0){A.userName=msg;A.data.answers.q0=msg;}
+  else{A.data.answers[`q${qi}`]=msg;}
+  A.data.step.qIdx=qi+1;
+  const nextQi=qi+1;
+  if(nextQi<t.oQ.length){
+    const qObj=t.oQ[nextQi];
+    const q=qObj?qObj[A.gender]||qObj.m:null;
+    const chips=t.oC[nextQi]||[];
+    if(chips.length)await sayC(q,chips,v=>sendDirect(v));
+    else await say(q);
+  }else{
+    // Onboarding done → vision
+    A.stage='vision';A.data.step={vIdx:0};updateBadge();
+    track('onboarding_complete');
+    await say(t.visionIntro(A.userName,A.gender),1000);
+  }
 }
 
-function showTyping() {
-  const area = document.getElementById('chat-area');
-  const row = document.createElement('div');
-  row.className = 'msg-row';
-  row.id = 'typing-row';
-  const av = document.createElement('div');
-  av.className = 'msg-av coach-av-sm'; av.textContent = '🤖';
-  const bub = document.createElement('div');
-  bub.className = 'typing-bubble';
-  bub.innerHTML = '<div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div>';
-  row.appendChild(av); row.appendChild(bub);
-  area.appendChild(row);
-  scrollBottom();
-  document.getElementById('coach-status').textContent = T[S.lang].coachTyping;
+/* ══ VISION ══ */
+async function doVision(msg){
+  const t=T[A.lang];
+  const vi=A.data.step.vIdx||0;
+  const keys=['goal','feel','change','fear','idealDate'];
+  A.data.vision[keys[vi]]=msg;
+  A.data.step.vIdx=vi+1;
+  const nextVi=vi+1;
+  if(nextVi<t.vQ.length){
+    const qObj=t.vQ[nextVi];
+    const q=qObj?qObj[A.gender]||qObj.m:null;
+    const chips=t.vC[nextVi]||[];
+    if(chips.length)await sayC(q,chips,v=>sendDirect(v));
+    else await say(q);
+  }else{
+    // Vision done → show card → ask email
+    track('vision_complete');
+    await wait(400);showVC();await wait(800);
+    await say(t.emailPrompt(A.userName),1000);
+    A.stage='awaiting_email';updateBadge();
+  }
 }
 
-function hideTyping() {
-  const r = document.getElementById('typing-row');
-  if (r) r.remove();
-  document.getElementById('coach-status').textContent = T[S.lang].coachStatus;
+/* ══ EMAIL COLLECTION (after vision) ══ */
+async function doAwaitingEmail(msg){
+  const t=T[A.lang];
+  if(!msg.includes('@')){
+    await say(A.lang==='he'?'נראה שזה לא אימייל תקין, נסה שוב 😊':'That doesn\'t look like a valid email, try again 😊',600);
+    return;
+  }
+  A.email=msg;
+  // Register/login with this email
+  if(sb){
+    const{error}=await sb.auth.signInWithOtp({email:msg,options:{shouldCreateUser:true}});
+    if(!error){
+      await say(A.lang==='he'
+        ?`📬 שלחנו לך מייל אישור לכתובת ${msg}.\nלחץ/י על הקישור כדי להתחבר ולהמשיך.`
+        :`📬 We sent a confirmation email to ${msg}.\nClick the link to sign in and continue.`,800);
+    }
+  }
+  A.stage='registered';updateBadge();await saveData();
+  track('email_collected');
+  await wait(600);
+  await sayC(t.readyMsg(A.userName,A.gender),t.statusC,v=>sendDirect(v),1000);
 }
 
-function scrollBottom() {
-  const a = document.getElementById('chat-area');
-  setTimeout(() => a.scrollTop = a.scrollHeight, 50);
+/* ══ COACHING FLOW (main loop) ══ */
+async function doCoaching(msg){
+  const t=T[A.lang];
+  const step=A.data.step;
+
+  if(!step.coachPhase){
+    // First message → show "אני כאן איתך"
+    step.coachPhase='asked_how';
+    await say(t.coachGreet(A.userName),800);
+    return;
+  }
+  if(step.coachPhase==='asked_how'){
+    step.coachPhase='asked_want';
+    step.feeling=msg;
+    await say(t.coachQ1(A.gender),700);
+    return;
+  }
+  if(step.coachPhase==='asked_want'){
+    step.coachPhase='pushed';
+    step.feeling2=msg;
+    await say(t.coachQ2(A.gender),700);
+    return;
+  }
+  if(step.coachPhase==='pushed'){
+    step.coachPhase='done';
+    step.want=msg;
+    // Show motivation
+    await say(t.coachPush(A.gender),600);
+    await wait(300);await showMotivation();
+    // If returning (visitCount > 1) also show vision reminder
+    if(A.visitCount>1&&A.data.vision?.goal){
+      await wait(500);
+      await say(t.rememberVision,500);
+      await wait(300);showVC();
+    }
+    await saveData();
+    // Next time they come back → ask status
+    step.waitingForReturn=true;
+    step.coachPhase=null;
+    return;
+  }
+  // Default fallback
+  await aiSay(msg);
 }
 
-/* ════════════════════════════
-   PROGRESS
-════════════════════════════ */
-function updateProgress(n) {
-  S.msgCount = n;
-  const pct = Math.min((n / S.totalQ) * 100, 100);
-  document.getElementById('prog-fill').style.width = pct + '%';
-  document.getElementById('prog-label').textContent = T[S.lang].progLabel(Math.min(n, S.totalQ), S.totalQ);
+/* ══ STATUS CHECK (returning user) ══ */
+async function doStatus(msg){
+  const t=T[A.lang];
+  A.data.step={};// reset step
+  A.data.lastStatus=msg;
+  track('status_update',{status:msg});
+  // Start fresh coaching cycle
+  await doCoaching(msg);
 }
 
-/* ════════════════════════════
-   CLAUDE API CALL
-════════════════════════════ */
-async function callClaude(userMsg) {
-  S.history.push({ role: 'user', content: userMsg });
+/* ══ REGISTERED ROUTER ══ */
+async function doRegistered(msg){
+  const t=T[A.lang];
+  const step=A.data.step||{};
 
-  showTyping();
-  setInputDisabled(true);
+  // If we were waiting for status
+  if(step.waitingForReturn){
+    A.data.step.waitingForReturn=false;
+    await sayC(t.statusQ,t.statusC,v=>sendDirect(v),700);
+    return;
+  }
+  await doCoaching(msg);
+}
 
-  try {
-    const res = await fetch('/api/coach', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: S.history, lang: S.lang })
+/* ══ AI FALLBACK ══ */
+async function aiSay(msg){
+  dis(true);showT();
+  try{
+    const res=await fetch('/api/coach',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:A.history.slice(-10),lang:A.lang,stage:A.stage,userName:A.userName,vision:A.data.vision,gender:A.gender})});
+    if(!res.ok)throw 0;
+    const{reply}=await res.json();
+    hideT();await addMsg(reply,'coach');
+  }catch(e){
+    hideT();
+    await addMsg(A.lang==='he'
+      ?'אני כאן איתך 💪 ספר/י לי יותר...'
+      :"I'm here with you 💪 Tell me more...",'coach');
+  }
+  dis(false);await saveData();
+}
+
+/* ══ ROUTER ══ */
+async function route(msg){
+  switch(A.stage){
+    case 'onboarding':     await doOnboarding(msg);break;
+    case 'vision':         await doVision(msg);break;
+    case 'awaiting_email': await doAwaitingEmail(msg);break;
+    case 'registered':
+    case 'coaching':       await doRegistered(msg);break;
+    default:               await aiSay(msg);
+  }
+  await saveData();
+}
+
+/* ══ INPUT ══ */
+function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
+function autoH(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,90)+'px';}
+async function send(){
+  const box=g('ibox'),txt=box.value.trim();
+  if(!txt||A.busy)return;
+  box.value='';box.style.height='auto';rmChips();
+  await addMsg(txt,'user');await route(txt);
+}
+async function sendDirect(txt){rmChips();await addMsg(txt,'user');await route(txt);}
+
+/* ══ START APP ══ */
+async function startApp(isReturning){
+  track('session_start',{returning:isReturning,visit:A.visitCount});
+
+  if(isReturning&&A.stage&&A.stage!=='start'){
+    // Returning user – restore last few messages
+    A.visitCount++;
+    const name=A.userName;updateBadge();
+    const last=A.history.slice(-4);
+    last.forEach(m=>{
+      const row=document.createElement('div');row.className='mrow'+(m.role==='user'?' u':'');
+      const av=document.createElement('div');av.className='mav '+(m.role==='user'?'u':'c');av.textContent=m.role==='user'?'😊':'🤖';
+      const bub=document.createElement('div');bub.className='bub '+(m.role==='user'?'u':'c');bub.innerHTML=m.content.replace(/\n/g,'<br>');
+      if(m.role==='user'){row.appendChild(bub);row.appendChild(av);}else{row.appendChild(av);row.appendChild(bub);}
+      g('chat').appendChild(row);
     });
-
-    if (!res.ok) throw new Error('API error');
-
-    const data = await res.json();
-    const reply = data.reply || '';
-
-    hideTyping();
-    updateProgress(Math.floor(S.history.filter(m => m.role === 'user').length));
-
-    if (reply.trim() === 'DONE' || reply.trim().startsWith('DONE')) {
-      extractAnswers();
-      await triggerSignup();
-    } else {
-      // Store reply in history for context
-      S.history.push({ role: 'assistant', content: reply });
-      await addMsg(reply, 'coach');
-      setInputDisabled(false);
-      document.getElementById('input-box').focus();
-    }
-
-  } catch (err) {
-    // Fallback if no API or error
-    hideTyping();
-    updateProgress(Math.floor(S.history.filter(m => m.role === 'user').length));
-    const fb = getFallbackReply();
-    if (fb && fb.text) {
-      await addMsg(fb.text, 'coach', 0, fb.key);
-    }
-    setInputDisabled(false);
-    document.getElementById('input-box').focus();
+    scroll();
+    const t=T[A.lang];
+    await wait(400);
+    A.data.step=A.data.step||{};
+    A.data.step.waitingForReturn=true;
+    await sayC(
+      t.wbMsg(name,A.gender||'m')+'\n'+t.statusQ,
+      t.statusC,
+      v=>sendDirect(v),800
+    );
+  }else{
+    // New user
+    A.stage='onboarding';A.visitCount=1;
+    await startOnboarding();
   }
 }
 
-/* Fallback for demo without API key */
-const fallbackReplies = ['fallback0','fallback1','fallback2','fallback3'];
-
-let fallbackIdx = 0;
-function getFallbackReply() {
-  if (fallbackIdx >= fallbackReplies.length) {
-    const key = 'fallbackDone';
-    setTimeout(async () => {
-      extractAnswers();
-      await triggerSignup();
-    }, 300);
-    return { text: T[S.lang][key], key };
-  }
-  const key = fallbackReplies[fallbackIdx++];
-  return { text: T[S.lang][key], key };
-}
-
-/* ════════════════════════════
-   EXTRACT ANSWERS FROM HISTORY
-════════════════════════════ */
-function extractAnswers() {
-  const userMsgs = S.history.filter(m => m.role === 'user').map(m => m.content);
-  S.answers = {
-    status: userMsgs[0] || '',
-    important: userMsgs[1] || '',
-    blocker: userMsgs[2] || '',
-    improve: userMsgs[3] || '',
-    comfort: (userMsgs[4] || '5').match(/\d+/)?.[0] || '5'
-  };
-}
-
-/* ════════════════════════════
-   SIGNUP FLOW
-════════════════════════════ */
-async function triggerSignup() {
-  S.phase = 'report';
-  const t = T[S.lang];
-
-  // Pick up name from wherever it was set
-  S.userName = S.userName
-    || currentUser?.email?.split('@')[0]
-    || document.getElementById('user-email-short')?.textContent?.trim()
-    || (S.lang === 'he' ? 'חבר/ה' : 'friend');
-  S.userEmoji = '😊';
-
-  await addMsg(t.signupIntroMsg, 'coach', 0, 'signupIntroMsg');
-  await new Promise(r => setTimeout(r, 600));
-  await showReport();
-}
-
-/* ════════════════════════════
-   REPORT
-════════════════════════════ */
-async function showReport() {
-  S.phase = 'report';
-  const t = T[S.lang];
-  const a = S.answers;
-  const comfort = parseInt(a.comfort) || 5;
-
-  const conf = Math.min(95, comfort * 8 + 20);
-  const emot = Math.min(90, comfort * 6 + 35);
-  const comm = Math.min(88, comfort * 7 + 25);
-
-  const area = document.getElementById('chat-area');
-  await new Promise(r => setTimeout(r, 500));
-
-  // Use timestamp to avoid duplicate IDs
-  const uid = Date.now();
-  const card = document.createElement('div');
-  card.className = 'report-card';
-  card.style.cssText = 'max-width:460px;width:100%;';
-
-  const statusVal = shortenAnswer(a.status, 30, S.lang);
-  const importantVal = shortenAnswer(a.important, 35, S.lang);
-  const blockerVal = shortenAnswer(a.blocker, 35, S.lang);
-
-  card.innerHTML = `
-    <div class="report-header">
-      <div class="report-icon">📊</div>
-      <div>
-        <div class="report-title">${t.reportTitle}</div>
-        <div class="report-sub">${t.reportSub}</div>
-      </div>
-    </div>
-    <div class="report-body">
-      <div class="report-row">
-        <span class="report-label">${t.labels.status}</span>
-        <span class="report-value">${statusVal}</span>
-      </div>
-      <div class="report-row">
-        <span class="report-label">${t.labels.important}</span>
-        <span class="report-value">${importantVal}</span>
-      </div>
-      <div class="report-row">
-        <span class="report-label">${t.labels.blocker}</span>
-        <span class="report-value">${blockerVal}</span>
-      </div>
-      <div style="height:1px;background:var(--border);margin:4px 0"></div>
-      <div class="report-bar-row">
-        <div class="report-bar-label">
-          <span>${t.barLabels[0]}</span>
-          <span style="color:var(--red)">${conf}%</span>
-        </div>
-        <div class="report-bar-bg">
-          <div class="report-bar-fill" id="rbar1-${uid}" style="width:0%;background:var(--red)"></div>
-        </div>
-      </div>
-      <div class="report-bar-row">
-        <div class="report-bar-label">
-          <span>${t.barLabels[1]}</span>
-          <span style="color:var(--yellow)">${emot}%</span>
-        </div>
-        <div class="report-bar-bg">
-          <div class="report-bar-fill" id="rbar2-${uid}" style="width:0%;background:var(--yellow)"></div>
-        </div>
-      </div>
-      <div class="report-bar-row">
-        <div class="report-bar-label">
-          <span>${t.barLabels[2]}</span>
-          <span style="color:var(--green)">${comm}%</span>
-        </div>
-        <div class="report-bar-bg">
-          <div class="report-bar-fill" id="rbar3-${uid}" style="width:0%;background:var(--green)"></div>
-        </div>
-      </div>
-      <div class="report-insight">${t.reportInsight(a)}</div>
-      <button class="report-cta" onclick="startCoaching(this)">${t.reportCtaBtn}</button>
-    </div>`;
-
-  area.appendChild(card);
-  scrollBottom();
-
-  // Animate bars after paint
-  requestAnimationFrame(() => {
-    setTimeout(() => {
-      const b1 = document.getElementById(`rbar1-${uid}`);
-      const b2 = document.getElementById(`rbar2-${uid}`);
-      const b3 = document.getElementById(`rbar3-${uid}`);
-      if (b1) b1.style.width = conf + '%';
-      if (b2) b2.style.width = emot + '%';
-      if (b3) b3.style.width = comm + '%';
-      scrollBottom();
-    }, 300);
-  });
-
-  setInputDisabled(false);
-  document.getElementById('input-box').focus();
-}
-
-function shortenAnswer(text, max, lang) {
-  if (!text) return lang === 'he' ? 'לא צוין' : 'Not specified';
-  return text.length > max ? text.slice(0, max) + '...' : text;
-}
-
-function startCoaching(btn) {
-  if (btn) {
-    btn.textContent = S.lang === 'he' ? '✓ מעביר אותך... 🎰' : '✓ Taking you there... 🎰';
-    btn.style.background = 'var(--green)';
-  }
-  // TODO: redirect to coaching dashboard
-}
-
-/* ════════════════════════════
-   INPUT
-════════════════════════════ */
-function setInputDisabled(val) {
-  S.isTyping = val;
-  document.getElementById('input-box').disabled = val;
-  document.getElementById('send-btn').disabled = val;
-  if (!val) document.getElementById('input-box').placeholder = T[S.lang].inputPh;
-  else document.getElementById('input-box').placeholder = S.lang === 'he' ? 'המאמן מקליד... ✍️' : 'Coach is typing...';
-}
-
-function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
-}
-
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
-}
-
-async function sendMessage() {
-  const box = document.getElementById('input-box');
-  const text = box.value.trim();
-  if (!text || S.isTyping) return;
-
-  box.value = '';
-  box.style.height = 'auto';
-  removeChips();
-
-  await addMsg(text, 'user');
-  await callClaude(text);
-}
-
-/* ════════════════════════════
-   SUPABASE AUTH + DATA
-════════════════════════════ */
-
-/* ════════════════════════════
-   SUPABASE AUTH + DATA
-════════════════════════════ */
-let sb = null;
-let currentUser = null;
-let authMode = 'login'; // 'login' | 'register'
-
-async function initSupabase() {
-  try {
-    const res = await fetch('/api/env');
-    const { supabaseUrl, supabaseKey } = await res.json();
-    if (supabaseUrl && supabaseKey && supabaseUrl.includes('supabase')) {
-      sb = supabase.createClient(supabaseUrl, supabaseKey);
-    } else {
-      console.warn('Supabase not configured – demo mode');
-    }
-  } catch(e) {
-    console.warn('No env endpoint – demo mode');
-  }
-}
-
-function toggleMode() {
-  authMode = authMode === 'login' ? 'register' : 'login';
-  const isHe = S.lang === 'he';
-  if (authMode === 'register') {
-    document.getElementById('auth-title').textContent    = isHe ? 'יצירת חשבון 🎰' : 'Create Account 🎰';
-    document.getElementById('email-btn-txt').textContent = isHe ? 'צור חשבון' : 'Create Account';
-    document.getElementById('toggle-txt').textContent    = isHe ? 'כבר יש לך חשבון?' : 'Already have an account?';
-    document.getElementById('toggle-link').textContent   = isHe ? 'כניסה' : 'Sign in';
-  } else {
-    document.getElementById('auth-title').textContent    = isHe ? 'כניסה / הרשמה' : 'Sign In / Sign Up';
-    document.getElementById('email-btn-txt').textContent = isHe ? 'כניסה / הרשמה' : 'Sign In / Sign Up';
-    document.getElementById('toggle-txt').textContent    = isHe ? 'משתמש חדש?' : 'New here?';
-    document.getElementById('toggle-link').textContent   = isHe ? 'צור חשבון' : 'Create Account';
-  }
-}
-
-function showAuthError(msg) {
-  const el = document.getElementById('auth-error');
-  el.textContent = msg;
-  el.style.display = 'block';
-  setTimeout(() => el.style.display = 'none', 4000);
-}
-
-async function loginWithGoogle() {
-  if (!sb) { demoSkipAuth(); return; }
-  const btn = document.querySelector('.btn-google');
-  btn.disabled = true;
-  document.getElementById('google-btn-txt').textContent = S.lang === 'he' ? 'מחבר...' : 'Connecting...';
-  const { error } = await sb.auth.signInWithOAuth({
-    provider: 'google',
-    options: { redirectTo: window.location.href }
-  });
-  if (error) {
-    showAuthError(S.lang === 'he' ? 'שגיאה בכניסה עם Google' : 'Google sign-in error');
-    btn.disabled = false;
-    document.getElementById('google-btn-txt').textContent = S.lang === 'he' ? 'המשך עם Google' : 'Continue with Google';
-  }
-}
-
-async function emailAuth() {
-  const email    = document.getElementById('auth-email').value.trim();
-  const password = document.getElementById('auth-password').value;
-  const btn      = document.getElementById('btn-email');
-  const isHe     = S.lang === 'he';
-
-  if (!email.includes('@') || password.length < 6) {
-    showAuthError(isHe ? 'אימייל לא תקין או סיסמא קצרה מדי (6+ תווים)' : 'Invalid email or password too short (6+ chars)');
-    return;
-  }
-
-  btn.disabled = true;
-  document.getElementById('email-btn-txt').textContent = isHe ? 'טוען...' : 'Loading...';
-
-  if (!sb) { demoSkipAuth(email); return; }
-
-  if (authMode === 'register') {
-    const { error } = await sb.auth.signUp({ email, password });
-    if (error) {
-      showAuthError(isHe ? 'שגיאה: ' + error.message : 'Error: ' + error.message);
-      btn.disabled = false;
-      document.getElementById('email-btn-txt').textContent = isHe ? 'צור חשבון' : 'Create Account';
-      return;
-    }
-    // Auto sign-in after register
-    await sb.auth.signInWithPassword({ email, password });
-  } else {
-    const { error } = await sb.auth.signInWithPassword({ email, password });
-    if (error) {
-      // If user doesn't exist, auto-register
-      if (error.message.includes('Invalid login')) {
-        showAuthError(isHe ? 'אימייל או סיסמא שגויים' : 'Wrong email or password');
-      } else {
-        showAuthError(isHe ? 'שגיאה: ' + error.message : 'Error: ' + error.message);
-      }
-      btn.disabled = false;
-      document.getElementById('email-btn-txt').textContent = isHe ? 'כניסה / הרשמה' : 'Sign In / Sign Up';
-      return;
-    }
-  }
-  // onAuthStateChange will fire and handle the rest
-}
-
-function demoSkipAuth(email) {
-  // No Supabase – just continue as guest
-  hideAuthAndStart(email || 'guest@demo.com');
-}
-
-async function saveConversation() {
-  if (!sb || !currentUser) return;
-  try {
-    await sb.from('conversations').upsert({
-      user_id: currentUser.id,
-      messages: S.history,
-      updated_at: new Date().toISOString()
-    }, { onConflict: 'user_id' });
-  } catch(e) { console.warn('Save error', e); }
-}
-
-async function loadConversation() {
-  if (!sb || !currentUser) return null;
-  try {
-    const { data } = await sb.from('conversations')
-      .select('messages').eq('user_id', currentUser.id).single();
-    return data?.messages || null;
-  } catch(e) { return null; }
-}
-
-async function saveOnboarding() {
-  if (!sb || !currentUser) return;
-  const a = S.answers;
-  try {
-    await sb.from('onboarding').upsert({
-      user_id: currentUser.id,
-      status: a.status, important: a.important,
-      blocker: a.blocker, improve: a.improve,
-      comfort: parseInt(a.comfort) || null,
-      completed_at: new Date().toISOString()
-    }, { onConflict: 'user_id' });
-  } catch(e) { console.warn('Onboarding save error', e); }
-}
-
-function showUserBadge(email) {
-  const badge = document.getElementById('user-badge');
-  badge.style.display = 'flex';
-  document.getElementById('user-email-short').textContent = email.split('@')[0];
-}
-
-async function signOut() {
-  if (sb) await sb.auth.signOut();
-  currentUser = null;
-  document.getElementById('user-badge').style.display = 'none';
-  document.getElementById('auth-overlay').style.display = 'flex';
-  document.getElementById('auth-email').value = '';
-  document.getElementById('auth-password').value = '';
-  document.getElementById('btn-email').disabled = false;
-  document.getElementById('email-btn-txt').textContent = S.lang === 'he' ? 'כניסה / הרשמה' : 'Sign In / Sign Up';
-  document.getElementById('auth-error').style.display = 'none';
-}
-
-function hideAuthAndStart(email) {
-  document.getElementById('auth-overlay').style.display = 'none';
-  if (email) showUserBadge(email);
-  startChat();
-}
-
-// Wrap triggerSignup to save onboarding data
-const _origTriggerSignup = triggerSignup;
-triggerSignup = async function() {
-  await saveOnboarding();
-  await _origTriggerSignup();
-};
-
-// Save after each coach reply
-const _origCallClaude = callClaude;
-callClaude = async function(msg) {
-  await _origCallClaude(msg);
-  saveConversation(); // fire and forget
-};
-
-/* ════════════════════════════
-   INIT
-════════════════════════════ */
-async function startChat() {
-  const params = new URLSearchParams(location.search);
-  const lang = params.get('lang') === 'en' ? 'en' : 'he';
+/* ══ INIT ══ */
+async function init(){
+  const p=new URLSearchParams(location.search),lang=p.get('lang')==='en'?'en':'he';
   setLang(lang);
+  await initSB();
 
-  // Check for saved conversation
-  const saved = await loadConversation();
-  if (saved && saved.length > 0) {
-    // Restore previous session
-    S.history = saved;
-    for (const m of saved) {
-      const key = m._msgKey || null;
-      await addMsg(m.content, m.role === 'user' ? 'user' : 'coach', 0, key);
-    }
-    setInputDisabled(false);
-    document.getElementById('input-box').focus();
-    return;
-  }
+  // Setup auth UI
+  const t=T[lang];
+  g('a-title').textContent=t.atitle_new;
+  g('abtxt').textContent=t.btnNew;
 
-  // Fresh start
-  await new Promise(r => setTimeout(r, 400));
-  showTyping();
-  await new Promise(r => setTimeout(r, 1200));
-  hideTyping();
-  await addMsg(T[lang].openingMsg, 'coach', 0, 'openingMsg');
-  document.getElementById('input-box').focus();
-}
-
-async function init() {
-  const params = new URLSearchParams(location.search);
-  const lang = params.get('lang') === 'en' ? 'en' : 'he';
-  setLang(lang);
-
-  await initSupabase();
-
-  if (!sb) {
-    // No Supabase configured – show simple "what's your name" form
-    document.querySelector('.btn-google').style.display = 'none';
-    document.querySelector('.auth-divider').style.display = 'none';
-    document.getElementById('auth-password').style.display = 'none';
-    document.getElementById('toggle-txt').style.display = 'none';
-    document.getElementById('toggle-link').style.display = 'none';
-    document.getElementById('auth-title').textContent = lang === 'he' ? 'איך קוראים לך? 👋' : "What's your name? 👋";
-    document.getElementById('auth-email').type = 'text';
-    document.getElementById('auth-email').placeholder = lang === 'he' ? 'השם שלך...' : 'Your name...';
-    document.getElementById('email-btn-txt').textContent = lang === 'he' ? 'בואו נתחיל 🎰' : "Let's go 🎰";
-    document.getElementById('auth-note').textContent = lang === 'he' ? 'חינמי · ללא הרשמה' : 'Free · No sign up needed';
-
-    // Override emailAuth to just use name and start
-    window.emailAuth = function() {
-      const name = document.getElementById('auth-email').value.trim() || (lang === 'he' ? 'חבר/ה' : 'friend');
-      S.userName = name;
-      hideAuthAndStart(name);
+  if(!sb){
+    // Demo mode – simple name entry
+    g('a-title').textContent=lang==='he'?'איך קוראים לך? 👋':"What's your name? 👋";
+    g('ain-e').type='text';g('ain-e').placeholder=lang==='he'?'השם שלך...':'Your name...';
+    g('abtxt').textContent=lang==='he'?'בואו נתחיל 🎰':"Let's go 🎰";
+    g('a-note').textContent=lang==='he'?'חינמי':'Free';
+    window.emailAuth=function(){
+      const n=g('ain-e').value.trim()||(lang==='he'?'חבר/ה':'friend');
+      A.userName=n;A.email=n;hideAuth();startApp(false);
     };
     return;
   }
 
-  // Supabase configured – listen for auth changes
-  sb.auth.onAuthStateChange(async (event, session) => {
-    if (session?.user && !currentUser) {
-      currentUser = session.user;
-      hideAuthAndStart(session.user.email);
+  // Listen for auth state changes
+  sb.auth.onAuthStateChange(async(ev,sess)=>{
+    if(sess?.user&&!A.user){
+      A.user=sess.user;A.email=sess.user.email;
+      A.userName=sess.user.email.split('@')[0];
+      const isReturning=await loadData();
+      hideAuth();startApp(isReturning);
     }
   });
 
   // Already logged in?
-  const { data } = await sb.auth.getSession();
-  if (data?.session?.user) {
-    currentUser = data.session.user;
-    hideAuthAndStart(currentUser.email);
+  const{data}=await sb.auth.getSession();
+  if(data?.session?.user){
+    A.user=data.session.user;A.email=A.user.email;
+    A.userName=A.user.email.split('@')[0];
+    const isReturning=await loadData();
+    hideAuth();startApp(isReturning);
   }
-  // Otherwise auth overlay stays visible
+  // Otherwise auth overlay stays
 }
 
 init();
