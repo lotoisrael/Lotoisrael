@@ -211,8 +211,8 @@ body{font-family:'Assistant',sans-serif;background:var(--bg);color:var(--cream);
     <div class="a-tag" id="a-tag">המאמן האישי שלך לזוגיות 🎰</div>
     <div class="a-title" id="a-title">ברוך הבא!</div>
     <div class="a-err" id="a-err"></div>
-    <input type="email" class="ain" id="ain-e" placeholder="האימייל שלך" autocomplete="email">
-    <input type="password" class="ain" id="ain-p" placeholder="סיסמא (6+ תווים)" autocomplete="current-password" style="display:none">
+    <input type="email" class="ain" id="ain-e" placeholder="האימייל שלך" autocomplete="email" onkeydown="if(event.key==='Enter')emailAuth()">
+    <input type="password" class="ain" id="ain-p" placeholder="סיסמא (6+ תווים)" autocomplete="current-password" style="display:none" onkeydown="if(event.key==='Enter')emailAuth()">
     <button class="abtn" id="abtn" onclick="emailAuth()"><span id="abtxt">המשך</span></button>
     <p class="a-note" id="a-note">חינמי · ללא כרטיס אשראי · הנתונים שמורים</p>
   </div>
@@ -458,42 +458,60 @@ async function loadData(){
 }
 
 /* ══ AUTH ══ */
-let authPhase='check'; // 'check'|'new_pw'|'login'
-async function emailAuth(){
-  const em=g('ain-e').value.trim();
-  const pw=g('ain-p').value;
-  const t=T[A.lang];
-  if(!em.includes('@')){aerr('אימייל לא תקין');return;}
-  g('abtn').disabled=true;g('abtxt').textContent=A.lang==='he'?'טוען...':'Loading...';
+let authPhase='check';
 
-  if(!sb){
-    // Demo mode
-    A.email=em;A.userName=em.split('@')[0];
-    hideAuth();startApp(false);return;
+function emailAuth(){
+  const emailEl=document.getElementById('ain-e');
+  const pwEl=document.getElementById('ain-p');
+  const btnEl=document.getElementById('abtn');
+  const btxtEl=document.getElementById('abtxt');
+  if(!emailEl||!btnEl)return;
+
+  const em=(emailEl.value||'').trim();
+  const pw=pwEl?pwEl.value:'';
+
+  // Empty field
+  if(!em){
+    const e=document.getElementById('a-err');
+    if(e){e.textContent=A.lang==='he'?'נא למלא את השדה':'Please fill in the field';e.style.display='block';setTimeout(()=>e.style.display='none',3000);}
+    emailEl.focus();return;
   }
 
+  // No Supabase → demo mode
+  if(!sb){
+    A.email=em;
+    A.userName=em.includes('@')?em.split('@')[0]:em;
+    document.getElementById('aov').style.display='none';
+    const ubdg=document.getElementById('ubdg');
+    const uname=document.getElementById('uname');
+    if(ubdg&&uname){ubdg.style.display='flex';uname.textContent=A.userName;}
+    startApp(false);
+    return;
+  }
+
+  // Supabase mode
+  if(!em.includes('@')){aerr(A.lang==='he'?'אימייל לא תקין':'Invalid email');return;}
+  btnEl.disabled=true;if(btxtEl)btxtEl.textContent=A.lang==='he'?'טוען...':'Loading...';
+
   if(authPhase==='check'){
-    // Try sign in first
-    const{data,error}=await sb.auth.signInWithPassword({email:em,password:pw||'demo123'});
-    if(!error&&data.user){return;} // onAuthStateChange handles the rest
-    // Show password field for registration
-    g('ain-p').style.display='block';
-    g('a-title').textContent=t.atitle_new;
-    g('abtxt').textContent=t.btnNew;
-    authPhase='new_pw';
-    g('abtn').disabled=false;
+    sb.auth.signInWithPassword({email:em,password:pw||'_'}).then(({data,error})=>{
+      if(!error&&data?.user)return;
+      pwEl.style.display='block';pwEl.focus();
+      authPhase='new_pw';
+      btnEl.disabled=false;
+      if(btxtEl)btxtEl.textContent=T[A.lang].btnNew;
+    });
     return;
   }
   if(authPhase==='new_pw'){
-    if(pw.length<6){aerr(t.shortPw);g('abtn').disabled=false;g('abtxt').textContent=t.btnNew;return;}
-    // Try register
-    const{error:signUpErr}=await sb.auth.signUp({email:em,password:pw});
-    if(signUpErr){
-      // Maybe already exists – try login
-      const{error:loginErr}=await sb.auth.signInWithPassword({email:em,password:pw});
-      if(loginErr){aerr(t.authErr);g('abtn').disabled=false;g('abtxt').textContent=t.btnNew;return;}
-    }
-    // onAuthStateChange handles rest
+    if(pw.length<6){aerr(T[A.lang].shortPw);btnEl.disabled=false;return;}
+    sb.auth.signUp({email:em,password:pw}).then(({error:e1})=>{
+      if(e1){
+        sb.auth.signInWithPassword({email:em,password:pw}).then(({error:e2})=>{
+          if(e2){aerr(T[A.lang].authErr);btnEl.disabled=false;if(btxtEl)btxtEl.textContent=T[A.lang].btnNew;}
+        });
+      }
+    });
   }
 }
 
@@ -863,15 +881,12 @@ async function init(){
   g('abtxt').textContent=t.btnNew;
 
   if(!sb){
-    // Demo mode – simple name entry
-    g('a-title').textContent=lang==='he'?'איך קוראים לך? 👋':"What's your name? 👋";
-    g('ain-e').type='text';g('ain-e').placeholder=lang==='he'?'השם שלך...':'Your name...';
-    g('abtxt').textContent=lang==='he'?'בואו נתחיל 🎰':"Let's go 🎰";
-    g('a-note').textContent=lang==='he'?'חינמי':'Free';
-    window.emailAuth=function(){
-      const n=g('ain-e').value.trim()||(lang==='he'?'חבר/ה':'friend');
-      A.userName=n;A.email=n;hideAuth();startApp(false);
-    };
+    // Demo mode – simple name/email entry, emailAuth already handles this
+    g('a-title').textContent=A.lang==='he'?'מה שמך? 👋':"What's your name? 👋";
+    g('ain-e').type='text';
+    g('ain-e').placeholder=A.lang==='he'?'השם שלך...':'Your name...';
+    g('abtxt').textContent=A.lang==='he'?'בואו נתחיל 🎰':"Let's go 🎰";
+    g('a-note').textContent=A.lang==='he'?'חינמי · ללא הרשמה':'Free · No sign up needed';
     return;
   }
 
