@@ -3,16 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>לוטו – המאמן שלך</title>
+
+<!-- SEO Primary -->
+<title>לוטו ישראל – המאמן האישי שלך לדייטינג וזוגיות 🎰</title>
+<meta name="description" content="לוטו ישראל – מאמן הדייטינג והזוגיות האישי שלך. בנה חזון לזוגיות, קבל ליווי אישי בכל שלב – מחיפוש ועד מערכת יחסים. חינמי. מתחיל עכשיו.">
+<meta name="keywords" content="מאמן דייטינג, אימון זוגיות, ייעוץ זוגי, עזרה בדייטינג, איך למצוא זוגיות, מאמן אישי, lotoisrael">
+<meta name="author" content="LotoIsrael">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.lotoisrael.com/">
+
+<!-- Open Graph (WhatsApp, Facebook) -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.lotoisrael.com/">
+<meta property="og:title" content="לוטו ישראל – המאמן האישי שלך לדייטינג וזוגיות">
+<meta property="og:description" content="בנה חזון לזוגיות. קבל ליווי אישי בכל שלב – מחיפוש ועד מערכת יחסים ארוכת טווח. חינמי. מתחיל עכשיו.">
+<meta property="og:image" content="https://www.lotoisrael.com/og-image.jpg">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="LotoIsrael">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="לוטו ישראל – מאמן דייטינג אישי">
+<meta name="twitter:description" content="בנה חזון לזוגיות וקבל ליווי אישי. חינמי.">
+<meta name="twitter:image" content="https://www.lotoisrael.com/og-image.jpg">
+
+<!-- PWA / Mobile -->
+<meta name="theme-color" content="#0C0B09">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="LotoIsrael">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "לוטו ישראל",
+  "url": "https://www.lotoisrael.com",
+  "description": "מאמן דייטינג וזוגיות אישי מבוסס AI",
+  "applicationCategory": "LifestyleApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "ILS" },
+  "inLanguage": ["he", "en"],
+  "author": { "@type": "Organization", "name": "LotoIsrael", "email": "Info@lotoisrael.com" }
+}
+</script>
+
 <!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-691HKZF7E5"></script>
 <script>
   window.dataLayer=window.dataLayer||[];
   function gtag(){dataLayer.push(arguments);}
   gtag('js',new Date());
-  gtag('config','G-XXXXXXXXXX');
-  function track(event,params){gtag('event',event,params||{});}
+  gtag('config','G-691HKZF7E5');
+  function track(event,params){
+    try{gtag('event',event,params||{});}catch(e){}
+  }
 </script>
+
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700;900&family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
@@ -102,7 +150,56 @@ body{font-family:'Assistant',sans-serif;background:var(--bg);color:var(--cream);
 .abtn{width:100%;background:var(--red);color:white;border:none;border-radius:9px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;box-shadow:0 3px 12px rgba(232,35,42,.3);margin-bottom:8px}
 .abtn:hover{background:var(--red2);transform:translateY(-2px)}
 .abtn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.a-note{font-size:11px;color:var(--dim2);margin-top:9px}
+/* ── FOOTER ── */
+.footer{
+  display:flex;align-items:center;justify-content:center;gap:16px;
+  padding:8px 16px;
+  border-top:1px solid var(--border);
+  background:rgba(12,11,9,.97);
+  flex-shrink:0;
+  flex-wrap:wrap;
+}
+.footer a{
+  font-size:11px;color:var(--dim);text-decoration:none;
+  transition:color .2s;cursor:pointer;
+}
+.footer a:hover{color:var(--warm);}
+.footer-sep{color:var(--dim2);font-size:11px;}
+
+/* ── MODAL ── */
+.modal-ov{
+  position:fixed;inset:0;z-index:600;
+  background:rgba(0,0,0,.75);
+  display:none;align-items:center;justify-content:center;
+  padding:20px;
+}
+.modal-ov.open{display:flex;}
+.modal-box{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:20px;width:100%;max-width:500px;
+  max-height:80vh;display:flex;flex-direction:column;
+  animation:pop .3s ease both;
+}
+.modal-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 20px 14px;border-bottom:1px solid var(--border);
+}
+.modal-title{font-family:'Rubik',sans-serif;font-size:16px;font-weight:700;color:white;}
+.modal-close{
+  width:28px;height:28px;border-radius:50%;background:var(--lifted);
+  border:none;color:var(--dim);cursor:pointer;font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+}
+.modal-close:hover{background:rgba(232,35,42,.2);color:white;}
+.modal-body{
+  padding:18px 20px;overflow-y:auto;
+  font-size:13px;color:var(--warm);line-height:1.75;
+}
+.modal-body h3{font-family:'Rubik',sans-serif;font-size:14px;font-weight:700;color:white;margin:14px 0 6px;}
+.modal-body h3:first-child{margin-top:0;}
+.modal-body a{color:var(--yellow);text-decoration:none;}
+.modal-body a:hover{text-decoration:underline;}
 </style>
 </head>
 <body>
@@ -205,23 +302,22 @@ he:{
   shortPw:'סיסמא קצרה מדי (6+ תווים)',
   stages:{
     start:'מתחיל',onboarding:'היכרות',vision:'חזון',
-    registered:'מוכן',coaching:'אימון',
+    registered:'מוכן',coaching:'אימון',awaiting_email:'הרשמה',
   },
-  genderQ:'נתחיל – האם אתה…?',
+  genderQ:'נתחיל – מה המין שלך?',
   genderC:['גבר','אישה'],
   nameQ:{m:'מה שמך?',f:'מה שמך?'},
-  returningQ:'חזרת? הכנס/י את האימייל שלך:',
   oQ:[
     null,
     {m:'מה המצב הזוגי שלך כרגע?',f:'מה המצב הזוגי שלך כרגע?'},
-    {m:'מה הכי חשוב לך בבת זוג? ציין 2-3 דברים.',f:'מה הכי חשוב לך בבן זוג? ציין 2-3 דברים.'},
+    {m:'מה הכי חשוב לך בבת זוג? בחר דבר אחד.',f:'מה הכי חשוב לך בבן זוג? בחרי דבר אחד.'},
     {m:'מה לדעתך עצר אותך עד כה מזוגיות?',f:'מה לדעתך עצר אותך עד כה מזוגיות?'},
     {m:'על סקאלה 1-10, כמה אתה מרגיש בנוח בדייט ראשון?',f:'על סקאלה 1-10, כמה את מרגישה בנוח בדייט ראשון?'},
   ],
   oC:[
     [],
     ['רווק','רווקה','אחרי פרידה','יוצא/ת לדייטים'],
-    ['קשר רגשי','הומור','יציבות','ערכים משותפים','משיכה'],
+    ['קשר רגשי עמוק','הומור','יציבות ואמינות','ערכים משותפים','משיכה פיזית','עצמאות ומרחב'],
     ['חוסר ביטחון','פחד מדחייה','תבניות חוזרות','לא יודע/ת איך'],
     ['1','2','3','4','5','6','7','8','9','10'],
   ],
@@ -237,26 +333,39 @@ he:{
   ],
   vC:[[],
     ['שמחה ושלמות','ביטחון ואהבה','רוגע וביטחון'],
-    ['ביטחון עצמי','פתיחות רגשית','תקשורת','להיות נוכח יותר'],
+    ['ביטחון עצמי','פתיחות רגשית','תקשורת','להיות נוכח/ת יותר'],
     [],[]
   ],
-  emailPrompt:(n)=>`מדהים ${n}! 💛\nהחזון שלך שמור.\n\nכדי שנוכל לשמור את ההתקדמות שלך ולחזור מאיפה שעצרנו – הכנס/י את האימייל שלך:`,
+  // EMAIL after vision - but only if not already logged in
+  emailPrompt:(n,g)=>g==='m'
+    ?`מדהים ${n}! 💛\nהחזון שלך שמור.\n\nכדי לשמור את ההתקדמות שלך – מה האימייל שלך?`
+    :`מדהים ${n}! 💛\nהחזון שלך שמור.\n\nכדי לשמור את ההתקדמות שלך – מה האימייל שלך?`,
   readyMsg:(n,g)=>g==='m'
     ?`${n}, אתה מוכן להתחיל! 🎰\nאני כאן איתך בכל שלב.\n\nמה הסטטוס שלך עכשיו?`
     :`${n}, את מוכנה להתחיל! 🎰\nאני כאן איתך בכל שלב.\n\nמה הסטטוס שלך עכשיו?`,
   statusC:['אין כלום','בהתכתבויות','יצאתי לדייט ראשון','יצאתי לכמה דייטים'],
-  // COACHING FLOW
-  coachGreet:(n)=>`אני כאן איתך ${n} 💪\nספר/י לי יותר – מה בדיוק קורה?`,
+  coachGreet:(n,g)=>g==='m'
+    ?`אני כאן איתך ${n} 💪\nספר לי יותר – מה בדיוק קורה?`
+    :`אני כאן איתך ${n} 💪\nספרי לי יותר – מה בדיוק קורה?`,
   coachQ1:(g)=>g==='m'?'איך אתה מרגיש?':'איך את מרגישה?',
   coachQ2:(g)=>g==='m'?'מה אתה רוצה שיקרה?':'מה את רוצה שיקרה?',
-  coachPush:(g)=>`אז יאללה לך תשיג את זה! 💪`,
+  coachPush:(g)=>g==='m'?'אז יאללה לך תשיג את זה! 💪':'אז יאללה לכי תשיגי את זה! 💪',
   statusQ:'מה הסטטוס עכשיו?',
   wbMsg:(n,g)=>g==='m'?`ברוך השב ${n}! 🎰`:`ברוכה השבה ${n}! 🎰`,
   vcTitle:'🌟 החזון שלך לזוגיות',
   vcL:{goal:'מטרה לשנה הבאה',feel:'תחושה מיוחלת',change:'מה אשנה',fear:'הפחד הגדול',idealDate:'הדייט האידיאלי'},
   bars:['ביטחון עצמי','מוכנות רגשית','כישורי תקשורת'],
-  ins:(c)=>{const v=parseInt(c)||5;if(v<=4)return 'נקודת הכוח שלך היא המודעות העצמית. נעבוד על ביטחון מעשי.';if(v>=8)return 'יש לך ביטחון טוב! נתמקד בעמיקת הקשר הרגשי.';return 'אתה במקום מאוזן. נתמקד בהמרת דייטים ראשונים לשניים.'},
-  rememberVision:'🌟 אל תשכח/י את החזון שלך:',
+  ins:(c,g)=>{const v=parseInt(c)||5;
+    if(g==='f'){
+      if(v<=4)return 'נקודת הכוח שלך היא המודעות העצמית. נעבוד על ביטחון מעשי.';
+      if(v>=8)return 'יש לך ביטחון טוב! נתמקד בעמיקת הקשר הרגשי.';
+      return 'את במקום מאוזן. נתמקד בהמרת דייטים ראשונים לשניים.';
+    }
+    if(v<=4)return 'נקודת הכוח שלך היא המודעות העצמית. נעבוד על ביטחון מעשי.';
+    if(v>=8)return 'יש לך ביטחון טוב! נתמקד בעמיקת הקשר הרגשי.';
+    return 'אתה במקום מאוזן. נתמקד בהמרת דייטים ראשונים לשניים.';
+  },
+  rememberVision:(g)=>g==='m'?'🌟 אל תשכח את החזון שלך:':'🌟 אל תשכחי את החזון שלך:',
 },
 en:{
   cn:'Loto Coach',ls:'Listening...',tp:'Typing...',ph:'Type here...',
@@ -407,6 +516,15 @@ async function signOut(){
   track('sign_out');
 }
 
+/* ══ MODALS ══ */
+function openModal(id){
+  track('modal_open',{modal:id});
+  document.getElementById('modal-'+id).classList.add('open');
+}
+function closeModal(id){document.getElementById('modal-'+id).classList.remove('open');}
+function closeModalOutside(e,id){if(e.target===document.getElementById(id))closeModal(id);}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){['terms','privacy','contact'].forEach(closeModal);}});
+
 /* ══ LANG ══ */
 function setLang(l){
   A.lang=l;
@@ -418,6 +536,17 @@ function setLang(l){
   g('cname').textContent=t.cn;g('cst').textContent=t.ls;g('ibox').placeholder=t.ph;
   g('a-tag').textContent=t.atag;g('a-note').textContent=t.anote;
   g('ain-e').placeholder=t.emailPh;g('ain-p').placeholder=t.pwPh;
+  // Footer
+  g('footer-terms').textContent=l==='he'?'תנאי שימוש':'Terms of Use';
+  g('footer-privacy').textContent=l==='he'?'מדיניות פרטיות':'Privacy Policy';
+  g('footer-contact').textContent=l==='he'?'צור קשר':'Contact';
+  // Modal titles
+  g('terms-title').textContent=l==='he'?'תנאי שימוש':'Terms of Use';
+  g('privacy-title').textContent=l==='he'?'מדיניות פרטיות':'Privacy Policy';
+  g('contact-title').textContent=l==='he'?'צור קשר':'Contact Us';
+  g('contact-sub').textContent=l==='he'?'אנחנו כאן בשבילך 🎰':'We\'re here for you 🎰';
+  g('contact-p').textContent=l==='he'?'לכל שאלה, הצעה, או בקשה – נשמח לשמוע ממך.':'For any question, suggestion, or request – we\'d love to hear from you.';
+  g('contact-note').textContent=l==='he'?'נחזור אליך תוך 24-48 שעות בימי עסקים.':'We\'ll get back to you within 24-48 business hours.';
   updateBadge();
   history.replaceState(null,'',l==='en'?'?lang=en':'?lang=he');
 }
@@ -475,7 +604,7 @@ ${v.fear?`<div class="vc-row"><span class="vc-l">${t.vcL.fear}</span><span class
 <div class="vc-br"><div class="vc-bl"><span>${t.bars[0]}</span><span style="color:var(--red)">${cf}%</span></div><div class="vc-bg"><div class="vc-bf" id="b1-${uid}" style="width:0%;background:var(--red)"></div></div></div>
 <div class="vc-br"><div class="vc-bl"><span>${t.bars[1]}</span><span style="color:var(--yellow)">${em}%</span></div><div class="vc-bg"><div class="vc-bf" id="b2-${uid}" style="width:0%;background:var(--yellow)"></div></div></div>
 <div class="vc-br"><div class="vc-bl"><span>${t.bars[2]}</span><span style="color:var(--green)">${co}%</span></div><div class="vc-bg"><div class="vc-bf" id="b3-${uid}" style="width:0%;background:var(--green)"></div></div></div>
-<div class="vc-ins">${t.ins(A.data.answers?.q4)}</div>`;
+<div class="vc-ins">${t.ins(A.data.answers?.q4,A.gender)}</div>`;
   g('chat').appendChild(card);scroll();
   setTimeout(()=>{
     const b1=g(`b1-${uid}`);const b2=g(`b2-${uid}`);const b3=g(`b3-${uid}`);
@@ -496,12 +625,13 @@ async function showMotivation(){
 async function startOnboarding(){
   A.stage='onboarding';A.data.step={qIdx:0};updateBadge();
   const t=T[A.lang];
+  track('onboarding_begin',{lang:A.lang});
   await sayC(t.genderQ,t.genderC,async(v)=>{
     A.gender=v==='גבר'||v==='Male'?'m':'f';
     await addMsg(v,'user');
+    track('gender_selected',{gender:A.gender});
     const nq=t.nameQ[A.gender];
     await say(nq,600);
-    track('onboarding_start',{gender:A.gender});
   });
 }
 
@@ -519,9 +649,8 @@ async function doOnboarding(msg){
     if(chips.length)await sayC(q,chips,v=>sendDirect(v));
     else await say(q);
   }else{
-    // Onboarding done → vision
     A.stage='vision';A.data.step={vIdx:0};updateBadge();
-    track('onboarding_complete');
+    track('onboarding_complete',{gender:A.gender,comfort:A.data.answers?.q4});
     await say(t.visionIntro(A.userName,A.gender),1000);
   }
 }
@@ -541,11 +670,18 @@ async function doVision(msg){
     if(chips.length)await sayC(q,chips,v=>sendDirect(v));
     else await say(q);
   }else{
-    // Vision done → show card → ask email
+    // Vision done → show card → ask email only if not already logged in
     track('vision_complete');
     await wait(400);showVC();await wait(800);
-    await say(t.emailPrompt(A.userName),1000);
-    A.stage='awaiting_email';updateBadge();
+    if(A.user||!sb){
+      // Already authenticated or demo mode → go straight to coaching
+      A.stage='registered';updateBadge();await saveData();
+      await sayC(t.readyMsg(A.userName,A.gender),t.statusC,v=>sendDirect(v),1000);
+    }else{
+      // Not logged in → ask for email
+      await say(t.emailPrompt(A.userName,A.gender),1000);
+      A.stage='awaiting_email';updateBadge();
+    }
   }
 }
 
@@ -557,6 +693,7 @@ async function doAwaitingEmail(msg){
     return;
   }
   A.email=msg;
+  track('email_collected',{gender:A.gender});
   // Register/login with this email
   if(sb){
     const{error}=await sb.auth.signInWithOtp({email:msg,options:{shouldCreateUser:true}});
@@ -580,7 +717,7 @@ async function doCoaching(msg){
   if(!step.coachPhase){
     // First message → show "אני כאן איתך"
     step.coachPhase='asked_how';
-    await say(t.coachGreet(A.userName),800);
+    await say(t.coachGreet(A.userName,A.gender),800);
     return;
   }
   if(step.coachPhase==='asked_how'){
@@ -598,13 +735,13 @@ async function doCoaching(msg){
   if(step.coachPhase==='pushed'){
     step.coachPhase='done';
     step.want=msg;
-    // Show motivation
+    track('coaching_cycle_complete',{visit:A.visitCount,status:A.data.lastStatus||''});
     await say(t.coachPush(A.gender),600);
     await wait(300);await showMotivation();
     // If returning (visitCount > 1) also show vision reminder
     if(A.visitCount>1&&A.data.vision?.goal){
       await wait(500);
-      await say(t.rememberVision,500);
+      await say(t.rememberVision(A.gender),500);
       await wait(300);showVC();
     }
     await saveData();
@@ -619,11 +756,9 @@ async function doCoaching(msg){
 
 /* ══ STATUS CHECK (returning user) ══ */
 async function doStatus(msg){
-  const t=T[A.lang];
-  A.data.step={};// reset step
+  A.data.step={};
   A.data.lastStatus=msg;
-  track('status_update',{status:msg});
-  // Start fresh coaching cycle
+  track('status_update',{status:msg,visit:A.visitCount,gender:A.gender});
   await doCoaching(msg);
 }
 
@@ -685,7 +820,7 @@ async function sendDirect(txt){rmChips();await addMsg(txt,'user');await route(tx
 
 /* ══ START APP ══ */
 async function startApp(isReturning){
-  track('session_start',{returning:isReturning,visit:A.visitCount});
+  track('session_start',{returning:isReturning,visit:A.visitCount,gender:A.gender,stage:A.stage});
 
   if(isReturning&&A.stage&&A.stage!=='start'){
     // Returning user – restore last few messages
@@ -746,7 +881,9 @@ async function init(){
       A.user=sess.user;A.email=sess.user.email;
       A.userName=sess.user.email.split('@')[0];
       const isReturning=await loadData();
-      hideAuth();startApp(isReturning);
+      hideAuth();
+      await saveData(); // ensure row exists
+      startApp(isReturning);
     }
   });
 
@@ -760,6 +897,83 @@ async function init(){
   }
   // Otherwise auth overlay stays
 }
+
+<!-- FOOTER -->
+<div class="footer">
+  <a onclick="openModal('terms')" id="footer-terms">תנאי שימוש</a>
+  <span class="footer-sep">·</span>
+  <a onclick="openModal('privacy')" id="footer-privacy">מדיניות פרטיות</a>
+  <span class="footer-sep">·</span>
+  <a href="mailto:Info@lotoisrael.com" id="footer-contact">צור קשר</a>
+</div>
+
+<!-- MODAL: Terms -->
+<div class="modal-ov" id="modal-terms" onclick="closeModalOutside(event,'modal-terms')">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <span class="modal-title" id="terms-title">תנאי שימוש</span>
+      <button class="modal-close" onclick="closeModal('modal-terms')">✕</button>
+    </div>
+    <div class="modal-body" id="terms-body">
+      <h3>1. קבלת התנאים</h3>
+      <p>השימוש באתר LotoIsrael מהווה הסכמה לתנאי השימוש המפורטים להלן. אם אינך מסכים לתנאים אלו, אנא הפסק את השימוש באתר.</p>
+      <h3>2. תיאור השירות</h3>
+      <p>LotoIsrael מציעה שירות מאמן דייטינג וזוגיות מבוסס בינה מלאכותית. השירות מיועד למטרות הדרכה והעשרה בלבד ואינו תחליף לטיפול פסיכולוגי מקצועי.</p>
+      <h3>3. גיל מינימלי</h3>
+      <p>השירות מיועד לבני 18 ומעלה בלבד. שימוש בשירות מהווה הצהרה כי הנך בן 18 ומעלה.</p>
+      <h3>4. אחריות</h3>
+      <p>LotoIsrael אינה אחראית לתוצאות הנובעות מהשימוש בשירות. ההחלטות הסופיות הן באחריות המשתמש בלבד.</p>
+      <h3>5. קניין רוחני</h3>
+      <p>כל התוכן באתר, לרבות טקסטים, עיצוב וקוד, הוא רכושה הבלעדי של LotoIsrael.</p>
+      <h3>6. יצירת קשר</h3>
+      <p>לשאלות בנוגע לתנאי השימוש: <a href="mailto:Info@lotoisrael.com">Info@lotoisrael.com</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Privacy -->
+<div class="modal-ov" id="modal-privacy" onclick="closeModalOutside(event,'modal-privacy')">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <span class="modal-title" id="privacy-title">מדיניות פרטיות</span>
+      <button class="modal-close" onclick="closeModal('modal-privacy')">✕</button>
+    </div>
+    <div class="modal-body" id="privacy-body">
+      <h3>אילו נתונים אנו אוספים?</h3>
+      <p>אנו אוספים: כתובת אימייל, שם, מין, תשובות לשאלון ההיכרות, חזון הזוגיות שלך, והיסטוריית השיחות עם המאמן.</p>
+      <h3>כיצד אנו משתמשים בנתונים?</h3>
+      <p>הנתונים משמשים אך ורק לצורך מתן השירות האישי ושיפורו. אנו לא מוכרים, משכירים, או מעבירים נתונים לצדדים שלישיים.</p>
+      <h3>אבטחת מידע</h3>
+      <p>הנתונים שלך מאוחסנים בצורה מוצפנת ב-Supabase, עם פרוטוקולי אבטחה מתקדמים.</p>
+      <h3>זכות למחיקה</h3>
+      <p>תוכל/י לבקש מחיקת כל הנתונים שלך בכל עת על ידי פנייה ל: <a href="mailto:Info@lotoisrael.com">Info@lotoisrael.com</a></p>
+      <h3>עוגיות (Cookies)</h3>
+      <p>האתר עושה שימוש מינימלי בעוגיות לצורך שמירת הגדרות שפה וסשן.</p>
+      <h3>Google Analytics</h3>
+      <p>אנו משתמשים ב-Google Analytics לניתוח שימוש אנונימי באתר, ללא זיהוי אישי.</p>
+      <h3>צור קשר</h3>
+      <p>שאלות בנוגע לפרטיות: <a href="mailto:Info@lotoisrael.com">Info@lotoisrael.com</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Contact -->
+<div class="modal-ov" id="modal-contact" onclick="closeModalOutside(event,'modal-contact')">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <span class="modal-title" id="contact-title">צור קשר</span>
+      <button class="modal-close" onclick="closeModal('modal-contact')">✕</button>
+    </div>
+    <div class="modal-body">
+      <h3 id="contact-sub">אנחנו כאן בשבילך 🎰</h3>
+      <p id="contact-p">לכל שאלה, הצעה, או בקשה – נשמח לשמוע ממך.</p>
+      <br>
+      <p>📧 <a href="mailto:Info@lotoisrael.com" style="font-size:15px;font-weight:600">Info@lotoisrael.com</a></p>
+      <br>
+      <p id="contact-note" style="color:var(--dim);font-size:12px">נחזור אליך תוך 24-48 שעות בימי עסקים.</p>
+    </div>
+  </div>
+</div>
 
 init();
 </script>
