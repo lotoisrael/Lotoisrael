@@ -8,6 +8,22 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --red:     #E8232A;
+  --red2:    #B8181E;
+  --yellow:  #FFD700;
+  --bg:      #0C0B09;
+  --card:    #141210;
+  --lifted:  #1E1B15;
+  --border:  rgba(255,255,255,0.07);
+  --cream:   #FFF8EE;
+  --warm:    #E8D4B4;
+  --dim:     #7A6B58;
+  --dim2:    #3A3025;
+  --green:   #22C55E;
+}
+
 html { height: 100%; }
 body {
   font-family: 'Assistant', sans-serif;
@@ -18,7 +34,6 @@ body {
   height: 100%;
   height: 100dvh;
   overflow: hidden;
-  /* Safe areas for notch + home bar (iOS/Android) */
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
@@ -874,9 +889,10 @@ async function triggerSignup() {
   S.phase = 'report';
   const t = T[S.lang];
 
-  // User is already logged in via auth overlay – go straight to report
-  S.userName = currentUser?.email?.split('@')[0]
-    || document.getElementById('user-email-short')?.textContent
+  // Pick up name from wherever it was set
+  S.userName = S.userName
+    || currentUser?.email?.split('@')[0]
+    || document.getElementById('user-email-short')?.textContent?.trim()
     || (S.lang === 'he' ? 'חבר/ה' : 'friend');
   S.userEmoji = '😊';
 
@@ -1258,13 +1274,28 @@ async function init() {
   await initSupabase();
 
   if (!sb) {
-    // No Supabase – skip auth overlay
-    document.getElementById('auth-overlay').style.display = 'none';
-    startChat();
+    // No Supabase configured – show simple "what's your name" form
+    document.querySelector('.btn-google').style.display = 'none';
+    document.querySelector('.auth-divider').style.display = 'none';
+    document.getElementById('auth-password').style.display = 'none';
+    document.getElementById('toggle-txt').style.display = 'none';
+    document.getElementById('toggle-link').style.display = 'none';
+    document.getElementById('auth-title').textContent = lang === 'he' ? 'איך קוראים לך? 👋' : "What's your name? 👋";
+    document.getElementById('auth-email').type = 'text';
+    document.getElementById('auth-email').placeholder = lang === 'he' ? 'השם שלך...' : 'Your name...';
+    document.getElementById('email-btn-txt').textContent = lang === 'he' ? 'בואו נתחיל 🎰' : "Let's go 🎰";
+    document.getElementById('auth-note').textContent = lang === 'he' ? 'חינמי · ללא הרשמה' : 'Free · No sign up needed';
+
+    // Override emailAuth to just use name and start
+    window.emailAuth = function() {
+      const name = document.getElementById('auth-email').value.trim() || (lang === 'he' ? 'חבר/ה' : 'friend');
+      S.userName = name;
+      hideAuthAndStart(name);
+    };
     return;
   }
 
-  // Listen for auth changes (Google OAuth callback / email login)
+  // Supabase configured – listen for auth changes
   sb.auth.onAuthStateChange(async (event, session) => {
     if (session?.user && !currentUser) {
       currentUser = session.user;
