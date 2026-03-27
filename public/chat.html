@@ -910,24 +910,22 @@ async function showReport() {
   const a = S.answers;
   const comfort = parseInt(a.comfort) || 5;
 
-  // Success message
-  await addMsg(t.reportSuccessMsg(S.userName), 'coach', 200, 'reportSuccessMsg');
-
-  // Build bar values from comfort score
-  const conf   = Math.min(95, comfort * 8 + 20);
-  const emot   = Math.min(90, comfort * 6 + 35);
-  const comm   = Math.min(88, comfort * 7 + 25);
+  const conf = Math.min(95, comfort * 8 + 20);
+  const emot = Math.min(90, comfort * 6 + 35);
+  const comm = Math.min(88, comfort * 7 + 25);
 
   const area = document.getElementById('chat-area');
   await new Promise(r => setTimeout(r, 500));
 
+  // Use timestamp to avoid duplicate IDs
+  const uid = Date.now();
   const card = document.createElement('div');
   card.className = 'report-card';
+  card.style.cssText = 'max-width:460px;width:100%;';
 
-  const statusMap = {
-    he: { label: 'מצב זוגי', val: shortenAnswer(a.status, 30, 'he') },
-    en: { label: 'Status', val: shortenAnswer(a.status, 30, 'en') }
-  }[S.lang];
+  const statusVal = shortenAnswer(a.status, 30, S.lang);
+  const importantVal = shortenAnswer(a.important, 35, S.lang);
+  const blockerVal = shortenAnswer(a.blocker, 35, S.lang);
 
   card.innerHTML = `
     <div class="report-header">
@@ -940,26 +938,24 @@ async function showReport() {
     <div class="report-body">
       <div class="report-row">
         <span class="report-label">${t.labels.status}</span>
-        <span class="report-value">${statusMap.val}</span>
+        <span class="report-value">${statusVal}</span>
       </div>
       <div class="report-row">
         <span class="report-label">${t.labels.important}</span>
-        <span class="report-value">${shortenAnswer(a.important, 35, S.lang)}</span>
+        <span class="report-value">${importantVal}</span>
       </div>
       <div class="report-row">
         <span class="report-label">${t.labels.blocker}</span>
-        <span class="report-value">${shortenAnswer(a.blocker, 35, S.lang)}</span>
+        <span class="report-value">${blockerVal}</span>
       </div>
-
       <div style="height:1px;background:var(--border);margin:4px 0"></div>
-
       <div class="report-bar-row">
         <div class="report-bar-label">
           <span>${t.barLabels[0]}</span>
           <span style="color:var(--red)">${conf}%</span>
         </div>
         <div class="report-bar-bg">
-          <div class="report-bar-fill" id="bar1" style="width:0%;background:var(--red)"></div>
+          <div class="report-bar-fill" id="rbar1-${uid}" style="width:0%;background:var(--red)"></div>
         </div>
       </div>
       <div class="report-bar-row">
@@ -968,7 +964,7 @@ async function showReport() {
           <span style="color:var(--yellow)">${emot}%</span>
         </div>
         <div class="report-bar-bg">
-          <div class="report-bar-fill" id="bar2" style="width:0%;background:var(--yellow)"></div>
+          <div class="report-bar-fill" id="rbar2-${uid}" style="width:0%;background:var(--yellow)"></div>
         </div>
       </div>
       <div class="report-bar-row">
@@ -977,30 +973,31 @@ async function showReport() {
           <span style="color:var(--green)">${comm}%</span>
         </div>
         <div class="report-bar-bg">
-          <div class="report-bar-fill" id="bar3" style="width:0%;background:var(--green)"></div>
+          <div class="report-bar-fill" id="rbar3-${uid}" style="width:0%;background:var(--green)"></div>
         </div>
       </div>
-
       <div class="report-insight">${t.reportInsight(a)}</div>
-
-      <button class="report-cta" onclick="startCoaching()">${t.reportCtaBtn}</button>
+      <button class="report-cta" onclick="startCoaching(this)">${t.reportCtaBtn}</button>
     </div>`;
 
   area.appendChild(card);
   scrollBottom();
 
-  // Animate bars
-  setTimeout(() => {
-    document.getElementById('bar1').style.width = conf + '%';
-    document.getElementById('bar2').style.width = emot + '%';
-    document.getElementById('bar3').style.width = comm + '%';
-  }, 600);
+  // Animate bars after paint
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      const b1 = document.getElementById(`rbar1-${uid}`);
+      const b2 = document.getElementById(`rbar2-${uid}`);
+      const b3 = document.getElementById(`rbar3-${uid}`);
+      if (b1) b1.style.width = conf + '%';
+      if (b2) b2.style.width = emot + '%';
+      if (b3) b3.style.width = comm + '%';
+      scrollBottom();
+    }, 300);
+  });
 
-  // Re-enable input for continued chat
-  setTimeout(() => {
-    setInputDisabled(false);
-    document.getElementById('input-box').focus();
-  }, 1000);
+  setInputDisabled(false);
+  document.getElementById('input-box').focus();
 }
 
 function shortenAnswer(text, max, lang) {
@@ -1008,11 +1005,12 @@ function shortenAnswer(text, max, lang) {
   return text.length > max ? text.slice(0, max) + '...' : text;
 }
 
-function startCoaching() {
-  const btn = document.querySelector('.report-cta');
-  btn.textContent = S.lang === 'he' ? '✓ מעביר אותך... 🎰' : '✓ Taking you there... 🎰';
-  btn.style.background = 'var(--green)';
-  // In production: redirect to main chat dashboard
+function startCoaching(btn) {
+  if (btn) {
+    btn.textContent = S.lang === 'he' ? '✓ מעביר אותך... 🎰' : '✓ Taking you there... 🎰';
+    btn.style.background = 'var(--green)';
+  }
+  // TODO: redirect to coaching dashboard
 }
 
 /* ════════════════════════════
