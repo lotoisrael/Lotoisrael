@@ -151,23 +151,25 @@
 }
 html{height:100%;height:100dvh}
 body{font-family:'Assistant',sans-serif;background:var(--bg);color:var(--cream);display:flex;flex-direction:column;height:100%;height:100dvh;overflow:hidden;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
-.hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border);background:rgba(12,11,9,.97);flex-shrink:0;gap:8px}
-.logo{font-family:'Rubik',sans-serif;font-weight:900;font-size:18px;color:var(--yellow);text-decoration:none;flex-shrink:0}
+/* ── HEADER ── */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--border);background:rgba(12,11,9,.97);flex-shrink:0;gap:6px;overflow:hidden}
+.logo{font-family:'Rubik',sans-serif;font-weight:900;font-size:17px;color:var(--yellow);text-decoration:none;flex-shrink:0}
 .logo span{color:var(--red)}
-.cinfo{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.cav{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--red),#FF7C30);display:flex;align-items:center;justify-content:center;font-size:15px}
-.clbl{line-height:1.2}
-.cname{font-size:13px;font-weight:700;color:white}
+.cinfo{display:flex;align-items:center;gap:7px;flex-shrink:0;min-width:0;overflow:hidden}
+.cav{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--red),#FF7C30);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.clbl{line-height:1.2;min-width:0;overflow:hidden}
+.cname{font-size:12px;font-weight:700;color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cst{font-size:10px;color:var(--green);display:flex;align-items:center;gap:3px}
-.sdot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s ease-in-out infinite}
+.sdot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s ease-in-out infinite;flex-shrink:0}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.hright{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.sbadge{background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.25);color:var(--yellow);border-radius:50px;padding:4px 10px;font-size:11px;font-weight:600;white-space:nowrap;display:none}
-.ltog{display:flex;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:50px;overflow:hidden}
-.lb{padding:5px 10px;cursor:pointer;color:var(--dim);font-size:11px;font-weight:600;background:none;border:none;font-family:inherit;transition:all .15s}
+.hright{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.sbadge{background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.25);color:var(--yellow);border-radius:50px;padding:3px 8px;font-size:10px;font-weight:600;white-space:nowrap;display:none;max-width:90px;overflow:hidden;text-overflow:ellipsis}
+.ltog{display:flex;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:50px;overflow:hidden;flex-shrink:0}
+.lb{padding:4px 9px;cursor:pointer;color:var(--dim);font-size:11px;font-weight:600;background:none;border:none;font-family:inherit;transition:all .15s}
 .lb.on{background:var(--yellow);color:var(--bg);border-radius:50px}
-.ubdg{display:none;align-items:center;gap:5px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:50px;padding:4px 10px;font-size:11px;color:var(--dim);cursor:pointer}
-.ubdg .ud{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.ubdg{display:none;align-items:center;gap:5px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:50px;padding:4px 9px;font-size:11px;color:var(--dim);cursor:pointer;max-width:80px;overflow:hidden}
+.ubdg .ud{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0}
+@media(max-width:360px){.sbadge{display:none!important}}
 .chat{flex:1;overflow-y:auto;overflow-x:hidden;padding:14px 12px 10px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
 .chat::-webkit-scrollbar{width:3px}
 .chat::-webkit-scrollbar-thumb{background:var(--dim2);border-radius:2px}
@@ -285,11 +287,17 @@ body{font-family:'Assistant',sans-serif;background:var(--bg);color:var(--cream);
 <!-- AUTH -->
 <div class="auth-ov" id="aov">
   <div class="abox">
+    <div style="display:flex;justify-content:center;margin-bottom:16px">
+      <div class="ltog">
+        <button class="lb on" id="auth-btn-he" onclick="setLang('he');return false">עב</button>
+        <button class="lb" id="auth-btn-en" onclick="setLang('en');return false">EN</button>
+      </div>
+    </div>
     <div class="a-logo">Loto<span>Israel</span></div>
     <div class="a-tag" id="a-tag">המאמן האישי שלך לזוגיות 🎰</div>
-    <div class="a-title" id="a-title">מה שמך? 👋</div>
+    <div class="a-title" id="a-title">מה המייל שלך? 👋</div>
     <div class="a-err" id="a-err"></div>
-    <input type="text" class="ain" id="ain-e" placeholder="השם שלך" autocomplete="name" onkeydown="if(event.key==='Enter')emailAuth()">
+    <input type="email" class="ain" id="ain-e" placeholder="האימייל שלך" autocomplete="email" onkeydown="if(event.key==='Enter')emailAuth()">
     <input type="password" class="ain" id="ain-p" placeholder="סיסמא (6+ תווים)" autocomplete="current-password" style="display:none" onkeydown="if(event.key==='Enter')emailAuth()">
     <button class="abtn" id="abtn" onclick="emailAuth()"><span id="abtxt">המשך</span></button>
     <p class="a-note" id="a-note">חינמי · ללא כרטיס אשראי · הנתונים שמורים</p>
@@ -381,6 +389,7 @@ he:{
   stages:{
     start:'מתחיל',onboarding:'היכרות',vision:'חזון',
     registered:'מוכן',coaching:'אימון',awaiting_email:'הרשמה',
+    schedule:'תזמון',session:'פגישה',graduate:'בוגר/ת 🎓',
   },
   genderQ:'נתחיל – מה המין שלך?',
   genderC:['גבר','אישה'],
@@ -453,7 +462,7 @@ en:{
   btnNew:'Continue',btnBack:'Sign in',
   anote:'Free · No credit card needed · Data saved',
   authErr:'Wrong email or password',shortPw:'Password too short (6+ chars)',
-  stages:{start:'Starting',onboarding:'Getting to know you',vision:'Vision',registered:'Ready',coaching:'Coaching'},
+  stages:{start:'Starting',onboarding:'Getting to know you',vision:'Vision',registered:'Ready',coaching:'Coaching',awaiting_email:'Registration',schedule:'Scheduling',session:'Session',graduate:'Graduate 🎓'},
   genderQ:'Let\'s start – are you…?',genderC:['Male','Female'],
   nameQ:{m:'What\'s your name?',f:'What\'s your name?'},
   returningQ:'Welcome back! Enter your email:',
@@ -546,7 +555,6 @@ let authPhase='check';
 
 function emailAuth(){
   const emailEl=document.getElementById('ain-e');
-  const pwEl=document.getElementById('ain-p');
   const btnEl=document.getElementById('abtn');
   const btxtEl=document.getElementById('abtxt');
   if(!emailEl||!btnEl)return;
@@ -555,17 +563,22 @@ function emailAuth(){
 
   if(!val){
     const e=document.getElementById('a-err');
-    if(e){e.textContent=A.lang==='he'?'נא להכניס שם':'Please enter your name';e.style.display='block';setTimeout(()=>e.style.display='none',3000);}
+    if(e){e.textContent=A.lang==='he'?'נא להכניס אימייל':'Please enter your email';e.style.display='block';setTimeout(()=>e.style.display='none',3000);}
     emailEl.focus();return;
   }
 
-  // Always start with name → demo mode (email collected later in flow)
-  A.userName=val;
-  A.email='';
+  if(!val.includes('@')){
+    const e=document.getElementById('a-err');
+    if(e){e.textContent=A.lang==='he'?'אימייל לא תקין':'Invalid email';e.style.display='block';setTimeout(()=>e.style.display='none',3000);}
+    emailEl.focus();return;
+  }
+
+  A.email=val;
+  // Don't set userName yet – will be asked in chat
   document.getElementById('aov').style.display='none';
   const ubdg=document.getElementById('ubdg');
   const uname=document.getElementById('uname');
-  if(ubdg&&uname){ubdg.style.display='flex';uname.textContent=A.userName;}
+  if(ubdg&&uname){ubdg.style.display='flex';uname.textContent=val.split('@')[0];}
   startApp(false);
 }
 
@@ -602,12 +615,16 @@ function setLang(l){
   A.lang=l;
   g('root').setAttribute('dir',l==='he'?'rtl':'ltr');
   g('root').setAttribute('lang',l);
-  g('btn-he').classList.toggle('on',l==='he');
-  g('btn-en').classList.toggle('on',l==='en');
+  // Sync all lang buttons (header + auth overlay)
+  ['btn-he','auth-btn-he'].forEach(id=>{const el=g(id);if(el)el.classList.toggle('on',l==='he');});
+  ['btn-en','auth-btn-en'].forEach(id=>{const el=g(id);if(el)el.classList.toggle('on',l==='en');});
   const t=T[l];
   g('cname').textContent=t.cn;g('cst').textContent=t.ls;g('ibox').placeholder=t.ph;
+  // Auth overlay texts
   g('a-tag').textContent=t.atag;g('a-note').textContent=t.anote;
   g('ain-e').placeholder=t.emailPh;g('ain-p').placeholder=t.pwPh;
+  g('a-title').textContent=l==='he'?'מה המייל שלך? 👋':'What\'s your email? 👋';
+  g('abtxt').textContent=t.btnNew;
   // Footer
   g('footer-terms').textContent=l==='he'?'תנאי שימוש':'Terms of Use';
   g('footer-privacy').textContent=l==='he'?'מדיניות פרטיות':'Privacy Policy';
@@ -746,11 +763,10 @@ async function doVision(msg){
     track('vision_complete');
     await wait(400);showVC();await wait(800);
     if(A.user||!sb){
-      // Already authenticated or demo mode → go straight to coaching
-      A.stage='registered';updateBadge();await saveData();
-      await sayC(t.readyMsg(A.userName,A.gender),t.statusC,v=>sendDirect(v),1000);
+      // Already authenticated or demo mode → go to schedule setup
+      A.stage='schedule';updateBadge();await saveData();
+      await doScheduleSetup();
     }else{
-      // Not logged in → ask for email
       await say(t.emailPrompt(A.userName,A.gender),1000);
       A.stage='awaiting_email';updateBadge();
     }
@@ -775,10 +791,9 @@ async function doAwaitingEmail(msg){
         :`📬 We sent a confirmation email to ${msg}.\nClick the link to sign in and continue.`,800);
     }
   }
-  A.stage='registered';updateBadge();await saveData();
-  track('email_collected');
+  A.stage='schedule';updateBadge();await saveData();
   await wait(600);
-  await sayC(t.readyMsg(A.userName,A.gender),t.statusC,v=>sendDirect(v),1000);
+  await doScheduleSetup();
 }
 
 /* ══ COACHING FLOW (main loop) ══ */
@@ -826,6 +841,240 @@ async function doCoaching(msg){
   await aiSay(msg);
 }
 
+/* ══ 11 SESSIONS PLAN ══ */
+const SESSION_PLAN = {
+  he: [
+    { num:1,  title:'כלים לקבלת החלטות, בניית מטרות ולמה + חזון',        icon:'🎯' },
+    { num:2,  title:'אמונות מגבילות',                                      icon:'🔓' },
+    { num:3,  title:'איך לבחור בן/בת זוג נכון/ה ואיפה נמצא/ת',            icon:'🔍' },
+    { num:4,  title:'פידבק + בניית תוכנית פרויקט ליצירת זוגיות',           icon:'📋' },
+    { num:5,  title:'כלים מתקדמים להתמודדות עם כישלון',                    icon:'💪' },
+    { num:6,  title:'יציאה מהשרדות',                                       icon:'🦋' },
+    { num:7,  title:'פתיחת שפע זוגי',                                      icon:'✨' },
+    { num:8,  title:'הכנות אחרונות לשלב הליווי',                           icon:'🚀' },
+    { num:9,  title:'ליווי 1',                                              icon:'🌹' },
+    { num:10, title:'ליווי 2',                                              icon:'🌹' },
+    { num:11, title:'ליווי 3',                                              icon:'🌹' },
+  ],
+  en: [
+    { num:1,  title:'Decision tools, building goals & vision',              icon:'🎯' },
+    { num:2,  title:'Limiting beliefs',                                     icon:'🔓' },
+    { num:3,  title:'How to choose the right partner & where to find them', icon:'🔍' },
+    { num:4,  title:'Feedback + building a relationship project plan',       icon:'📋' },
+    { num:5,  title:'Advanced tools for dealing with failure',               icon:'💪' },
+    { num:6,  title:'Getting out of survival mode',                         icon:'🦋' },
+    { num:7,  title:'Opening relationship abundance',                       icon:'✨' },
+    { num:8,  title:'Final preparations for coaching phase',                icon:'🚀' },
+    { num:9,  title:'Coaching 1',                                           icon:'🌹' },
+    { num:10, title:'Coaching 2',                                           icon:'🌹' },
+    { num:11, title:'Coaching 3',                                           icon:'🌹' },
+  ]
+};
+
+/* ── Session Progress Card ── */
+function showSessionCard(sessionNum) {
+  const plan = SESSION_PLAN[A.lang];
+  const current = plan.find(s=>s.num===sessionNum) || plan[0];
+  const uid = Date.now();
+  const card = document.createElement('div');
+  card.style.cssText = 'background:linear-gradient(135deg,#1A0808,#0F0505);border:1px solid rgba(232,35,42,0.25);border-radius:16px;padding:16px;max-width:380px;width:100%;animation:pop .4s ease both';
+
+  const dots = plan.map(s => `<span style="width:${s.num<=sessionNum?'20px':'8px'};height:8px;border-radius:4px;background:${s.num===sessionNum?'#E8232A':s.num<sessionNum?'rgba(232,35,42,0.5)':'rgba(255,255,255,0.1)'};transition:all .3s;display:inline-block;margin:0 2px"></span>`).join('');
+
+  const isHe = A.lang === 'he';
+  card.innerHTML = `
+    <div style="font-family:'Rubik',sans-serif;font-size:13px;color:#E8232A;font-weight:700;margin-bottom:8px">${isHe?`פגישה ${sessionNum} מתוך 11`:`Session ${sessionNum} of 11`}</div>
+    <div style="font-size:20px;margin-bottom:4px">${current.icon}</div>
+    <div style="font-family:'Rubik',sans-serif;font-size:15px;font-weight:700;color:white;margin-bottom:12px">${current.title}</div>
+    <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px">${dots}</div>
+    <div style="font-size:11px;color:#7A6B58">${Math.round(((sessionNum-1)/11)*100)}% ${isHe?'הושלם':'complete'}</div>`;
+  g('chat').appendChild(card);
+  scroll();
+}
+
+/* ── Schedule Setup (after vision/email) ── */
+async function doScheduleSetup() {
+  const isHe = A.lang === 'he';
+  const n = A.userName;
+  const g2 = A.gender;
+
+  await say(isHe
+    ? `${n}, מעכשיו מתחיל מסלול האימון שלך! 🎰\n\nהמסלול כולל **11 פגישות** עם לוטו המאמן:\n• פגישות 1-8: כלים, תובנות ובניית הבסיס\n• פגישות 9-11: ליווי צמוד בשטח\n\nכמה פגישות בשבוע ${g2==='m'?'אתה':'את'} רוצה?`
+    : `${n}, your coaching journey starts now! 🎰\n\nThe program includes **11 sessions** with Loto:\n• Sessions 1-8: Tools, insights & building your foundation\n• Sessions 9-11: Hands-on coaching\n\nHow many sessions per week would you like?`
+  , 1200);
+
+  addChips(
+    isHe ? ['פעם בשבוע','פעמיים בשבוע','3 פעמים בשבוע'] : ['Once a week','Twice a week','3 times a week'],
+    async (v) => {
+      await addMsg(v, 'user');
+      const num = v.includes('פעמיים')||v.includes('Twice') ? 2 : v.includes('3') ? 3 : 1;
+      A.data.sessionsPerWeek = num;
+      A.data.currentSession = 1;
+      A.stage = 'session';
+      updateBadge();
+
+      // Save schedule to Supabase
+      if (sb && A.user && A.email) {
+        try {
+          await sb.from('schedules').upsert({
+            user_id: A.user.id,
+            sessions_per_week: num,
+            email: A.email,
+            active: true
+          }, { onConflict: 'user_id' });
+        } catch(e) {}
+      }
+
+      track('schedule_set', { sessions_per_week: num });
+      await saveData();
+      await wait(400);
+      await startSession(1);
+    }
+  );
+}
+
+/* ── Start a Session ── */
+async function startSession(num) {
+  const plan = SESSION_PLAN[A.lang];
+  const session = plan.find(s=>s.num===num);
+  if (!session) return;
+  const isHe = A.lang === 'he';
+  const g2 = A.gender;
+
+  A.data.currentSession = num;
+  A.data.step = { sessionPhase: 'intro', sessionNum: num };
+  updateBadge();
+
+  // Show progress card
+  showSessionCard(num);
+  await wait(400);
+
+  // Session-specific opening
+  const greet = g2==='f' ? 'ברוכה' : 'ברוך';
+  const openings = isHe ? {
+    1: `${A.userName}, ${greet} לפגישה הראשונה שלנו! 🎯\n\nנתחיל עם השאלה הכי חשובה:\n${g2==='m'?'מה אתה רוצה להשיג':'מה את רוצה להשיג'} מתהליך האימון הזה? תהיה/י ספציפי/ת.`,
+    2: `פגישה 2 – אמונות מגבילות 🔓\n\nיש לנו כולנו אמונות שעוצרות אותנו מבלי שנשים לב.\n${g2==='m'?'מה אתה מאמין':'מה את מאמינה'} לגבי עצמך בנושא זוגיות שאולי מעכב אותך?`,
+    3: `פגישה 3 – לבחור נכון 🔍\n\nבסוף הפגישה הזו ${g2==='m'?'תדע':'תדעי'} בדיוק מה ${g2==='m'?'אתה מחפש':'את מחפשת'} ואיפה למצוא את זה.\n\nשאלה ראשונה: אם ${g2==='m'?'היית':'היית'} צריכ/ה לתאר את הפרטנר/ית האידיאלי/ת ב-3 מילים – מה הן?`,
+    4: `פגישה 4 – בניית תוכנית 📋\n\nפידבק קודם כל: מה הכי בולט ${g2==='m'?'לך':'לך'} מהפגישות עד עכשיו?\nמה ${g2==='m'?'השתנה':'השתנה'} בחשיבה שלך?`,
+    5: `פגישה 5 – להתמודד עם כישלון 💪\n\nכשלון בדייטינג הוא חלק בלתי נפרד מהתהליך.\n${g2==='m'?'ספר לי':'ספרי לי'} על דייט או היכרות שלא הצליח/ה – מה ${g2==='m'?'למדת':'למדת'} ממנה?`,
+    6: `פגישה 6 – לצאת מהשרדות 🦋\n\n"מצב הישרדות" בזוגיות זה כשאנחנו יוצאים לדייטים מתוך פחד ולא מתוך שפע.\n\n${g2==='m'?'האם אתה מרגיש':'האם את מרגישה'} שאת/ה פועל/ת מתוך פחד או מתוך בחירה? תסביר/י.`,
+    7: `פגישה 7 – שפע זוגי ✨\n\nהיום נדבר על גישת שפע לעומת גישת מחסור בזוגיות.\n\n${g2==='m'?'תחשוב':'תחשבי'} על שלושה דברים טובים שקרו לך לאחרונה בתחום הזוגיות – גם הכי קטן.`,
+    8: `פגישה 8 – הכנות אחרונות 🚀\n\nלפני שנעבור לשלב הליווי הצמוד – בואו נסכם.\n\nמה ${g2==='m'?'אתה מרגיש':'את מרגישה'} שהשתנה בך מאז שהתחלנו?`,
+    9: `פגישה 9 – ליווי ראשון 🌹\n\nאנחנו עוברים לשלב הליווי! כאן אני ${g2==='m'?'מלווה אותך':'מלווה אותך'} בזמן אמת.\n\nאיך הדייטינג שלך נראה עכשיו? מה קורה בשטח?`,
+    10: `פגישה 10 – ליווי שני 🌹\n\nחזרת! מה קרה מאז הפגישה האחרונה? ספר/י לי הכל.`,
+    11: `פגישה 11 – ליווי שלישי 🌹\n\nהפגישה האחרונה שלנו במסלול. לפני הכל – מה השיא הגדול ביותר שלך מכל המסלול הזה?`,
+  } : {
+    1: `${A.userName}, welcome to your first session! 🎯\n\nLet's start with the most important question:\nWhat do you want to achieve from this coaching program? Be specific.`,
+    2: `Session 2 – Limiting Beliefs 🔓\n\nWe all have beliefs that hold us back without realizing it.\nWhat do you believe about yourself in the relationship area that might be holding you back?`,
+    3: `Session 3 – Choosing Right 🔍\n\nBy the end of this session you'll know exactly what you're looking for and where to find it.\n\nFirst question: If you had to describe your ideal partner in 3 words – what would they be?`,
+    4: `Session 4 – Building Your Plan 📋\n\nFeedback first: What stands out most from our sessions so far?\nWhat has changed in your thinking?`,
+    5: `Session 5 – Dealing With Failure 💪\n\nFailure in dating is an unavoidable part of the process.\nTell me about a date or connection that didn't work out – what did you learn from it?`,
+    6: `Session 6 – Out of Survival Mode 🦋\n\n"Survival mode" in dating is when we date from fear rather than abundance.\n\nDo you feel you're acting from fear or from choice? Explain.`,
+    7: `Session 7 – Relationship Abundance ✨\n\nToday we talk about abundance vs scarcity in relationships.\n\nThink of three positive things that happened to you recently in the dating area – even the smallest ones.`,
+    8: `Session 8 – Final Preparations 🚀\n\nBefore we move to the hands-on coaching phase – let's summarize.\n\nWhat do you feel has changed in you since we started?`,
+    9: `Session 9 – First Coaching 🌹\n\nWe're moving to the coaching phase! I'm with you in real time now.\n\nHow does your dating life look right now? What's happening?`,
+    10: `Session 10 – Second Coaching 🌹\n\nYou're back! What happened since our last session? Tell me everything.`,
+    11: `Session 11 – Third Coaching 🌹\n\nOur last session in the program. First – what's your biggest win from this entire journey?`,
+  };
+
+  await say(openings[num] || openings[1], 1000);
+
+  // Save session start to Supabase
+  if (sb && A.user) {
+    try {
+      await sb.from('sessions').upsert({
+        user_id: A.user.id,
+        session_num: num,
+        status: 'in_progress',
+        started_at: new Date().toISOString()
+      }, { onConflict: 'user_id,session_num' });
+    } catch(e) {}
+  }
+  track('session_start', { session: num });
+}
+
+/* ── Session Conversation Handler ── */
+async function doSession(msg) {
+  const step = A.data.step || {};
+  const num = step.sessionNum || A.data.currentSession || 1;
+  const isHe = A.lang === 'he';
+  const g2 = A.gender;
+
+  // Route to AI for session conversation
+  await aiSay(msg);
+
+  // After 3+ exchanges, offer to end session
+  const exchanges = A.history.filter(m=>m.role==='user').length;
+  const sessionMsgs = exchanges - (A.data.sessionStartExchange||0);
+  if (sessionMsgs >= 4 && !step.offerEnd) {
+    step.offerEnd = true;
+    await wait(500);
+    addChips(
+      isHe ? ['סיימתי את הפגישה ✓','עוד קצת...'] : ['End session ✓','A bit more...'],
+      async (v) => {
+        await addMsg(v, 'user');
+        if (v.includes('סיימ') || v.includes('End')) {
+          await endSession(num);
+        } else {
+          step.offerEnd = false;
+        }
+      }
+    );
+  }
+}
+
+/* ── End Session ── */
+async function endSession(num) {
+  const isHe = A.lang === 'he';
+  const plan = SESSION_PLAN[A.lang];
+  const next = plan.find(s=>s.num===num+1);
+
+  // Mark done in Supabase
+  if (sb && A.user) {
+    try {
+      await sb.from('sessions').upsert({
+        user_id: A.user.id, session_num: num,
+        status: 'done', completed_at: new Date().toISOString()
+      }, { onConflict: 'user_id,session_num' });
+    } catch(e) {}
+  }
+  track('session_complete', { session: num });
+
+  if (num >= 11) {
+    // Program complete!
+    await say(isHe
+      ? `🎉 כל הכבוד ${A.userName}! סיימת את כל 11 הפגישות!\n\nזה לא סוף – זה התחלה. אני כאן בשבילך בכל פעם שתרצה/י לדבר.\n\n${A.gender==='m'?'אתה':'את'} עשית עבודה אמיתית. גאה בך! 💛`
+      : `🎉 Congratulations ${A.userName}! You completed all 11 sessions!\n\nThis isn't the end – it's a beginning. I'm here for you whenever you want to talk.\n\nYou did real work. I'm proud of you! 💛`
+    , 1200);
+    A.stage = 'graduate';
+    await saveData();
+    return;
+  }
+
+  // Send reminder email for next session
+  if (A.email && next) {
+    try {
+      await fetch('/api/email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: A.email, name: A.userName,
+          sessionNum: next.num, sessionTitle: next.title, lang: A.lang
+        })
+      });
+    } catch(e) {}
+  }
+
+  await say(isHe
+    ? `מעולה! פגישה ${num} הושלמה ✅\n\n${A.gender==='m'?'יקבל':'תקבל'} תזכורת במייל לפגישה ${num+1}: **${next?.title}**\n\nנתראה בקרוב! 🎰`
+    : `Great! Session ${num} complete ✅\n\nYou'll get a reminder email for session ${num+1}: **${next?.title}**\n\nSee you soon! 🎰`
+  , 1000);
+
+  A.data.currentSession = num + 1;
+  A.data.step = {};
+  await saveData();
+}
+
 /* ══ STATUS CHECK (returning user) ══ */
 async function doStatus(msg){
   A.data.step={};
@@ -833,6 +1082,7 @@ async function doStatus(msg){
   track('status_update',{status:msg,visit:A.visitCount,gender:A.gender});
   await doCoaching(msg);
 }
+
 
 /* ══ REGISTERED ROUTER ══ */
 async function doRegistered(msg){
@@ -872,8 +1122,11 @@ async function route(msg){
     case 'onboarding':     await doOnboarding(msg);break;
     case 'vision':         await doVision(msg);break;
     case 'awaiting_email': await doAwaitingEmail(msg);break;
+    case 'schedule':       await doScheduleSetup();break;
+    case 'session':        await doSession(msg);break;
     case 'registered':
     case 'coaching':       await doRegistered(msg);break;
+    case 'graduate':       await aiSay(msg);break;
     default:               await aiSay(msg);
   }
   await saveData();
@@ -895,7 +1148,6 @@ async function startApp(isReturning){
   track('session_start',{returning:isReturning,visit:A.visitCount,gender:A.gender,stage:A.stage});
 
   if(isReturning&&A.stage&&A.stage!=='start'){
-    // Returning user – restore last few messages
     A.visitCount++;
     const name=A.userName;updateBadge();
     const last=A.history.slice(-4);
@@ -908,14 +1160,35 @@ async function startApp(isReturning){
     });
     scroll();
     const t=T[A.lang];
+    const isHe=A.lang==='he';
     await wait(400);
-    A.data.step=A.data.step||{};
-    A.data.step.waitingForReturn=true;
-    await sayC(
-      t.wbMsg(name,A.gender||'m')+'\n'+t.statusQ,
-      t.statusC,
-      v=>sendDirect(v),800
-    );
+
+    if(A.stage==='session'||A.stage==='graduate'){
+      // Resuming a session
+      const curSes=A.data.currentSession||1;
+      const plan=SESSION_PLAN[A.lang];
+      const ses=plan.find(s=>s.num===curSes);
+      if(A.stage==='graduate'){
+        await say(isHe
+          ?`ברוכ${A.gender==='f'?'ה':''} השב${A.gender==='f'?'ה':''} ${name}! 🎰\nסיימת את כל המסלול. אני כאן לכל שאלה.`
+          :`Welcome back ${name}! 🎰\nYou completed the program. I'm here for any question.`,800);
+      }else{
+        await say(isHe
+          ?`ברוכ${A.gender==='f'?'ה':''} השב${A.gender==='f'?'ה':''} ${name}! 🎰\nממשיכים מפגישה ${curSes}: **${ses?.title||''}**`
+          :`Welcome back ${name}! 🎰\nContinuing with session ${curSes}: **${ses?.title||''}**`,800);
+        A.data.step=A.data.step||{};
+        A.data.step.sessionNum=curSes;
+        A.data.sessionStartExchange=A.history.filter(m=>m.role==='user').length;
+      }
+    }else{
+      A.data.step=A.data.step||{};
+      A.data.step.waitingForReturn=true;
+      await sayC(
+        t.wbMsg(name,A.gender||'m')+'\n'+t.statusQ,
+        t.statusC,
+        v=>sendDirect(v),800
+      );
+    }
   }else{
     // New user
     A.stage='onboarding';A.visitCount=1;
