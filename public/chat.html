@@ -555,6 +555,7 @@ let authPhase='check';
 
 function emailAuth(){
   const emailEl=document.getElementById('ain-e');
+  const pwEl=document.getElementById('ain-p');
   const btnEl=document.getElementById('abtn');
   const btxtEl=document.getElementById('abtxt');
   if(!emailEl||!btnEl)return;
@@ -566,7 +567,6 @@ function emailAuth(){
     if(e){e.textContent=A.lang==='he'?'נא להכניס אימייל':'Please enter your email';e.style.display='block';setTimeout(()=>e.style.display='none',3000);}
     emailEl.focus();return;
   }
-
   if(!val.includes('@')){
     const e=document.getElementById('a-err');
     if(e){e.textContent=A.lang==='he'?'אימייל לא תקין':'Invalid email';e.style.display='block';setTimeout(()=>e.style.display='none',3000);}
@@ -574,12 +574,63 @@ function emailAuth(){
   }
 
   A.email=val;
-  // Don't set userName yet – will be asked in chat
-  document.getElementById('aov').style.display='none';
-  const ubdg=document.getElementById('ubdg');
-  const uname=document.getElementById('uname');
-  if(ubdg&&uname){ubdg.style.display='flex';uname.textContent=val.split('@')[0];}
-  startApp(false);
+
+  // No Supabase → demo mode, skip auth
+  if(!sb){
+    A.userName=val.split('@')[0];
+    document.getElementById('aov').style.display='none';
+    const ubdg=document.getElementById('ubdg');
+    const uname=document.getElementById('uname');
+    if(ubdg&&uname){ubdg.style.display='flex';uname.textContent=A.userName;}
+    startApp(false);
+    return;
+  }
+
+  // Supabase mode – sign in or sign up
+  btnEl.disabled=true;
+  if(btxtEl)btxtEl.textContent=A.lang==='he'?'טוען...':'Loading...';
+
+  const pw=pwEl?pwEl.value:'';
+
+  if(authPhase==='check'){
+    // First try sign in
+    sb.auth.signInWithPassword({email:val,password:pw||'__no_pw__'}).then(({data,error})=>{
+      if(!error&&data?.user){
+        // Signed in – onAuthStateChange will handle the rest
+        return;
+      }
+      // Not found or wrong pw → show password field for registration
+      if(pwEl)pwEl.style.display='block';
+      if(pwEl)pwEl.focus();
+      authPhase='register';
+      btnEl.disabled=false;
+      if(btxtEl)btxtEl.textContent=A.lang==='he'?'הרשמה והמשך':'Register & Continue';
+    });
+    return;
+  }
+
+  if(authPhase==='register'){
+    if(!pw||pw.length<6){
+      const e=document.getElementById('a-err');
+      if(e){e.textContent=A.lang==='he'?'סיסמא קצרה מדי (6+ תווים)':'Password too short (6+ chars)';e.style.display='block';setTimeout(()=>e.style.display='none',3000);}
+      btnEl.disabled=false;return;
+    }
+    // Try sign up
+    sb.auth.signUp({email:val,password:pw}).then(async({data,error})=>{
+      if(error){
+        // Already exists → try sign in
+        sb.auth.signInWithPassword({email:val,password:pw}).then(({data:d2,error:e2})=>{
+          if(e2){
+            const e=document.getElementById('a-err');
+            if(e){e.textContent=A.lang==='he'?'אימייל או סיסמא שגויים':'Wrong email or password';e.style.display='block';setTimeout(()=>e.style.display='none',3000);}
+            btnEl.disabled=false;if(btxtEl)btxtEl.textContent=A.lang==='he'?'הרשמה והמשך':'Register & Continue';
+          }
+          // onAuthStateChange handles success
+        });
+      }
+      // onAuthStateChange handles success
+    });
+  }
 }
 
 function aerr(m){const e=g('a-err');e.textContent=m;e.style.display='block';setTimeout(()=>e.style.display='none',4000);}
