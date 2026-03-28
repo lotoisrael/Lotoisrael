@@ -655,10 +655,16 @@ async function signOut(){
 /* ══ MODALS ══ */
 function openModal(id){
   track('modal_open',{modal:id});
-  document.getElementById('modal-'+id).classList.add('open');
+  const cleanId=id.replace(/^modal-/,'');
+  const el=document.getElementById('modal-'+cleanId);
+  if(el)el.classList.add('open');
 }
-function closeModal(id){document.getElementById('modal-'+id).classList.remove('open');}
-function closeModalOutside(e,id){if(e.target===document.getElementById(id))closeModal(id);}
+function closeModal(id){
+  const cleanId=id.replace(/^modal-/,'');
+  const el=document.getElementById('modal-'+cleanId);
+  if(el)el.classList.remove('open');
+}
+function closeModalOutside(e,id){if(e.target===e.currentTarget)closeModal(id);}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){['terms','privacy','contact'].forEach(closeModal);}});
 
 /* ══ LANG ══ */
@@ -676,7 +682,7 @@ function setLang(l){
   g('ain-e').placeholder=t.emailPh;g('ain-p').placeholder=t.pwPh;
   g('a-title').textContent=l==='he'?'מה המייל שלך? 👋':'What\'s your email? 👋';
   g('abtxt').textContent=t.btnNew;
-  // Footer
+  // Footer links
   g('footer-terms').textContent=l==='he'?'תנאי שימוש':'Terms of Use';
   g('footer-privacy').textContent=l==='he'?'מדיניות פרטיות':'Privacy Policy';
   g('footer-contact').textContent=l==='he'?'צור קשר':'Contact';
@@ -684,6 +690,27 @@ function setLang(l){
   g('terms-title').textContent=l==='he'?'תנאי שימוש':'Terms of Use';
   g('privacy-title').textContent=l==='he'?'מדיניות פרטיות':'Privacy Policy';
   g('contact-title').textContent=l==='he'?'צור קשר':'Contact Us';
+  // Terms content
+  g('terms-h1').textContent=l==='he'?'1. קבלת התנאים':'1. Acceptance of Terms';
+  g('terms-p1').textContent=l==='he'?'השימוש באתר LotoIsrael מהווה הסכמה לתנאי השימוש המפורטים להלן.':'Use of LotoIsrael constitutes acceptance of these Terms of Use.';
+  g('terms-h2').textContent=l==='he'?'2. תיאור השירות':'2. Service Description';
+  g('terms-p2').textContent=l==='he'?'LotoIsrael מציעה שירות מאמן דייטינג וזוגיות מבוסס בינה מלאכותית. השירות אינו תחליף לטיפול פסיכולוגי מקצועי.':'LotoIsrael offers an AI-based dating and relationship coaching service. This service is not a substitute for professional psychological treatment.';
+  g('terms-h3').textContent=l==='he'?'3. גיל מינימלי':'3. Minimum Age';
+  g('terms-p3').textContent=l==='he'?'השירות מיועד לבני 18 ומעלה בלבד.':'The service is intended for users aged 18 and above only.';
+  g('terms-h4').textContent=l==='he'?'4. אחריות':'4. Liability';
+  g('terms-p4').textContent=l==='he'?'LotoIsrael אינה אחראית לתוצאות הנובעות מהשימוש בשירות.':'LotoIsrael is not responsible for outcomes resulting from use of the service.';
+  g('terms-h5').textContent=l==='he'?'5. יצירת קשר':'5. Contact';
+  // Privacy content
+  g('privacy-h1').textContent=l==='he'?'מה אנו אוספים?':'What do we collect?';
+  g('privacy-p1').textContent=l==='he'?'שם, מין, תשובות לשאלון, חזון הזוגיות, והיסטוריית שיחות.':'Name, gender, questionnaire answers, relationship vision, and chat history.';
+  g('privacy-h2').textContent=l==='he'?'שימוש בנתונים':'Data Usage';
+  g('privacy-p2').textContent=l==='he'?'הנתונים משמשים לצורך מתן השירות בלבד. אנו לא מוכרים נתונים לצדדים שלישיים.':'Data is used solely to provide the service. We do not sell data to third parties.';
+  g('privacy-h3').textContent=l==='he'?'אבטחה':'Security';
+  g('privacy-p3').textContent=l==='he'?'הנתונים מאוחסנים בצורה מוצפנת ב-Supabase.':'Data is stored encrypted in Supabase.';
+  g('privacy-h4').textContent=l==='he'?'זכות למחיקה':'Right to Deletion';
+  g('privacy-p4').innerHTML=l==='he'?'לבקשת מחיקת נתונים: <a href="mailto:Info@lotoisrael.com">Info@lotoisrael.com</a>':'To request data deletion: <a href="mailto:Info@lotoisrael.com">Info@lotoisrael.com</a>';
+  g('privacy-p5').textContent=l==='he'?'אנו משתמשים ב-Google Analytics לניתוח שימוש אנונימי.':'We use Google Analytics for anonymous usage analysis.';
+  // Contact content
   g('contact-sub').textContent=l==='he'?'אנחנו כאן בשבילך 🎰':'We\'re here for you 🎰';
   g('contact-p').textContent=l==='he'?'לכל שאלה, הצעה, או בקשה – נשמח לשמוע ממך.':'For any question, suggestion, or request – we\'d love to hear from you.';
   g('contact-note').textContent=l==='he'?'נחזור אליך תוך 24-48 שעות בימי עסקים.':'We\'ll get back to you within 24-48 business hours.';
@@ -1305,16 +1332,16 @@ init();
       <span class="modal-title" id="terms-title">תנאי שימוש</span>
       <button class="modal-close" onclick="closeModal('modal-terms')">✕</button>
     </div>
-    <div class="modal-body">
-      <h3>1. קבלת התנאים</h3>
-      <p>השימוש באתר LotoIsrael מהווה הסכמה לתנאי השימוש המפורטים להלן.</p>
-      <h3>2. תיאור השירות</h3>
-      <p>LotoIsrael מציעה שירות מאמן דייטינג וזוגיות מבוסס בינה מלאכותית. השירות אינו תחליף לטיפול פסיכולוגי מקצועי.</p>
-      <h3>3. גיל מינימלי</h3>
-      <p>השירות מיועד לבני 18 ומעלה בלבד.</p>
-      <h3>4. אחריות</h3>
-      <p>LotoIsrael אינה אחראית לתוצאות הנובעות מהשימוש בשירות.</p>
-      <h3>5. יצירת קשר</h3>
+    <div class="modal-body" id="terms-body">
+      <h3 id="terms-h1">1. קבלת התנאים</h3>
+      <p id="terms-p1">השימוש באתר LotoIsrael מהווה הסכמה לתנאי השימוש המפורטים להלן.</p>
+      <h3 id="terms-h2">2. תיאור השירות</h3>
+      <p id="terms-p2">LotoIsrael מציעה שירות מאמן דייטינג וזוגיות מבוסס בינה מלאכותית. השירות אינו תחליף לטיפול פסיכולוגי מקצועי.</p>
+      <h3 id="terms-h3">3. גיל מינימלי</h3>
+      <p id="terms-p3">השירות מיועד לבני 18 ומעלה בלבד.</p>
+      <h3 id="terms-h4">4. אחריות</h3>
+      <p id="terms-p4">LotoIsrael אינה אחראית לתוצאות הנובעות מהשימוש בשירות.</p>
+      <h3 id="terms-h5">5. יצירת קשר</h3>
       <p><a href="mailto:Info@lotoisrael.com">Info@lotoisrael.com</a></p>
     </div>
   </div>
@@ -1328,16 +1355,16 @@ init();
       <button class="modal-close" onclick="closeModal('modal-privacy')">✕</button>
     </div>
     <div class="modal-body">
-      <h3>מה אנו אוספים?</h3>
-      <p>שם, מין, תשובות לשאלון, חזון הזוגיות, והיסטוריית שיחות.</p>
-      <h3>שימוש בנתונים</h3>
-      <p>הנתונים משמשים לצורך מתן השירות בלבד. אנו לא מוכרים נתונים לצדדים שלישיים.</p>
-      <h3>אבטחה</h3>
-      <p>הנתונים מאוחסנים בצורה מוצפנת ב-Supabase.</p>
-      <h3>זכות למחיקה</h3>
-      <p>לבקשת מחיקת נתונים: <a href="mailto:Info@lotoisrael.com">Info@lotoisrael.com</a></p>
+      <h3 id="privacy-h1">מה אנו אוספים?</h3>
+      <p id="privacy-p1">שם, מין, תשובות לשאלון, חזון הזוגיות, והיסטוריית שיחות.</p>
+      <h3 id="privacy-h2">שימוש בנתונים</h3>
+      <p id="privacy-p2">הנתונים משמשים לצורך מתן השירות בלבד. אנו לא מוכרים נתונים לצדדים שלישיים.</p>
+      <h3 id="privacy-h3">אבטחה</h3>
+      <p id="privacy-p3">הנתונים מאוחסנים בצורה מוצפנת ב-Supabase.</p>
+      <h3 id="privacy-h4">זכות למחיקה</h3>
+      <p id="privacy-p4">לבקשת מחיקת נתונים: <a href="mailto:Info@lotoisrael.com">Info@lotoisrael.com</a></p>
       <h3>Google Analytics</h3>
-      <p>אנו משתמשים ב-Google Analytics לניתוח שימוש אנונימי.</p>
+      <p id="privacy-p5">אנו משתמשים ב-Google Analytics לניתוח שימוש אנונימי.</p>
     </div>
   </div>
 </div>
