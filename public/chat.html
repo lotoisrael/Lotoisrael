@@ -509,14 +509,18 @@ let sb=null;
 async function initSB(){
   try{
     const ctrl=new AbortController();
-    const timeout=setTimeout(()=>ctrl.abort(),3000); // 3s timeout
+    const timeout=setTimeout(()=>ctrl.abort(),3000);
     const r=await fetch('/api/env',{signal:ctrl.signal});
     clearTimeout(timeout);
     const{supabaseUrl,supabaseKey}=await r.json();
-    if(supabaseUrl?.includes('supabase')&&supabaseKey)
+    if(supabaseUrl?.includes('supabase')&&supabaseKey){
       sb=supabase.createClient(supabaseUrl,supabaseKey);
+      window._dbg='✅ SB OK: '+supabaseUrl.slice(8,24)+'...';
+    }else{
+      window._dbg='⚠️ Env empty – URL:'+(supabaseUrl||'none');
+    }
   }catch(e){
-    console.log('Supabase not configured – demo mode');
+    window._dbg='❌ initSB failed: '+e.message;
     sb=null;
   }
 }
@@ -1313,7 +1317,17 @@ async function init(){
   // Otherwise auth overlay stays
 }
 
-init();
+init().then(()=>{
+  // DEBUG – remove after testing
+  setTimeout(()=>{
+    const area=document.getElementById('chat');
+    if(!area)return;
+    const d=document.createElement('div');
+    d.style.cssText='background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:8px 12px;font-size:11px;color:#aaa;margin:4px 0;font-family:monospace';
+    d.innerHTML='🔧 Debug:<br>'+(window._dbg||'no debug info')+'<br>sb='+(!!window.sb)+'  user='+(window.A?.user?.id?.slice(0,8)||'null');
+    area.appendChild(d);
+  },2000);
+});
 </script>
 
 <!-- FOOTER -->
