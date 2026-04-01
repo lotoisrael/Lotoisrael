@@ -1170,17 +1170,18 @@ async function startSession(num) {
 
   await say(openings[num] || openings[1], 1000);
 
-  // Save session start to Supabase
-  if (sb && A.user) {
-    try {
-      await sb.from('sessions').upsert({
-        user_id: A.user.id,
-        session_num: num,
-        status: 'in_progress',
-        started_at: new Date().toISOString()
-      }, { onConflict: 'user_id,session_num' });
-    } catch(e) {}
-  }
+  // Show "end session" chip immediately so user can always finish
+  const isH = A.lang === 'he';
+  A.data.sessionStartExchange = A.history.filter(m=>m.role==='user').length;
+  await wait(300);
+  addChips(
+    isH ? ['סיים שיעור ✓'] : ['End session ✓'],
+    async (v) => {
+      await addMsg(v, 'user');
+      await endSession(num);
+    }
+  );
+
   track('session_start', { session: num });
 }
 
@@ -1194,14 +1195,14 @@ async function doSession(msg) {
   // Route to AI for session conversation
   await aiSay(msg);
 
-  // After 3+ exchanges, offer to end session
+  // After 2+ exchanges, offer to end session
   const exchanges = A.history.filter(m=>m.role==='user').length;
   const sessionMsgs = exchanges - (A.data.sessionStartExchange||0);
-  if (sessionMsgs >= 4 && !step.offerEnd) {
+  if (sessionMsgs >= 2 && !step.offerEnd) {
     step.offerEnd = true;
-    await wait(500);
+    await wait(400);
     addChips(
-      isHe ? ['סיימתי את הפגישה ✓','עוד קצת...'] : ['End session ✓','A bit more...'],
+      isHe ? ['סיימתי את השיעור ✓','עוד קצת...'] : ['End session ✓','A bit more...'],
       async (v) => {
         await addMsg(v, 'user');
         if (v.includes('סיימ') || v.includes('End')) {
