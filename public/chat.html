@@ -230,7 +230,31 @@ body{font-family:'Assistant',sans-serif;background:var(--bg);color:var(--cream);
 .abtn{width:100%;background:var(--red);color:white;border:none;border-radius:9px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;box-shadow:0 3px 12px rgba(232,35,42,.3);margin-bottom:8px}
 .abtn:hover{background:var(--red2);transform:translateY(-2px)}
 .abtn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-/* ── FOOTER ── */
+/* ── SESSION BUTTONS GRID ── */
+.sessions-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  max-width:420px;width:100%;padding:4px 0;
+}
+.sess-btn{
+  background:var(--lifted);border:1px solid var(--border);
+  border-radius:12px;padding:12px 10px;
+  display:flex;flex-direction:column;gap:4px;
+  cursor:pointer;transition:all .2s;text-align:start;
+  font-family:inherit;
+}
+.sess-btn.unlocked{border-color:rgba(232,35,42,0.35);cursor:pointer;}
+.sess-btn.unlocked:hover{background:rgba(232,35,42,0.08);transform:translateY(-2px);}
+.sess-btn.completed{border-color:rgba(34,197,94,0.4);background:rgba(34,197,94,0.05);}
+.sess-btn.locked{opacity:0.38;cursor:not-allowed;}
+.sess-btn-num{font-size:10px;font-weight:700;color:var(--dim);}
+.sess-btn.unlocked .sess-btn-num{color:var(--red);}
+.sess-btn.completed .sess-btn-num{color:var(--green);}
+.sess-btn-icon{font-size:18px;}
+.sess-btn-title{font-size:11px;color:var(--warm);line-height:1.4;font-weight:600;}
+.sess-btn-status{font-size:10px;margin-top:2px;}
+.sess-btn.completed .sess-btn-status{color:var(--green);}
+.sess-btn.unlocked .sess-btn-status{color:var(--red);}
+.sess-btn.locked .sess-btn-status{color:var(--dim2);}
 .footer{
   display:flex;align-items:center;justify-content:center;gap:16px;
   padding:8px 16px;
@@ -339,13 +363,51 @@ const A={
   user:null, userName:'', email:'',
   history:[], busy:false, visitCount:0,
   data:{
-    answers:{},   // onboarding q0-q4
-    vision:{},    // vision goal/feel/change/fear/idealDate
-    match:null,   // current person name
-    dates:[],     // date history
-    step:{},      // current flow sub-step
+    answers:{}, vision:{}, match:null, dates:[],
+    step:{}, currentSession:1,
+    completedSessions:[], // [1,2,3...]
+    sessionsPerWeek:2,
   }
 };
+
+/* ══ localStorage ══ */
+function lsSave(){
+  try{
+    localStorage.setItem('loto_state', JSON.stringify({
+      stage:A.stage, gender:A.gender, userName:A.userName, email:A.email,
+      lang:A.lang, visitCount:A.visitCount, data:A.data,
+      history:A.history.slice(-30)
+    }));
+  }catch(e){}
+}
+function lsLoad(){
+  try{
+    const raw=localStorage.getItem('loto_state');
+    if(!raw)return false;
+    const s=JSON.parse(raw);
+    A.stage=s.stage||'start';
+    A.gender=s.gender||null;
+    A.userName=s.userName||'';
+    A.email=s.email||'';
+    A.lang=s.lang||'he';
+    A.visitCount=(s.visitCount||0)+1;
+    A.data=s.data||{answers:{},vision:{},match:null,dates:[],step:{},currentSession:1,completedSessions:[],sessionsPerWeek:2};
+    A.history=s.history||[];
+    return A.stage&&A.stage!=='start';
+  }catch(e){return false;}
+}
+async function saveData(){ lsSave(); trackAllData(); }
+async function loadData(){ return lsLoad(); }
+
+/* ── Add to Resend Contacts ── */
+function addToResendContacts(email, name) {
+  if (!email || !email.includes('@')) return;
+  fetch('/api/email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'add_contact', to: email, name: name || email.split('@')[0], lang: A.lang })
+  }).catch(() => {});
+}
 
 /* ══ MOTIVATION QUOTES (fallback if API unavailable) ══ */
 const QUOTES_HE=[
@@ -504,55 +566,28 @@ en:{
   rememberVision:'🌟 Don\'t forget your vision:',
 }};
 
-/* ══ SUPABASE ══ */
+/* ══ GA4 – שליחת כל הנתונים ══ */
+function trackAllData(){
+  try{
+    track('user_data',{
+      user_name: A.userName,
+      gender: A.gender,
+      stage: A.stage,
+      current_session: A.data.currentSession||1,
+      completed_sessions: (A.data.completedSessions||[]).length,
+      email: A.email||'',
+      lang: A.lang,
+      visit_count: A.visitCount,
+      comfort_score: A.data.answers?.q4||'',
+      vision_goal: (A.data.vision?.goal||'').slice(0,50),
+      sessions_per_week: A.data.sessionsPerWeek||2,
+    });
+  }catch(e){}
+}
+
+/* ══ SUPABASE – disabled, using localStorage ══ */
 let sb=null;
-async function initSB(){
-  try{
-    const ctrl=new AbortController();
-    const timeout=setTimeout(()=>ctrl.abort(),3000);
-    const r=await fetch('/api/env',{signal:ctrl.signal});
-    clearTimeout(timeout);
-    const{supabaseUrl,supabaseKey}=await r.json();
-    if(supabaseUrl?.includes('supabase')&&supabaseKey){
-      sb=supabase.createClient(supabaseUrl,supabaseKey);
-      window._dbg='✅ SB OK: '+supabaseUrl.slice(8,24)+'...';
-    }else{
-      window._dbg='⚠️ Env empty – URL:'+(supabaseUrl||'none');
-    }
-  }catch(e){
-    window._dbg='❌ initSB failed: '+e.message;
-    sb=null;
-  }
-}
-async function saveData(){
-  if(!sb||!A.user)return;
-  try{
-    await sb.from('user_data').upsert({
-      user_id:A.user.id,email:A.email,
-      stage:A.stage,gender:A.gender,name:A.userName,
-      data:A.data,history:A.history.slice(-50),
-      visit_count:A.visitCount,lang:A.lang,
-      updated_at:new Date().toISOString()
-    },{onConflict:'user_id'});
-  }catch(e){}
-}
-async function loadData(){
-  if(!sb||!A.user)return false;
-  try{
-    const{data}=await sb.from('user_data').select('*').eq('user_id',A.user.id).single();
-    if(data){
-      A.stage=data.stage||'start';
-      A.gender=data.gender||null;
-      A.userName=data.name||'';
-      A.data=data.data||{answers:{},vision:{},match:null,dates:[],step:{}};
-      A.history=data.history||[];
-      A.visitCount=(data.visit_count||0)+1;
-      A.lang=data.lang||A.lang;
-      return true;
-    }
-  }catch(e){}
-  return false;
-}
+async function initSB(){ sb=null; }
 
 /* ══ AUTH ══ */
 let authPhase='check';
@@ -578,6 +613,8 @@ function emailAuth(){
   }
 
   A.email=val;
+  // Add to Resend contacts for broadcast emails
+  addToResendContacts(val, A.userName);
 
   // No Supabase → demo mode, skip auth
   if(!sb){
@@ -841,40 +878,35 @@ async function doVision(msg){
     if(chips.length)await sayC(q,chips,v=>sendDirect(v));
     else await say(q);
   }else{
-    // Vision done → show card → ask email only if not already logged in
     track('vision_complete');
     await wait(400);showVC();await wait(800);
-    if(A.user||!sb){
-      // Already authenticated or demo mode → go to schedule setup
-      A.stage='schedule';updateBadge();await saveData();
-      await doScheduleSetup();
-    }else{
-      await say(t.emailPrompt(A.userName,A.gender),1000);
-      A.stage='awaiting_email';updateBadge();
-    }
+    // Ask for email (for reminders) then go to schedule
+    await say(A.lang==='he'
+      ?`מדהים ${A.userName}! 💛\nהחזון שלך שמור.\n\nמה האימייל שלך? נשלח לך תזכורות לשיעורים הבאים 📬\n(אפשר לדלג עם Enter ריק)`
+      :`Amazing ${A.userName}! 💛\nYour vision is saved.\n\nWhat's your email? We'll send you session reminders 📬\n(Press Enter to skip)`
+    ,1000);
+    A.stage='awaiting_email'; updateBadge();
   }
 }
 
 /* ══ EMAIL COLLECTION (after vision) ══ */
 async function doAwaitingEmail(msg){
-  const t=T[A.lang];
+  // Allow skipping
+  if(msg.trim()===''||msg.trim()==='-'){
+    A.stage='schedule'; updateBadge(); lsSave();
+    await doScheduleSetup(); return;
+  }
   if(!msg.includes('@')){
-    await say(A.lang==='he'?'נראה שזה לא אימייל תקין, נסה שוב 😊':'That doesn\'t look like a valid email, try again 😊',600);
+    await say(A.lang==='he'?'נראה שזה לא אימייל תקין, נסה שוב (או לחץ/י Enter לדלג) 😊':'That doesn\'t look like a valid email, try again (or Enter to skip) 😊',600);
     return;
   }
-  A.email=msg;
+  A.email=msg.trim();
   track('email_collected',{gender:A.gender});
-  // Register/login with this email
-  if(sb){
-    const{error}=await sb.auth.signInWithOtp({email:msg,options:{shouldCreateUser:true}});
-    if(!error){
-      await say(A.lang==='he'
-        ?`📬 שלחנו לך מייל אישור לכתובת ${msg}.\nלחץ/י על הקישור כדי להתחבר ולהמשיך.`
-        :`📬 We sent a confirmation email to ${msg}.\nClick the link to sign in and continue.`,800);
-    }
-  }
-  A.stage='schedule';updateBadge();await saveData();
-  await wait(600);
+  addToResendContacts(A.email, A.userName);
+  lsSave();
+  await say(A.lang==='he'?`מעולה! נשמר 📬`:`Got it! Saved 📬`,500);
+  A.stage='schedule'; updateBadge();
+  await wait(400);
   await doScheduleSetup();
 }
 
@@ -974,45 +1006,121 @@ function showSessionCard(sessionNum) {
   scroll();
 }
 
-/* ── Schedule Setup (after vision/email) ── */
-async function doScheduleSetup() {
-  const isHe = A.lang === 'he';
-  const n = A.userName;
-  const g2 = A.gender;
+/* ── Show Session Grid ── */
+async function showSessionGrid(){
+  const isHe=A.lang==='he';
+  const plan=SESSION_PLAN[A.lang];
+  const completed=A.data.completedSessions||[];
+  const current=A.data.currentSession||1;
 
   await say(isHe
-    ? `${n}, מעכשיו מתחיל מסלול האימון שלך! 🎰\n\nהמסלול כולל **11 פגישות** עם לוטו המאמן:\n• פגישות 1-8: כלים, תובנות ובניית הבסיס\n• פגישות 9-11: ליווי צמוד בשטח\n\nכמה פגישות בשבוע ${g2==='m'?'אתה':'את'} רוצה?`
-    : `${n}, your coaching journey starts now! 🎰\n\nThe program includes **11 sessions** with Loto:\n• Sessions 1-8: Tools, insights & building your foundation\n• Sessions 9-11: Hands-on coaching\n\nHow many sessions per week would you like?`
-  , 1200);
+    ?`${A.userName}, הנה מסלול האימון שלך! 🎰\n\nיש לך **11 שיעורים** לפניך.\nכל שיעור נפתח אחרי שמסיימים את הקודם.\n\nאיפה ${A.gender==='m'?'אתה':'את'} רוצה להתחיל?`
+    :`${A.userName}, here's your coaching journey! 🎰\n\nYou have **11 sessions** ahead.\nEach session unlocks after completing the previous one.\n\nWhere would you like to start?`
+  ,1000);
+
+  await wait(300);
+
+  const area=g('chat');
+  const wrap=document.createElement('div');
+  wrap.className='sessions-grid';
+  wrap.id='sessions-grid';
+
+  plan.forEach(s=>{
+    const isDone=completed.includes(s.num);
+    const isUnlocked=s.num===1||completed.includes(s.num-1)||isDone;
+    const isCurrent=s.num===current&&!isDone;
+
+    const btn=document.createElement('button');
+    btn.className='sess-btn '+(isDone?'completed':isUnlocked?'unlocked':'locked');
+
+    const statusText=isHe
+      ?(isDone?'✓ הושלם':isUnlocked?(isCurrent?'▶ ממשיך':'▶ התחל'):'🔒 נעול')
+      :(isDone?'✓ Done':isUnlocked?(isCurrent?'▶ Continue':'▶ Start'):'🔒 Locked');
+
+    btn.innerHTML=`
+      <div class="sess-btn-num">${isHe?`שיעור ${s.num}`:`Session ${s.num}`}</div>
+      <div class="sess-btn-icon">${s.icon}</div>
+      <div class="sess-btn-title">${s.title}</div>
+      <div class="sess-btn-status">${statusText}</div>`;
+
+    if(isUnlocked){
+      btn.onclick=()=>{
+        wrap.remove();
+        A.data.currentSession=s.num;
+        lsSave();
+        addMsg(isHe?`שיעור ${s.num} – ${s.title}`:`Session ${s.num} – ${s.title}`,'user');
+        startSession(s.num);
+      };
+    }
+    wrap.appendChild(btn);
+  });
+
+  area.appendChild(wrap);
+  scroll();
+  track('session_grid_shown',{completed:completed.length,current});
+}
+
+/* ── Schedule Setup (asks frequency then shows grid) ── */
+async function doScheduleSetup(){
+  const isHe=A.lang==='he';
+
+  // If already set up, go straight to grid
+  if(A.data.completedSessions!==undefined&&A.data.sessionsPerWeek){
+    await showSessionGrid();
+    return;
+  }
+
+  await say(isHe
+    ?`מעולה ${A.userName}! 🎰\nכמה שיעורים בשבוע ${A.gender==='m'?'אתה':'את'} רוצה?`
+    :`Great ${A.userName}! 🎰\nHow many sessions per week would you like?`
+  ,900);
 
   addChips(
-    isHe ? ['פעם בשבוע','פעמיים בשבוע','3 פעמים בשבוע'] : ['Once a week','Twice a week','3 times a week'],
-    async (v) => {
-      await addMsg(v, 'user');
-      const num = v.includes('פעמיים')||v.includes('Twice') ? 2 : v.includes('3') ? 3 : 1;
-      A.data.sessionsPerWeek = num;
-      A.data.currentSession = 1;
-      A.stage = 'session';
+    isHe?['פעם בשבוע','פעמיים בשבוע','3 פעמים בשבוע']:['Once a week','Twice a week','3 times a week'],
+    async(v)=>{
+      await addMsg(v,'user');
+      const num=v.includes('פעמיים')||v.includes('Twice')?2:v.includes('3')?3:1;
+      A.data.sessionsPerWeek=num;
+      A.data.completedSessions=[];
+      A.data.currentSession=1;
+      A.stage='session';
       updateBadge();
-
-      // Save schedule to Supabase
-      if (sb && A.user && A.email) {
-        try {
-          await sb.from('schedules').upsert({
-            user_id: A.user.id,
-            sessions_per_week: num,
-            email: A.email,
-            active: true
-          }, { onConflict: 'user_id' });
-        } catch(e) {}
-      }
-
-      track('schedule_set', { sessions_per_week: num });
-      await saveData();
-      await wait(400);
-      await startSession(1);
+      track('schedule_set',{sessions_per_week:num});
+      lsSave();
+      await wait(300);
+      await showSessionGrid();
     }
   );
+}
+
+/* ── Abandon Reminder ── */
+function setAbandonReminder(sessionNum){
+  if(!A.email)return;
+  const key='loto_remind_ses_'+sessionNum;
+  if(!localStorage.getItem(key)){
+    localStorage.setItem(key,Date.now().toString());
+  }
+}
+function checkAbandonReminder(){
+  if(!A.email)return;
+  const completed=A.data.completedSessions||[];
+  const cur=A.data.currentSession||1;
+  if(completed.includes(cur))return; // already done
+  const key='loto_remind_ses_'+cur;
+  const ts=localStorage.getItem(key);
+  if(!ts)return;
+  const diff=Date.now()-parseInt(ts);
+  if(diff>86400000){ // 24h
+    const plan=SESSION_PLAN[A.lang];
+    const ses=plan.find(s=>s.num===cur);
+    if(ses){
+      fetch('/api/email',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({to:A.email,name:A.userName,sessionNum:ses.num,sessionTitle:ses.title,lang:A.lang})
+      }).catch(()=>{});
+      localStorage.removeItem(key);
+      track('reminder_sent',{session:cur});
+    }
+  }
 }
 
 /* ── Start a Session ── */
@@ -1026,6 +1134,7 @@ async function startSession(num) {
   A.data.currentSession = num;
   A.data.step = { sessionPhase: 'intro', sessionNum: num };
   updateBadge();
+  setAbandonReminder(num); // start 24h countdown
 
   // Show progress card
   showSessionCard(num);
@@ -1111,50 +1220,40 @@ async function endSession(num) {
   const plan = SESSION_PLAN[A.lang];
   const next = plan.find(s=>s.num===num+1);
 
-  // Mark done in Supabase
-  if (sb && A.user) {
-    try {
-      await sb.from('sessions').upsert({
-        user_id: A.user.id, session_num: num,
-        status: 'done', completed_at: new Date().toISOString()
-      }, { onConflict: 'user_id,session_num' });
-    } catch(e) {}
-  }
-  track('session_complete', { session: num });
+  // Mark as completed
+  if(!A.data.completedSessions) A.data.completedSessions=[];
+  if(!A.data.completedSessions.includes(num)) A.data.completedSessions.push(num);
+  A.data.currentSession = Math.min(num+1, 11);
+  lsSave();
+  track('session_complete',{session:num,total_completed:A.data.completedSessions.length});
 
-  if (num >= 11) {
-    // Program complete!
+  // Send reminder email if we have email
+  if(A.email && next){
+    try{
+      await fetch('/api/email',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({to:A.email,name:A.userName,sessionNum:next.num,sessionTitle:next.title,lang:A.lang})
+      });
+    }catch(e){}
+  }
+
+  if(num>=11){
     await say(isHe
-      ? `🎉 כל הכבוד ${A.userName}! סיימת את כל 11 הפגישות!\n\nזה לא סוף – זה התחלה. אני כאן בשבילך בכל פעם שתרצה/י לדבר.\n\n${A.gender==='m'?'אתה':'את'} עשית עבודה אמיתית. גאה בך! 💛`
-      : `🎉 Congratulations ${A.userName}! You completed all 11 sessions!\n\nThis isn't the end – it's a beginning. I'm here for you whenever you want to talk.\n\nYou did real work. I'm proud of you! 💛`
-    , 1200);
-    A.stage = 'graduate';
-    await saveData();
+      ?`🎉 כל הכבוד ${A.userName}! סיימת את כל 11 השיעורים!\n\nזה לא סוף – זה התחלה.\n${A.gender==='m'?'אתה':'את'} עשית עבודה אמיתית. גאה בך! 💛`
+      :`🎉 Congratulations ${A.userName}! You completed all 11 sessions!\n\nThis is a beginning, not an end. I'm proud of you! 💛`
+    ,1200);
+    A.stage='graduate'; updateBadge(); lsSave();
     return;
   }
 
-  // Send reminder email for next session
-  if (A.email && next) {
-    try {
-      await fetch('/api/email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          to: A.email, name: A.userName,
-          sessionNum: next.num, sessionTitle: next.title, lang: A.lang
-        })
-      });
-    } catch(e) {}
-  }
-
   await say(isHe
-    ? `מעולה! פגישה ${num} הושלמה ✅\n\n${A.gender==='m'?'יקבל':'תקבל'} תזכורת במייל לפגישה ${num+1}: **${next?.title}**\n\nנתראה בקרוב! 🎰`
-    : `Great! Session ${num} complete ✅\n\nYou'll get a reminder email for session ${num+1}: **${next?.title}**\n\nSee you soon! 🎰`
-  , 1000);
+    ?`מעולה! שיעור ${num} הושלם ✅\n${next?`השיעור הבא: **${next.title}**`:''}\n${A.email?'נשלח לך מייל תזכורת 📬':''}`
+    :`Great! Session ${num} complete ✅\n${next?`Next: **${next.title}**`:''}\n${A.email?'A reminder email is on its way 📬':''}`
+  ,1000);
 
-  A.data.currentSession = num + 1;
-  A.data.step = {};
-  await saveData();
+  await wait(600);
+  await showSessionGrid();
 }
 
 /* ══ STATUS CHECK (returning user) ══ */
@@ -1228,7 +1327,6 @@ async function sendDirect(txt){rmChips();await addMsg(txt,'user');await route(tx
 /* ══ START APP ══ */
 async function startApp(isReturning){
   track('session_start',{returning:isReturning,visit:A.visitCount,gender:A.gender,stage:A.stage});
-
   if(isReturning&&A.stage&&A.stage!=='start'){
     A.visitCount++;
     const name=A.userName;updateBadge();
@@ -1281,52 +1379,49 @@ async function startApp(isReturning){
 /* ══ INIT ══ */
 async function init(){
   const p=new URLSearchParams(location.search),lang=p.get('lang')==='en'?'en':'he';
-  setLang(lang);
-  await initSB();
 
-  // Setup auth UI
-  const t=T[lang];
-  g('a-title').textContent=t.atitle_new;
-  g('abtxt').textContent=t.btnNew;
+  // Load from localStorage first
+  const isReturning=lsLoad();
+  if(A.lang) setLang(A.lang); else setLang(lang);
 
-  if(!sb){
-    // Demo mode – name field already shown in HTML, emailAuth handles it
-    return;
+  // Check if returning user
+  if(isReturning&&A.userName&&A.stage&&A.stage!=='start'){
+    // Already know who they are – skip auth overlay
+    g('aov').style.display='none';
+    const ubdg=g('ubdg');const uname=g('uname');
+    if(ubdg&&uname){ubdg.style.display='flex';uname.textContent=A.userName;}
+    startApp(true);
+  }else{
+    // New user – show auth overlay
+    setLang(lang);
+    g('a-title').textContent=T[lang].atitle_new||'מה המייל שלך? 👋';
   }
+}
 
-  // Listen for auth state changes
-  sb.auth.onAuthStateChange(async(ev,sess)=>{
-    if(sess?.user&&!A.user){
-      A.user=sess.user;A.email=sess.user.email;
-      A.userName=sess.user.email.split('@')[0];
-      const isReturning=await loadData();
-      hideAuth();
-      await saveData(); // ensure row exists
-      startApp(isReturning);
+function checkAbandonReminder(){
+  // If user has email, is in session stage, and left mid-session → send reminder
+  const lastVisit=localStorage.getItem('loto_last_visit');
+  const now=Date.now();
+  if(lastVisit&&A.email&&A.stage==='session'){
+    const hoursPassed=(now-parseInt(lastVisit))/(1000*60*60);
+    if(hoursPassed>=24){
+      const plan=SESSION_PLAN[A.lang];
+      const cur=plan.find(s=>s.num===(A.data.currentSession||1));
+      if(cur){
+        fetch('/api/email',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({to:A.email,name:A.userName,sessionNum:cur.num,sessionTitle:cur.title,lang:A.lang,isReminder:true})
+        }).catch(()=>{});
+        track('abandon_reminder_sent',{session:cur.num});
+      }
     }
-  });
-
-  // Already logged in?
-  const{data}=await sb.auth.getSession();
-  if(data?.session?.user){
-    A.user=data.session.user;A.email=A.user.email;
-    A.userName=A.user.email.split('@')[0];
-    const isReturning=await loadData();
-    hideAuth();startApp(isReturning);
   }
-  // Otherwise auth overlay stays
+  localStorage.setItem('loto_last_visit',now.toString());
 }
 
 init().then(()=>{
-  // DEBUG – remove after testing
-  setTimeout(()=>{
-    const area=document.getElementById('chat');
-    if(!area)return;
-    const d=document.createElement('div');
-    d.style.cssText='background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:8px 12px;font-size:11px;color:#aaa;margin:4px 0;font-family:monospace';
-    d.innerHTML='🔧 Debug:<br>'+(window._dbg||'no debug info')+'<br>sb='+(!!window.sb)+'  user='+(window.A?.user?.id?.slice(0,8)||'null');
-    area.appendChild(d);
-  },2000);
+  setTimeout(checkAbandonReminder,1500);
 });
 </script>
 
