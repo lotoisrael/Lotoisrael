@@ -1,6 +1,5 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/chat.html" },
-    { "source": "/api/coach", "destination": "/api/coach" }
+    { "source": "/", "destination": "/chat.html" }
   ]
 }
