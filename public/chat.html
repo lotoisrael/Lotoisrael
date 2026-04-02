@@ -366,6 +366,7 @@ body{font-family:'Assistant',sans-serif;background:var(--bg);color:var(--cream);
 <div class="chat" id="chat"></div>
 
 <div class="ibar">
+  <button id="end-ses-btn" onclick="quickEndSession()" style="display:none;flex-shrink:0;background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.4);color:var(--green);border-radius:50px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .2s" onmouseenter="this.style.background='rgba(34,197,94,0.25)'" onmouseleave="this.style.background='rgba(34,197,94,0.15)'">✓ סיים</button>
   <textarea class="ibox" id="ibox" rows="1" placeholder="כתוב כאן..."
     onkeydown="onKey(event)" oninput="autoH(this)"></textarea>
   <button class="sbtn" id="sbtn" onclick="send()">➤</button>
@@ -774,7 +775,11 @@ function setLang(l){
   updateBadge();
   history.replaceState(null,'',l==='en'?'?lang=en':'?lang=he');
 }
-function updateBadge(){const b=g('sbadge'),l=T[A.lang].stages[A.stage];if(l){b.textContent=l;b.style.display='block';}}
+function updateBadge(){
+  const b=g('sbadge'),l=T[A.lang].stages[A.stage];
+  if(l){b.textContent=l;b.style.display='block';}
+  updateEndBtn();
+}
 
 /* ══ DOM ══ */
 function g(id){return document.getElementById(id);}
@@ -1388,9 +1393,26 @@ async function route(msg){
 /* ══ INPUT ══ */
 function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
 function autoH(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,90)+'px';}
+
+function updateEndBtn(){
+  const btn=g('end-ses-btn');
+  if(!btn)return;
+  const show=A.stage==='session';
+  btn.style.display=show?'block':'none';
+  const isHe=A.lang==='he';
+  btn.textContent=isHe?'✓ סיים':'✓ End';
+}
+
+async function quickEndSession(){
+  const num=A.data.step?.sessionNum||A.data.currentSession||1;
+  await addMsg(A.lang==='he'?'סיימתי את השיעור ✓':'I finished the session ✓','user');
+  await endSession(num);
+}
+
 async function send(){
   const box=g('ibox'),txt=box.value.trim();
-  if(!txt||A.busy)return;
+  if(!txt&&A.stage!=='awaiting_email')return;
+  if(A.busy)return;
   box.value='';box.style.height='auto';rmChips();
   await addMsg(txt,'user');await route(txt);
 }
@@ -1468,16 +1490,17 @@ async function init(){
   if(A.lang) setLang(A.lang); else setLang(lang);
 
   // Check if returning user
-  if(isReturning&&A.userName&&A.stage&&A.stage!=='start'){
+  if(isReturning&&A.stage&&A.stage!=='start'&&A.stage!=='onboarding'){
     // Already know who they are – skip auth overlay
     g('aov').style.display='none';
     const ubdg=g('ubdg');const uname=g('uname');
-    if(ubdg&&uname){ubdg.style.display='flex';uname.textContent=A.userName;}
+    const displayName=A.userName||A.email?.split('@')[0]||'';
+    if(ubdg&&uname&&displayName){ubdg.style.display='flex';uname.textContent=displayName;}
     startApp(true);
   }else{
     // New user – show auth overlay
     setLang(lang);
-    g('a-title').textContent=T[lang].atitle_new||'מה המייל שלך? 👋';
+    g('a-title').textContent='מה המייל שלך? 👋';
   }
 }
 
