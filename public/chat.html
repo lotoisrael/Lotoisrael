@@ -244,8 +244,10 @@ body{font-family:'Assistant',sans-serif;background:var(--bg);color:var(--cream);
 }
 .sess-btn.unlocked{border-color:rgba(232,35,42,0.35);cursor:pointer;}
 .sess-btn.unlocked:hover{background:rgba(232,35,42,0.08);transform:translateY(-2px);}
-.sess-btn.completed{border-color:rgba(34,197,94,0.4);background:rgba(34,197,94,0.05);}
-.sess-btn.locked{opacity:0.38;cursor:not-allowed;}
+.sess-btn.completed{border-color:rgba(34,197,94,0.4);background:rgba(34,197,94,0.05);cursor:pointer;}
+.sess-btn.completed:hover{background:rgba(34,197,94,0.1);transform:translateY(-2px);}
+.sess-btn.locked{border-color:rgba(255,255,255,0.1);cursor:pointer;}
+.sess-btn.locked:hover{background:rgba(255,255,255,0.04);transform:translateY(-2px);}
 .sess-btn-num{font-size:10px;font-weight:700;color:var(--dim);}
 .sess-btn.unlocked .sess-btn-num{color:var(--red);}
 .sess-btn.completed .sess-btn-num{color:var(--green);}
@@ -255,6 +257,19 @@ body{font-family:'Assistant',sans-serif;background:var(--bg);color:var(--cream);
 .sess-btn.completed .sess-btn-status{color:var(--green);}
 .sess-btn.unlocked .sess-btn-status{color:var(--red);}
 .sess-btn.locked .sess-btn-status{color:var(--dim2);}
+/* ── SHARE BUTTON ── */
+.share-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  background:linear-gradient(135deg,#FFD700,#FF8C00);
+  color:#0C0B09;border:none;border-radius:50px;
+  padding:12px 22px;font-size:14px;font-weight:800;
+  cursor:pointer;font-family:inherit;
+  box-shadow:0 4px 20px rgba(255,215,0,.35);
+  transition:all .2s;width:100%;max-width:380px;
+  animation:pgold 2.5s ease-in-out infinite;
+}
+.share-btn:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(255,215,0,.55);}
+@keyframes pgold{0%,100%{box-shadow:0 4px 20px rgba(255,215,0,.35);}50%{box-shadow:0 4px 32px rgba(255,215,0,.65);}}
 .footer{
   display:flex;align-items:center;justify-content:center;gap:16px;
   padding:8px 16px;
@@ -318,7 +333,7 @@ body{font-family:'Assistant',sans-serif;background:var(--bg);color:var(--cream);
       </div>
     </div>
     <div class="a-logo">Loto<span>Israel</span></div>
-    <div class="a-tag" id="a-tag">המאמן האישי שלך לזוגיות 🎰</div>
+    <div class="a-tag" id="a-tag">המאמן האישי שלך לזכיה בזוגיות 🎰</div>
     <div class="a-title" id="a-title">מה המייל שלך? 👋</div>
     <div class="a-err" id="a-err"></div>
     <input type="email" class="ain" id="ain-e" placeholder="האימייל שלך" autocomplete="email" onkeydown="if(event.key==='Enter')emailAuth()">
@@ -719,7 +734,8 @@ function setLang(l){
   const t=T[l];
   g('cname').textContent=t.cn;g('cst').textContent=t.ls;g('ibox').placeholder=t.ph;
   // Auth overlay texts
-  g('a-tag').textContent=t.atag;g('a-note').textContent=t.anote;
+  g('a-tag').textContent=l==='he'?'המאמן האישי שלך לזכיה בזוגיות 🎰':'Your personal coach to win at relationships 🎰';
+  g('a-note').textContent=t.anote;
   g('ain-e').placeholder=t.emailPh;g('ain-p').placeholder=t.pwPh;
   g('a-title').textContent=l==='he'?'מה המייל שלך? 👋':'What\'s your email? 👋';
   g('abtxt').textContent=t.btnNew;
@@ -1027,37 +1043,92 @@ async function showSessionGrid(){
 
   plan.forEach(s=>{
     const isDone=completed.includes(s.num);
-    const isUnlocked=s.num===1||completed.includes(s.num-1)||isDone;
     const isCurrent=s.num===current&&!isDone;
 
     const btn=document.createElement('button');
-    btn.className='sess-btn '+(isDone?'completed':isUnlocked?'unlocked':'locked');
+    btn.className='sess-btn '+(isDone?'completed':isCurrent?'unlocked':'locked');
 
     const statusText=isHe
-      ?(isDone?'✓ הושלם':isUnlocked?(isCurrent?'▶ ממשיך':'▶ התחל'):'🔒 נעול')
-      :(isDone?'✓ Done':isUnlocked?(isCurrent?'▶ Continue':'▶ Start'):'🔒 Locked');
+      ?(isDone?'✅ הושלם':isCurrent?'▶ ממשיך':'○ זמין')
+      :(isDone?'✅ Done':isCurrent?'▶ Continue':'○ Available');
 
     btn.innerHTML=`
       <div class="sess-btn-num">${isHe?`שיעור ${s.num}`:`Session ${s.num}`}</div>
-      <div class="sess-btn-icon">${s.icon}</div>
+      <div class="sess-btn-icon">${isDone?'✅':s.icon}</div>
       <div class="sess-btn-title">${s.title}</div>
       <div class="sess-btn-status">${statusText}</div>`;
 
-    if(isUnlocked){
-      btn.onclick=()=>{
-        wrap.remove();
-        A.data.currentSession=s.num;
-        lsSave();
-        addMsg(isHe?`שיעור ${s.num} – ${s.title}`:`Session ${s.num} – ${s.title}`,'user');
-        startSession(s.num);
-      };
-    }
+    // All sessions are clickable
+    btn.onclick=()=>{
+      wrap.remove();
+      A.data.currentSession=s.num;
+      lsSave();
+      addMsg(isHe?`שיעור ${s.num} – ${s.title}`:`Session ${s.num} – ${s.title}`,'user');
+      startSession(s.num);
+    };
+
     wrap.appendChild(btn);
   });
 
   area.appendChild(wrap);
   scroll();
   track('session_grid_shown',{completed:completed.length,current});
+
+  // Add viral share button below grid
+  await wait(400);
+  showShareButton();
+}
+
+/* ── SHARE ── */
+function showShareButton(){
+  const existing=document.getElementById('share-wrap');
+  if(existing)existing.remove();
+  const isHe=A.lang==='he';
+  const wrap=document.createElement('div');
+  wrap.id='share-wrap';
+  wrap.style.cssText='max-width:380px;width:100%;margin-top:4px';
+  const btn=document.createElement('button');
+  btn.className='share-btn';
+  btn.innerHTML=`🎰 ${isHe?'שתף/י חבר/ה – תזכו יחד בזוגיות!':'Share with a friend – Win together!'}`;
+  btn.onclick=shareApp;
+  wrap.appendChild(btn);
+  g('chat').appendChild(wrap);
+  scroll();
+}
+
+async function shareApp(){
+  const isHe=A.lang==='he';
+  const shareUrl='https://www.lotoisrael.com?utm_source=share&utm_medium=viral&utm_campaign=friend_share&utm_content='+encodeURIComponent(A.userName||'user');
+  const text=isHe
+    ?`🎰 גיליתי את לוטו ישראל – המאמן האישי לזכיה בזוגיות!\nהוא עזר לי להתחיל את המסלול שלי לזוגיות אמיתית.\nמגיע לך גם – חינמי לגמרי 👇\n${shareUrl}`
+    :`🎰 I found LotoIsrael – the personal coach to win at relationships!\nIt's helping me build my path to a real relationship.\nYou deserve this too – completely free 👇\n${shareUrl}`;
+
+  track('share_click',{method:'native',lang:A.lang});
+
+  if(navigator.share){
+    try{
+      await navigator.share({
+        title:isHe?'לוטו ישראל – המאמן לזוגיות':'LotoIsrael – Relationship Coach',
+        text,
+        url:shareUrl
+      });
+      track('share_success');
+    }catch(e){}
+  }else{
+    // Fallback – copy to clipboard
+    try{
+      await navigator.clipboard.writeText(text);
+      const btn=document.querySelector('.share-btn');
+      if(btn){
+        btn.innerHTML=`✅ ${isHe?'הטקסט הועתק! שלח/י לחבר/ה':'Copied! Send to a friend'}`;
+        btn.style.background='linear-gradient(135deg,#22C55E,#16A34A)';
+        setTimeout(()=>{
+          btn.innerHTML=`🎰 ${isHe?'שתף/י חבר/ה – תזכו יחד בזוגיות!':'Share with a friend – Win together!'}`;
+          btn.style.background='linear-gradient(135deg,#FFD700,#FF8C00)';
+        },3000);
+      }
+    }catch(e){}
+  }
 }
 
 /* ── Schedule Setup (asks frequency then shows grid) ── */
@@ -1380,6 +1451,17 @@ async function startApp(isReturning){
 /* ══ INIT ══ */
 async function init(){
   const p=new URLSearchParams(location.search),lang=p.get('lang')==='en'?'en':'he';
+
+  // Track viral share arrivals
+  const utmSource=p.get('utm_source');
+  const utmMedium=p.get('utm_medium');
+  const utmCampaign=p.get('utm_campaign');
+  if(utmSource){
+    track('utm_arrival',{source:utmSource,medium:utmMedium||'',campaign:utmCampaign||''});
+    if(utmSource==='share'&&utmMedium==='viral'){
+      track('viral_referral',{campaign:utmCampaign||'',referrer:p.get('utm_content')||''});
+    }
+  }
 
   // Load from localStorage first
   const isReturning=lsLoad();
