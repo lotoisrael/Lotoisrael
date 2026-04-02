@@ -1420,53 +1420,86 @@ async function sendDirect(txt){rmChips();await addMsg(txt,'user');await route(tx
 
 /* ══ START APP ══ */
 async function startApp(isReturning){
-  track('session_start',{returning:isReturning,visit:A.visitCount,gender:A.gender,stage:A.stage});
-  if(isReturning&&A.stage&&A.stage!=='start'){
-    A.visitCount++;
-    const name=A.userName;updateBadge();
-    const last=A.history.slice(-4);
-    last.forEach(m=>{
-      const row=document.createElement('div');row.className='mrow'+(m.role==='user'?' u':'');
-      const av=document.createElement('div');av.className='mav '+(m.role==='user'?'u':'c');av.textContent=m.role==='user'?'😊':'🤖';
-      const bub=document.createElement('div');bub.className='bub '+(m.role==='user'?'u':'c');bub.innerHTML=m.content.replace(/\n/g,'<br>');
-      if(m.role==='user'){row.appendChild(bub);row.appendChild(av);}else{row.appendChild(av);row.appendChild(bub);}
-      g('chat').appendChild(row);
-    });
-    scroll();
-    const t=T[A.lang];
-    const isHe=A.lang==='he';
-    await wait(400);
+  track('session_start',{returning:isReturning,visit:A.visitCount,stage:A.stage});
 
-    if(A.stage==='session'||A.stage==='graduate'){
-      // Resuming a session
+  if(!isReturning||!A.stage||A.stage==='start'||A.stage==='onboarding'){
+    A.stage='onboarding';A.visitCount=1;
+    await startOnboarding();
+    return;
+  }
+
+  // ── RETURNING USER ──
+  A.visitCount++;
+  updateBadge();
+  const name=A.userName||A.email?.split('@')[0]||'';
+  const isHe=A.lang==='he';
+  const gf=A.gender==='f';
+
+  // Restore last few messages
+  const last=A.history.slice(-4);
+  last.forEach(m=>{
+    const row=document.createElement('div');row.className='mrow'+(m.role==='user'?' u':'');
+    const av=document.createElement('div');av.className='mav '+(m.role==='user'?'u':'c');av.textContent=m.role==='user'?'😊':'🤖';
+    const bub=document.createElement('div');bub.className='bub '+(m.role==='user'?'u':'c');bub.innerHTML=m.content.replace(/\n/g,'<br>');
+    if(m.role==='user'){row.appendChild(bub);row.appendChild(av);}else{row.appendChild(av);row.appendChild(bub);}
+    g('chat').appendChild(row);
+  });
+  scroll();
+  await wait(400);
+
+  const wb=isHe
+    ?(gf?`ברוכה השבה ${name}! 🎰`:`ברוך השב ${name}! 🎰`)
+    :`Welcome back ${name}! 🎰`;
+
+  switch(A.stage){
+    case 'session':
+      // Resume mid-session
       const curSes=A.data.currentSession||1;
       const plan=SESSION_PLAN[A.lang];
       const ses=plan.find(s=>s.num===curSes);
-      if(A.stage==='graduate'){
-        await say(isHe
-          ?`ברוכ${A.gender==='f'?'ה':''} השב${A.gender==='f'?'ה':''} ${name}! 🎰\nסיימת את כל המסלול. אני כאן לכל שאלה.`
-          :`Welcome back ${name}! 🎰\nYou completed the program. I'm here for any question.`,800);
-      }else{
-        await say(isHe
-          ?`ברוכ${A.gender==='f'?'ה':''} השב${A.gender==='f'?'ה':''} ${name}! 🎰\nממשיכים מפגישה ${curSes}: **${ses?.title||''}**`
-          :`Welcome back ${name}! 🎰\nContinuing with session ${curSes}: **${ses?.title||''}**`,800);
-        A.data.step=A.data.step||{};
-        A.data.step.sessionNum=curSes;
-        A.data.sessionStartExchange=A.history.filter(m=>m.role==='user').length;
-      }
-    }else{
+      await say(`${wb}\n${isHe?`ממשיכים שיעור ${curSes}: ${ses?.title||''}`:`Continuing session ${curSes}: ${ses?.title||''}`}`,800);
       A.data.step=A.data.step||{};
-      A.data.step.waitingForReturn=true;
-      await sayC(
-        t.wbMsg(name,A.gender||'m')+'\n'+t.statusQ,
-        t.statusC,
-        v=>sendDirect(v),800
-      );
-    }
-  }else{
-    // New user
-    A.stage='onboarding';A.visitCount=1;
-    await startOnboarding();
+      A.data.step.sessionNum=curSes;
+      A.data.sessionStartExchange=A.history.filter(m=>m.role==='user').length;
+      break;
+
+    case 'sessions_menu':
+    case 'schedule':
+      // Show the grid directly
+      await say(wb,600);
+      await wait(300);
+      await showSessionGrid();
+      break;
+
+    case 'graduate':
+      await say(isHe
+        ?`${wb}\nסיימת את כל המסלול 🎓 אני כאן לכל שאלה.`
+        :`${wb}\nYou completed the full program 🎓 I'm here for any question.`
+      ,800);
+      break;
+
+    case 'vision':
+    case 'awaiting_email':
+      // Mid-onboarding – continue from vision
+      await say(isHe
+        ?`${wb}\nנמשיך מאיפה שעצרנו 🙌`
+        :`${wb}\nLet's continue from where we stopped 🙌`
+      ,600);
+      showVC();
+      await wait(400);
+      await doScheduleSetup();
+      break;
+
+    default:
+      // registered/coaching/etc → show grid if sessions started, else coaching
+      await say(wb,600);
+      await wait(300);
+      if(A.data.sessionsPerWeek){
+        await showSessionGrid();
+      }else{
+        await doScheduleSetup();
+      }
+      break;
   }
 }
 
