@@ -1480,14 +1480,18 @@ async function startApp(isReturning){
 
     case 'vision':
     case 'awaiting_email':
-      // Mid-onboarding – continue from vision
+      // Had email prompt mid-flow – skip it and go to schedule/grid
+      A.stage = A.data.sessionsPerWeek ? 'sessions_menu' : 'schedule';
       await say(isHe
         ?`${wb}\nנמשיך מאיפה שעצרנו 🙌`
         :`${wb}\nLet's continue from where we stopped 🙌`
       ,600);
-      showVC();
-      await wait(400);
-      await doScheduleSetup();
+      await wait(300);
+      if(A.data.sessionsPerWeek){
+        await showSessionGrid();
+      }else{
+        await doScheduleSetup();
+      }
       break;
 
     default:
@@ -1522,8 +1526,9 @@ async function init(){
   const isReturning=lsLoad();
   if(A.lang) setLang(A.lang); else setLang(lang);
 
-  // Check if returning user
-  if(isReturning&&A.stage&&A.stage!=='start'&&A.stage!=='onboarding'){
+  // Check if returning user - any stage past start/onboarding
+  const RETURNING_STAGES=['vision','awaiting_email','schedule','sessions_menu','session','registered','coaching','graduate'];
+  if(isReturning&&RETURNING_STAGES.includes(A.stage)){
     // Already know who they are – skip auth overlay
     g('aov').style.display='none';
     const ubdg=g('ubdg');const uname=g('uname');
