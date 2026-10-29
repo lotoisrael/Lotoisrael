@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>תקציב משפחתי חודשי – תבנית בעברית</title>
+<meta name="description" content="תבנית תקציב משפחתי בעברית ל-Google Sheets ולאקסל. הכנסות, הוצאות, חיסכון, מתוכנן מול בפועל וגרף, בגיליון אחד.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@700;900&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F5F3; --surface:#FFFFFF; --ink:#16302A; --muted:#4F645E; --line:#D3DCD8;
+  --accent:#0E6B5C; --accent-ink:#FFFFFF; --warn:#B8381F; --head:#E3EEEA;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark; --bg:#0F1B18; --surface:#16262F; --ink:#E6EFEC; --muted:#A5B8B2; --line:#2B4039;
+    --accent:#3CC2A7; --accent-ink:#06201A; --warn:#FF8A70; --head:#1D332D; --surface:#162622;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark; --bg:#0F1B18; --surface:#162622; --ink:#E6EFEC; --muted:#A5B8B2; --line:#2B4039;
+  --accent:#3CC2A7; --accent-ink:#06201A; --warn:#FF8A70; --head:#1D332D;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Heebo",Arial,sans-serif;font-size:17px;line-height:1.65}
+.wrap{max-width:980px;margin:0 auto;padding:0 20px}
+h1,h2{font-family:"Frank Ruhl Libre","David Libre",Georgia,serif;line-height:1.15;margin:0}
+h1{font-size:clamp(2.2rem,6vw,3.6rem);font-weight:900}
+h2{font-size:clamp(1.6rem,4vw,2.1rem);font-weight:700;margin-bottom:18px}
+.hero{display:grid;gap:36px;padding:48px 0 56px;align-items:center}
+@media(min-width:820px){.hero{grid-template-columns:1.05fr 1fr;padding:72px 0 80px}}
+.lead{color:var(--muted);font-size:1.15rem;max-width:34ch;margin:16px 0 26px}
+.buy{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px}
+.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:1.1rem;padding:14px 30px;border-radius:10px;text-decoration:none;min-height:48px}
+.btn:hover{filter:brightness(1.08)}
+.btn:focus-visible,summary:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.price{font-size:1.05rem;color:var(--muted)}
+.price b{color:var(--ink);font-size:1.5rem}
+.fine{color:var(--muted);font-size:.92rem;margin-top:12px}
+/* sheet preview */
+.sheet{background:var(--surface);border:1px solid var(--line);border-radius:6px;overflow-x:auto;box-shadow:6px 6px 0 var(--head)}
+.sheet table{width:100%;border-collapse:collapse;font-size:.95rem;min-width:300px}
+.sheet caption{background:var(--accent);color:var(--accent-ink);font-weight:700;padding:10px 14px;text-align:right}
+.sheet th{background:var(--head);font-weight:700;padding:8px 14px;text-align:center;border-bottom:1px solid var(--line)}
+.sheet th:first-child,.sheet td:first-child{text-align:right}
+.sheet td{padding:9px 14px;border-bottom:1px solid var(--line);text-align:center;font-variant-numeric:tabular-nums}
+.sheet td.in{background:color-mix(in srgb,#FFE9A0 35%,var(--surface))}
+.sheet tfoot td{font-weight:700;background:var(--head);border-bottom:0}
+.neg{color:var(--warn);font-weight:700}
+section{padding:44px 0;border-top:1px solid var(--line)}
+.list{list-style:none;margin:0;padding:0;display:grid;gap:12px;max-width:60ch}
+.list li{padding-inline-start:30px;position:relative}
+.list li::before{content:"";position:absolute;inset-inline-start:0;top:.55em;width:16px;height:9px;border-inline-start:3px solid var(--accent);border-bottom:3px solid var(--accent);transform:rotate(-45deg) scaleX(-1)}
+.steps{counter-reset:s;list-style:none;margin:0;padding:0;display:grid;gap:14px;max-width:60ch}
+.steps li{counter-increment:s;display:flex;gap:16px;align-items:flex-start}
+.steps li::before{content:counter(s);flex:none;width:34px;height:34px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-weight:700;display:grid;place-items:center}
+details{border-bottom:1px solid var(--line);max-width:68ch}
+summary{cursor:pointer;font-weight:700;padding:14px 0;min-height:48px}
+details p{margin:0 0 16px;color:var(--muted)}
+.cta{text-align:center}
+.cta .buy{justify-content:center}
+footer{padding:28px 0 40px;color:var(--muted);font-size:.9rem;text-align:center}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="hero">
+    <div>
+      <h1>לאן הכסף הולך כל חודש, בגיליון אחד</h1>
+      <p class="lead">תבנית תקציב משפחתי בעברית ל-Google Sheets ולאקסל. כותבים מה תכננתם ומה קרה בפועל, והגיליון מחשב את השאר.</p>
+      <div class="buy">
+        <a class="btn" id="buy" href="https://www.paypal.com/ncp/payment/9Z32QTH953Z2N" rel="noopener">לרכישה ב-PayPal</a>
+        <span class="price"><b>29 ש״ח</b> תשלום חד־פעמי</span>
+      </div>
+      <p class="fine">אחרי התשלום מקבלים קישור ויוצרים עותק אישי בחשבון גוגל.</p>
+    </div>
+    <div class="sheet">
+      <table>
+        <caption>דוגמה מהתבנית: הוצאות משתנות</caption>
+        <thead><tr><th>קטגוריה</th><th>מתוכנן</th><th>בפועל</th><th>יתרה</th></tr></thead>
+        <tbody>
+          <tr><td>סופר ומכולת</td><td class="in">3,000</td><td class="in">3,350</td><td class="neg">‎-350</td></tr>
+          <tr><td>מסעדות ובילויים</td><td class="in">800</td><td class="in">950</td><td class="neg">‎-150</td></tr>
+          <tr><td>דלק ותחבורה</td><td class="in">900</td><td class="in">870</td><td>30</td></tr>
+          <tr><td>בריאות</td><td class="in">300</td><td class="in">220</td><td>80</td></tr>
+        </tbody>
+        <tfoot><tr><td>סה״כ</td><td>5,000</td><td>5,390</td><td class="neg">‎-390</td></tr></tfoot>
+      </table>
+    </div>
+  </div>
+
+  <section>
+    <h2>מה בתוך הגיליון</h2>
+    <ul class="list">
+      <li>הכנסות, הוצאות קבועות, הוצאות משתנות וחיסכון, כל אחד בטבלה משלו.</li>
+      <li>עמודות מתוכנן, בפועל ויתרה. חריגה מהתקציב מסומנת באדום.</li>
+      <li>סיכום החודש עם אחוז חיסכון וגרף של מתוכנן מול בפועל.</li>
+      <li>עיצוב מימין לשמאל, בעברית מלאה, וגיליון הוראות קצר.</li>
+      <li>אפשר לשנות שמות קטגוריות ולהוסיף שורות.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>איך מתחילים</h2>
+    <ol class="steps">
+      <li>משלמים ב-PayPal.</li>
+      <li>מקבלים קישור ללחיצה אחת, ויוצרים עותק משלכם ב-Google Sheets.</li>
+      <li>ממלאים את התאים הצהובים: מתוכנן בתחילת החודש, בפועל במהלכו.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>שאלות נפוצות</h2>
+    <details><summary>צריך אקסל?</summary><p>לא. התבנית עובדת בחינם ב-Google Sheets, ואפשר גם להוריד אותה לאקסל.</p></details>
+    <details><summary>הנתונים שלי נשמרים אצלכם?</summary><p>לא. העותק נמצא בחשבון הגוגל שלכם, ורק אתם רואים אותו.</p></details>
+    <details><summary>איך עוברים לחודש הבא?</summary><p>משכפלים את הלשונית ומוחקים את הסכומים הישנים. ההוראות מופיעות בתוך הקובץ.</p></details>
+    <details><summary>אפשר להתאים לקטגוריות שלי?</summary><p>כן. אפשר לשנות שמות ולהוסיף שורות, והסכומים מתעדכנים.</p></details>
+  </section>
+
+  <section class="cta">
+    <h2>מתחילים את החודש הבא עם תמונה ברורה</h2>
+    <div class="buy">
+      <a class="btn" href="https://www.paypal.com/ncp/payment/9Z32QTH953Z2N" rel="noopener">לרכישה ב-PayPal</a>
+      <span class="price"><b>29 ש״ח</b> תשלום חד־פעמי</span>
+    </div>
+  </section>
+</main>
+<footer class="wrap">התבנית לשימוש אישי. הנתונים בדוגמה הם להמחשה בלבד.</footer>
+</body>
+</html>
